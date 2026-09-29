@@ -1,0 +1,57 @@
+{
+  "site": {
+    "name": "Odunayo Bolarinwa",
+    "shortName": "OD",
+    "title": "WordPress Developer & Digital Product Builder",
+    "description": "Portfolio of Odunayo Bolarinwa, a web developer focused on WordPress, custom development, e-commerce, frontend implementation, automation and digital experiences.",
+    "email": "odgrandeng@gmail.com",
+    "phone": "08027279797",
+    "location": "Lagos, Nigeria",
+    "github": "https://github.com/odgrande",
+    "linkedin": "",
+    "instagram": "",
+    "twitter": ""
+  },
+  "services": [
+    ["WordPress Development", "Custom WordPress builds, theme and plugin customization, Elementor implementation, dynamic content, PHP, JavaScript and responsive front-end work."],
+    ["E-commerce", "WooCommerce storefronts, product experiences, cart and checkout flows, integrations and conversion-focused implementation."],
+    ["Frontend & UI", "High-fidelity implementation from designs, responsive layouts, interaction details and cross-device troubleshooting."],
+    ["Automation & AI", "Custom workflows, third-party integrations, AI-powered experiences and chatbot implementations where they add practical value."],
+    ["Shopify & Liquid", "Shopify theme development and Liquid customization alongside broader e-commerce implementation experience."],
+    ["Maintenance & Digital Presence", "Website maintenance, updates, troubleshooting, hosting and domain support, SEO-aware implementation and ongoing social presence work."]
+  ],
+  "capabilities": [
+    "WordPress", "Elementor", "WooCommerce", "PHP", "JavaScript", "HTML", "CSS", "Custom Plugins",
+    "Custom Post Types", "Taxonomies", "Responsive UI", "Hosting & Domains", "SEO-aware Development",
+    "Shopify", "Liquid", "APIs & Integrations", "AI Chatbots", "Automation"
+  ],
+  "experience": [
+    ["Lead Website Developer", "CULTUR FM", "Current", "Full-time website development work across WordPress, custom templates, responsive implementation, e-commerce architecture, integrations and ongoing improvements."],
+    ["Web Developer / Digital Product Builder", "Odgrande Digital", "Independent", "Client websites, e-commerce platforms, custom WordPress functionality, frontend work, branding support and product experiments."]
+  ],
+  "projects": {
+    "cultur-fm-main-project": {"title":"CULTUR FM","client":"CULTUR FM","location":"UK","category":"WordPress Development","services":["WordPress","Elementor","WooCommerce","Custom Development","SoundCloud"],"year":"2026","featured":true,"liveSite":"https://cultur.fm/","description":"Official CULTUR FM digital platform, including website development and ongoing improvements."},
+    "uz-interiors-project": {"title":"UZ Interiors","client":"UZ Interiors","location":"Austin, TX, USA","category":"Web & Brand Design","services":["Branding","Web Design"],"year":"2026","featured":false,"liveSite":"https://uzinteriors.com/","description":"Logo, branding, and website design."},
+    "1seven4-project": {"title":"1seven4","client":"1seven4","location":"UK","category":"Web Development","services":["Website Development"],"year":"2026","featured":false,"description":"Website development project."},
+    "blast-music-fest-project": {"title":"BLASTFEST","client":"BLASTFEST","location":"USA","category":"Web Development & Campaigns","services":["Website Development","Campaign Work","Digital Experience"],"year":"2026","featured":true,"liveSite":"https://blastmusicfest.com/","description":"Music festival website and recurring campaign work."},
+    "mailoptin-project": {"title":"MailOptin","client":"MailOptin","location":"Nigeria","category":"SaaS / Web Development","services":["Web Development","Landing Page","Automation"],"year":"2026","featured":true,"liveSite":"https://mailoptin.discover234.com/","description":"SaaS-style email automation product landing page."},
+    "cultur-totes-project": {"title":"CULTUR FM Totes","client":"CULTUR FM","location":"UK","category":"E-commerce","services":["WooCommerce","E-commerce","Product UI"],"year":"2026","featured":true,"liveSite":"https://cultur.fm/","description":"E-commerce storefront for CULTUR FM merchandise."},
+    "glowbar-project": {"title":"DailyGlowBar","client":"DailyGlowBar","location":"Illinois, USA","category":"Shopify Development","services":["Shopify","Liquid","Theme Development","E-commerce"],"year":"2026","featured":true,"liveSite":"https://dailyglowbar.com/","description":"Shopify store built from scratch with theme development and Liquid customisation."},
+    "daffodils-project": {"title":"Daffodils Africa","client":"Daffodils Africa","location":"Nigeria","category":"Web Development / AI","services":["Website Development","Chatbot","AI Integration"],"year":"2026","featured":true,"liveSite":"https://daffodilsafrica.com/","description":"Static website with chatbot experience."},
+    "snap-and-stem-photography-project": {"title":"Snap and Stem Photography","client":"Snap and Stem","location":"Canada","category":"Photography / E-commerce","services":["Portfolio","Booking","E-commerce"],"year":"2026","featured":false,"liveSite":"https://snapandstem.ca/photograph/","description":"Photography portfolio within a broader booking and e-commerce platform."},
+    "borrowacam-project": {"title":"Borrow A Camera","client":"Borrow A Camera","location":"UK","category":"Marketplace / E-commerce","services":["Marketplace","Booking","E-commerce"],"year":"2026","featured":true,"liveSite":"https://borrowacamera.com/","description":"Camera hire marketplace with booking and e-commerce functionality."},
+    "project234foundation-project": {"title":"The 234 Project Foundation","client":"The 234 Project Foundation","location":"Nigeria","category":"Web Development","services":["Website Development","Content","Digital Presence"],"year":"2026","featured":false,"liveSite":"https://the234projectfoundation.com/","description":"Website and ongoing digital presence."},
+    "discover234-project": {"title":"Discover234","client":"Discover234","location":"Nigeria + USA","category":"Digital Platform","services":["Web Development","CMS","Content Experience"],"year":"2026","featured":false,"liveSite":"https://discover234.com/","description":"Static digital platform for Nigerian history and culture."},
+    "giftcardsnaira-project": {"title":"GiftCardsNaira","client":"GiftCardsNaira","location":"Nigeria","category":"E-commerce","services":["Web Development","Gift Cards"],"year":"2026","featured":false,"description":"Gift card-focused web project."},
+    "projecthelptofinish-project": {"title":"Project Help To Finish","client":"Project Help To Finish","location":"USA + Nigeria","category":"Webflow Development","services":["Webflow","Web Design"],"year":"2026","featured":false,"liveSite":"https://projecthelptofinish.com/","description":"Webflow website project."},
+    "addoz-project": {"title":"Addoz Integrated Resources Limited","client":"Addoz Integrated Resources Limited","location":"Nigeria","category":"Recruitment / Web Development","services":["WordPress","Recruitment","UX","Copywriting"],"year":"2026","featured":true,"liveSite":"http://addozconsultinglimited.com/","description":"Full website build and copywriting for an HR outsourcing and recruitment consultancy."},
+    "haloleander-project": {"title":"Halo Leander","client":"Halo Leander","category":"Web Project","services":["Web Development"],"year":"2026","featured":false,"liveSite":"https://www.haloleander.com/","description":"Website project from the portfolio archive."},
+    "prepmaster-plugin-project": {"title":"PrepMaster","client":"PrepMaster","category":"WordPress Plugin / Product","services":["WordPress Plugin","PHP","JavaScript","Product Development"],"year":"2025","featured":true,"liveSite":"https://github.com/odgrande/prepmaster","description":"WordPress plugin work developed as a technical product project."},
+    "djx-branding-project": {"title":"DJx Branding","client":"DJx","category":"Branding","services":["Visual Identity","Graphic Design"],"year":"2021","featured":false,"description":"Branding and visual design project from the portfolio archive."},
+    "olaedo-branding-project": {"title":"Olaedo Beauty","client":"Olaedo","category":"Branding","services":["Brand Identity","Packaging","Art Direction"],"year":"2021","featured":false,"description":"Brand identity and visual direction project with supporting identity, packaging and presentation assets."},
+    "viva-seduire-branding-project": {"title":"Viva Seduire","client":"Viva Seduire","category":"Branding","services":["Branding","Graphic Design"],"year":"2021","featured":false,"description":"Branding project from the portfolio archive."},
+    "youzed-project": {"title":"Youzed","client":"Youzed","category":"Digital Project","services":["Web Design","Visual Design"],"year":"2026","featured":false,"description":"Digital project from the portfolio archive."},
+    "snap-and-stem-main-project": {"title":"Snap and Stem Main Project","client":"Snap and Stem","category":"Digital Project","services":["Web Development"],"year":"2026","featured":false,"description":"Separate main-project portfolio entry, maintained independently from the photography project entry."}
+  },
+  "featuredOrder": ["cultur-fm-main-project","addoz-project","borrowacam-project","daffodils-project","mailoptin-project","cultur-totes-project","blast-music-fest-project","prepmaster-plugin-project"]
+}
