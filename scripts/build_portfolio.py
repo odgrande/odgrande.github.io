@@ -117,7 +117,7 @@ def footer():
     return f'''<footer><div class="footer-top"><div><small>HAVE A PROJECT IN MIND?</small><h2>LET'S MAKE<br>SOMETHING.</h2><a class="footer-cta" href="/contact/">START A CONVERSATION ↗</a></div><div class="footer-nav"><small>INDEX</small><a href="/">HOME</a><a href="/works/">WORKS</a><a href="/about/">ABOUT</a><a href="/credentials/">CREDENTIALS</a><a href="/contact/">CONTACT</a></div><div class="footer-nav"><small>ELSEWHERE</small><a href="https://github.com/odgrande" target="_blank">GITHUB ↗</a><a href="mailto:{esc(CONFIG["site"]["email"])}">EMAIL ↗</a></div></div><div class="footer-bottom"><span>© 2026 ODUNAYO BOLARINWA</span><span>LAGOS, NIGERIA · WORDPRESS DEVELOPER</span></div></footer>'''
 
 def image_card(p,index=0):
-    img=p["images"][index] if p.get("images") else ""
+    img=p["images"][0] if p.get("images") else ""
     media=f'<img src="{img}" alt="{esc(p["title"])}" loading="lazy">' if img else f'<div class="empty-media"><span>{esc(p["title"][:2].upper())}</span></div>'
     return f'''<a class="work-card" href="/works/{esc(p["slug"])}/"><div class="work-image">{media}<span class="work-no">0{index+1}</span><b>↗</b></div><div class="work-info"><div><h3>{esc(p["title"])}</h3><p>{esc(p["category"])}</p></div><span>{esc(p.get("year",""))}</span></div></a>'''
 
