@@ -1,0 +1,490 @@
+[
+  {
+    "title": "CULTUR FM",
+    "client": "CULTUR FM",
+    "location": "UK",
+    "category": "WordPress Development",
+    "services": [
+      "WordPress",
+      "Elementor",
+      "WooCommerce",
+      "Custom Development",
+      "SoundCloud"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://cultur.fm/",
+    "description": "Official CULTUR FM digital platform, including website development and ongoing improvements.",
+    "slug": "cultur-fm-main-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Addoz Integrated Resources Limited",
+    "client": "Addoz Integrated Resources Limited",
+    "location": "Nigeria",
+    "category": "Recruitment / Web Development",
+    "services": [
+      "WordPress",
+      "Recruitment",
+      "UX",
+      "Copywriting"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "http://addozconsultinglimited.com/",
+    "description": "Full website build and copywriting for an HR outsourcing and recruitment consultancy.",
+    "slug": "addoz-project",
+    "images": [
+      "/assets/projects/addoz-project/About-ADDOZ-09-28-2026_04_06_PM.png",
+      "/assets/projects/addoz-project/Browse-jobs-ADDOZ-09-28-2026_04_07_PM.png",
+      "/assets/projects/addoz-project/Candidate-workspace-ADDOZ-ADDOZ-09-28-2026_03_47_PM.png",
+      "/assets/projects/addoz-project/Career-Intelligence-ADDOZ-09-28-2026_04_11_PM.png",
+      "/assets/projects/addoz-project/Categories-ADDOZ-09-28-2026_04_09_PM.png",
+      "/assets/projects/addoz-project/Companies-ADDOZ-09-28-2026_04_10_PM.png",
+      "/assets/projects/addoz-project/Contact-ADDOZ-09-28-2026_04_07_PM.png",
+      "/assets/projects/addoz-project/Employer-sign-in-ADDOZ-09-28-2026_04_05_PM.png",
+      "/assets/projects/addoz-project/FAQ-ADDOZ-09-28-2026_04_07_PM.png",
+      "/assets/projects/addoz-project/For-employers-ADDOZ-09-28-2026_04_05_PM.png",
+      "/assets/projects/addoz-project/Frontend-Developer-%23U2014-Sample-Tech-Employer-ADDOZ-09-28-2026_04_08_PM.png",
+      "/assets/projects/addoz-project/Interview-Prep-ADDOZ-09-28-2026_04_11_PM.png",
+      "/assets/projects/addoz-project/Locations-ADDOZ-09-28-2026_04_09_PM.png",
+      "/assets/projects/addoz-project/Post-a-job-ADDOZ-09-28-2026_04_06_PM.png",
+      "/assets/projects/addoz-project/Sign-in-ADDOZ-09-28-2026_04_02_PM.png",
+      "/assets/projects/addoz-project/Sign-in-ADDOZ-09-28-2026_04_04_PM.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "Borrow A Camera",
+    "client": "Borrow A Camera",
+    "location": "UK",
+    "category": "Marketplace / E-commerce",
+    "services": [
+      "Marketplace",
+      "Booking",
+      "E-commerce"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://borrowacamera.com/",
+    "description": "Camera hire marketplace with booking and e-commerce functionality.",
+    "slug": "borrowacam-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Daffodils Africa",
+    "client": "Daffodils Africa",
+    "location": "Nigeria",
+    "category": "Web Development / AI",
+    "services": [
+      "Website Development",
+      "Chatbot",
+      "AI Integration"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://daffodilsafrica.com/",
+    "description": "Static website with chatbot experience.",
+    "slug": "daffodils-project",
+    "images": [
+      "/assets/projects/daffodils-project/file_0000000047c4821081f1577bcd24984c.png",
+      "/assets/projects/daffodils-project/file_00000000712082469040236213539e78.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "MailOptin",
+    "client": "MailOptin",
+    "location": "Nigeria",
+    "category": "SaaS / Web Development",
+    "services": [
+      "Web Development",
+      "Landing Page",
+      "Automation"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://mailoptin.discover234.com/",
+    "description": "SaaS-style email automation product landing page.",
+    "slug": "mailoptin-project",
+    "images": [
+      "/assets/projects/mailoptin-project/file_000000002e7081fba351cc840bb32533.png",
+      "/assets/projects/mailoptin-project/file_00000000ed80820789e0ed93596d6c81.png",
+      "/assets/projects/mailoptin-project/file_00000000ff4c620a8725679843a5af4e_conversation_id%3D67fb7f21-0618-8013-88a7-b809e2ec6ca6%26message_id%3D075fb68a-649c-447d-bb15-0fda56b46632.png",
+      "/assets/projects/mailoptin-project/undefined.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "CULTUR FM Totes",
+    "client": "CULTUR FM",
+    "location": "UK",
+    "category": "E-commerce",
+    "services": [
+      "WooCommerce",
+      "E-commerce",
+      "Product UI"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://cultur.fm/",
+    "description": "E-commerce storefront for CULTUR FM merchandise.",
+    "slug": "cultur-totes-project",
+    "images": [
+      "/assets/projects/cultur-totes-project/TOTE%20BADGE.png",
+      "/assets/projects/cultur-totes-project/TOTE%40NEW.png",
+      "/assets/projects/cultur-totes-project/file_00000000146881f49cd45519e78063c0.png",
+      "/assets/projects/cultur-totes-project/file_0000000036c081f69e0ea488cdb60e54.png",
+      "/assets/projects/cultur-totes-project/file_0000000086cc81f4b780cb3b4eb5be50.png",
+      "/assets/projects/cultur-totes-project/file_0000000088e481f4beacb3ceedc5b2af.png",
+      "/assets/projects/cultur-totes-project/file_00000000b3d88243bc86f4cb904c8bc2.png",
+      "/assets/projects/cultur-totes-project/file_00000000cf28824387fc4656219dd85c.png",
+      "/assets/projects/cultur-totes-project/file_00000000edfc824391f08a5bffd2b5ab.png",
+      "/assets/projects/cultur-totes-project/http-Cultur.fm-totes.png",
+      "/assets/projects/cultur-totes-project/https-cultur.fm-product-faces-tote-black-.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "BLASTFEST",
+    "client": "BLASTFEST",
+    "location": "USA",
+    "category": "Web Development & Campaigns",
+    "services": [
+      "Website Development",
+      "Campaign Work",
+      "Digital Experience"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://blastmusicfest.com/",
+    "description": "Music festival website and recurring campaign work.",
+    "slug": "blast-music-fest-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "PrepMaster",
+    "client": "PrepMaster",
+    "category": "WordPress Plugin / Product",
+    "services": [
+      "WordPress Plugin",
+      "PHP",
+      "JavaScript",
+      "Product Development"
+    ],
+    "year": "2025",
+    "featured": true,
+    "liveSite": "https://github.com/odgrande/prepmaster",
+    "description": "WordPress plugin work developed as a technical product project.",
+    "slug": "prepmaster-plugin-project",
+    "images": [
+      "/assets/projects/prepmaster-plugin-project/IMG-20251130-WA0002.jpg"
+    ],
+    "videos": []
+  },
+  {
+    "title": "DailyGlowBar",
+    "client": "DailyGlowBar",
+    "location": "Illinois, USA",
+    "category": "Shopify Development",
+    "services": [
+      "Shopify",
+      "Liquid",
+      "Theme Development",
+      "E-commerce"
+    ],
+    "year": "2026",
+    "featured": true,
+    "liveSite": "https://dailyglowbar.com/",
+    "description": "Shopify store built from scratch with theme development and Liquid customisation.",
+    "slug": "glowbar-project",
+    "images": [
+      "/assets/projects/glowbar-project/file_0000000006c882108744edebfdf73782.png",
+      "/assets/projects/glowbar-project/file_000000004ce4821085d6c6011ce8b85a.png",
+      "/assets/projects/glowbar-project/file_00000000cdec81f48cd36f95ccc549c0.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-collections-all%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-about%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-book-a-visit%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-book-a-visit.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-bundles%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-faq%20%281%29.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-pages-faq.png",
+      "/assets/projects/glowbar-project/https-dailyglowbar.com-products-golden-glow.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "1seven4",
+    "client": "1seven4",
+    "location": "UK",
+    "category": "Web Development",
+    "services": [
+      "Website Development"
+    ],
+    "year": "2026",
+    "featured": false,
+    "description": "Website development project.",
+    "slug": "1seven4-project",
+    "images": [
+      "/assets/projects/1seven4-project/file_00000000a4f881f4ba1c46ec0cd0a3da.png",
+      "/assets/projects/1seven4-project/file_00000000d3d881f49937592727d8a6e2.png",
+      "/assets/projects/1seven4-project/file_00000000e6b881f4a2f49beb292f41bd.png"
+    ],
+    "videos": []
+  },
+  {
+    "title": "Discover234",
+    "client": "Discover234",
+    "location": "Nigeria + USA",
+    "category": "Digital Platform",
+    "services": [
+      "Web Development",
+      "CMS",
+      "Content Experience"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://discover234.com/",
+    "description": "Static digital platform for Nigerian history and culture.",
+    "slug": "discover234-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "DJx Branding",
+    "client": "DJx",
+    "category": "Branding",
+    "services": [
+      "Visual Identity",
+      "Graphic Design"
+    ],
+    "year": "2021",
+    "featured": false,
+    "description": "Branding and visual design project from the portfolio archive.",
+    "slug": "djx-branding-project",
+    "images": [
+      "/assets/projects/djx-branding-project/IMG-20210529-WA0009.jpg",
+      "/assets/projects/djx-branding-project/IMG-20210529-WA0010.jpg",
+      "/assets/projects/djx-branding-project/IMG-20210529-WA0011.jpg",
+      "/assets/projects/djx-branding-project/IMG-20210529-WA0012.jpg"
+    ],
+    "videos": []
+  },
+  {
+    "title": "GiftCardsNaira",
+    "client": "GiftCardsNaira",
+    "location": "Nigeria",
+    "category": "E-commerce",
+    "services": [
+      "Web Development",
+      "Gift Cards"
+    ],
+    "year": "2026",
+    "featured": false,
+    "description": "Gift card-focused web project.",
+    "slug": "giftcardsnaira-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Halo Leander",
+    "client": "Halo Leander",
+    "category": "Web Project",
+    "services": [
+      "Web Development"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://www.haloleander.com/",
+    "description": "Website project from the portfolio archive.",
+    "slug": "haloleander-project",
+    "images": [
+      "/assets/projects/haloleander-project/IMG-20240104-WA0005.jpg",
+      "/assets/projects/haloleander-project/IMG-20240206-WA0001.jpg",
+      "/assets/projects/haloleander-project/IMG-20240206-WA0003.jpg",
+      "/assets/projects/haloleander-project/IMG-20240206-WA0005.jpg",
+      "/assets/projects/haloleander-project/IMG-20251130-WA0002.jpg"
+    ],
+    "videos": []
+  },
+  {
+    "title": "Olaedo Beauty",
+    "client": "Olaedo",
+    "category": "Branding",
+    "services": [
+      "Brand Identity",
+      "Packaging",
+      "Art Direction"
+    ],
+    "year": "2021",
+    "featured": false,
+    "description": "Brand identity and visual direction project with supporting identity, packaging and presentation assets.",
+    "slug": "olaedo-branding-project",
+    "images": [
+      "/assets/projects/olaedo-branding-project/04_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/1000088684.jpg",
+      "/assets/projects/olaedo-branding-project/2450059_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/2450063t.png",
+      "/assets/projects/olaedo-branding-project/3373536_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/4960844_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/5121638_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/5121738_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/56231914_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/5623191_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/5835012_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/6307772_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/7255141_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/7255141tt_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Alternatives.png",
+      "/assets/projects/olaedo-branding-project/Brand-Identity.png",
+      "/assets/projects/olaedo-branding-project/CosmeticCreamJar06_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Logo-1.png",
+      "/assets/projects/olaedo-branding-project/Logo-2.png",
+      "/assets/projects/olaedo-branding-project/Logo-3.png",
+      "/assets/projects/olaedo-branding-project/Logo-4.png",
+      "/assets/projects/olaedo-branding-project/Monogram.png",
+      "/assets/projects/olaedo-branding-project/Name_Tag_Mockup_21_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/OHTNP71.png",
+      "/assets/projects/olaedo-branding-project/Olaedo%202_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Olaedo%204_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Olaedo%206_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Olaedo%20leaf_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Olaedo_beauty_logo_mockup_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/Scope.png",
+      "/assets/projects/olaedo-branding-project/Sketch.png",
+      "/assets/projects/olaedo-branding-project/Variations.png",
+      "/assets/projects/olaedo-branding-project/bag2_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/mock-up_soap_optimized.jpg",
+      "/assets/projects/olaedo-branding-project/oLAEDO%20pERF_optimized.jpg"
+    ],
+    "videos": [
+      "/assets/projects/olaedo-branding-project/Odunayo%20Bolarinwa.mp4"
+    ]
+  },
+  {
+    "title": "Project Help To Finish",
+    "client": "Project Help To Finish",
+    "location": "USA + Nigeria",
+    "category": "Webflow Development",
+    "services": [
+      "Webflow",
+      "Web Design"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://projecthelptofinish.com/",
+    "description": "Webflow website project.",
+    "slug": "projecthelptofinish-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Snap and Stem Main Project",
+    "client": "Snap and Stem",
+    "category": "Digital Project",
+    "services": [
+      "Web Development"
+    ],
+    "year": "2026",
+    "featured": false,
+    "description": "Separate main-project portfolio entry, maintained independently from the photography project entry.",
+    "slug": "snap-and-stem-main-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Snap and Stem Photography",
+    "client": "Snap and Stem",
+    "location": "Canada",
+    "category": "Photography / E-commerce",
+    "services": [
+      "Portfolio",
+      "Booking",
+      "E-commerce"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://snapandstem.ca/photograph/",
+    "description": "Photography portfolio within a broader booking and e-commerce platform.",
+    "slug": "snap-and-stem-photography-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "The 234 Project Foundation",
+    "client": "The 234 Project Foundation",
+    "location": "Nigeria",
+    "category": "Web Development",
+    "services": [
+      "Website Development",
+      "Content",
+      "Digital Presence"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://the234projectfoundation.com/",
+    "description": "Website and ongoing digital presence.",
+    "slug": "project234foundation-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "UZ Interiors",
+    "client": "UZ Interiors",
+    "location": "Austin, TX, USA",
+    "category": "Web & Brand Design",
+    "services": [
+      "Branding",
+      "Web Design"
+    ],
+    "year": "2026",
+    "featured": false,
+    "liveSite": "https://uzinteriors.com/",
+    "description": "Logo, branding, and website design.",
+    "slug": "uz-interiors-project",
+    "images": [],
+    "videos": []
+  },
+  {
+    "title": "Viva Seduire",
+    "client": "Viva Seduire",
+    "category": "Branding",
+    "services": [
+      "Branding",
+      "Graphic Design"
+    ],
+    "year": "2021",
+    "featured": false,
+    "description": "Branding project from the portfolio archive.",
+    "slug": "viva-seduire-branding-project",
+    "images": [
+      "/assets/projects/viva-seduire-branding-project/IMG-20210523-WA0007.jpg",
+      "/assets/projects/viva-seduire-branding-project/IMG-20210523-WA0008.jpg",
+      "/assets/projects/viva-seduire-branding-project/IMG-20210523-WA0009.jpg",
+      "/assets/projects/viva-seduire-branding-project/IMG-20210523-WA0010.jpg"
+    ],
+    "videos": []
+  },
+  {
+    "title": "Youzed",
+    "client": "Youzed",
+    "category": "Digital Project",
+    "services": [
+      "Web Design",
+      "Visual Design"
+    ],
+    "year": "2026",
+    "featured": false,
+    "description": "Digital project from the portfolio archive.",
+    "slug": "youzed-project",
+    "images": [
+      "/assets/projects/youzed-project/file_000000006bf481f4b8872d82c7b008bb.png",
+      "/assets/projects/youzed-project/file_00000000f07882108a9c01a4f423635b.png"
+    ],
+    "videos": []
+  }
+]
