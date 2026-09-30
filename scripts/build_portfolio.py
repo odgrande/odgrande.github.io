@@ -149,7 +149,20 @@ def nav():
 
 def preloader():
     site=CONFIG["site"]
-    return f'''<div id="preloader"><div class="preloader-inner"><span class="preloader-name">{esc(site["name"])}</span><span class="preloader-pct"><span id="preloader-count">1</span>%</span></div><div class="preloader-panel"></div><div class="preloader-reveal"><span class="preloader-name">{esc(site["name"])}</span><p class="t-sm">{esc(site["title"])}</p></div></div>'''
+    first,*rest=site["name"].split(" ")
+    last=" ".join(rest)
+    return f'''<div id="preloader">
+<div class="preloader-content">
+<div class="preloader-name-mask"><h1 class="preloader-name">{esc(first)}<br>{esc(last)}</h1></div>
+<div class="preloader-bio-mask"><p class="preloader-bio">{esc(site["title"])}</p></div>
+</div>
+<div class="preloader-pct"><span id="preloader-count">0</span>%</div>
+<canvas id="preloader-canvas"></canvas>
+<div class="preloader-fallback">
+<div class="preloader-fallback-cover"></div>
+<div class="preloader-fallback-char"><div class="pfc-head"></div><div class="pfc-body"></div><div class="pfc-arm pfc-arm-l"></div><div class="pfc-arm pfc-arm-r"></div></div>
+</div>
+</div>'''
 
 PRELOADER_SKIP_INLINE='<script>if(sessionStorage.getItem("odIntroSeen")||window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}</script>'
 
@@ -423,8 +436,9 @@ def page_about():
     experience=accordion_box(CONFIG["experience"],resume=True)
     education=accordion_box(CONFIG["education"],resume=True)
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])
-    certs="".join(f"<span>{esc(x)}</span>" for x in CONFIG.get("certifications",[]))
+    certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name in CONFIG.get("certifications",[]))
     gallery=masonry_gallery(archive_images(),f'{site["name"]} personal archive')
+    second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
     quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))
     video_html=f'<div class="video-frame"><video controls preload="metadata" playsinline><source src="{esc(video)}"></video></div>' if video else ""
@@ -473,6 +487,10 @@ def page_about():
 <div class="tag-list">{certs}</div>
 </section>''' if certs else ""}
 
+{f'''<section class="container container-md" data-reveal>
+<div class="credential-single">{image_frame(second_award,"Designer Of The Year award")}<h3 class="h5 text-center">Designer Of The Year</h3></div>
+</section>''' if second_award else ""}
+
 {f'''<section class="container container-xl" data-reveal>
 <h2 class="h2 text-center">In Their Words</h2>
 <div class="testimonial-grid">{quotes}</div>
@@ -487,18 +505,19 @@ def page_about():
     return shell("About",f"About {site['name']}, Full-Stack Web Developer and Web Designer.",body,"/about/")
 
 def page_credentials():
-    a=awards();c=certificates()
-    award_html="".join(f'<div class="credential-card">{image_frame(x,"Award")}<h3 class="h5">Designer Of The Year</h3></div>' for x in a)
-    cert_html="".join(f'<div class="credential-card">{image_frame(x,"Certificate")}</div>' for x in c)
-    cert_tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG.get("certifications",[]))
-    body=f'''<section class="container container-xl" data-reveal>
+    a=awards()
+    award_html=f'<div class="credential-single">{image_frame(a[0],"Designer Of The Year award")}<h3 class="h5 text-center">Designer Of The Year</h3></div>' if a else '<p class="t-sm text-center">No award image yet.</p>'
+    cert_cards="".join(
+        f'<div class="contact-item"><div class="row"><span class="t-lg">{esc(org)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div><a class="t-sm link-inline" href="#" target="_blank" rel="noopener">{esc(name)}</a></div>'
+        for org,name in CONFIG.get("certifications",[])
+    )
+    body=f'''<section class="container container-md" data-reveal>
 <h1 class="h1 text-center">Credentials</h1>
-<div class="credential-grid">{award_html or '<p class="t-sm text-center">No award image yet.</p>'}</div>
+{award_html}
 </section>
-<section class="container container-xl" data-reveal>
+<section class="container container-md" data-reveal>
 <h2 class="h2 text-center">Certificates</h2>
-<div class="credential-grid">{cert_html or '<p class="t-sm text-center">No certificates added yet.</p>'}</div>
-{f'<div class="tag-list">{cert_tags}</div>' if cert_tags else ""}
+<div class="contact-grid">{cert_cards}</div>
 </section>'''
     return shell("Credentials","Credentials and recognition archive.",body,"/credentials/")
 

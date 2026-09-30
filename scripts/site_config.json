@@ -54,10 +54,10 @@
     ["Apprenticeship Certificate, Website Design", "GenM", "2018 - 2019", "Apprenticeship-style training in website design, the starting point for a full-time move into web development."]
   ],
   "certifications": [
-    "IBM Certified Web Developer",
-    "Fundamentals of Digital Marketing",
-    "Web Development (HTML & CSS)",
-    "Digital Marketing Apprenticeship - GenM Canada"
+    ["IBM", "Digital Nation – Web Development Badge"],
+    ["IBM", "HTML & CSS Certificate"],
+    ["Acadium", "Apprenticeship Completion Certificate"],
+    ["GenM", "Digital Marketing Apprenticeship"]
   ],
   "testimonials": [
     {"quote":"We love it from the very first look! The design looks amazing, clean, and exactly what we envisioned. This is what really matters — bringing our vision to life. Great work! Looking forward to the next phase.","name":"Founder","company":"MailOptin"},

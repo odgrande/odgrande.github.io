@@ -13,8 +13,8 @@
     --mono:"JetBrains Mono",monospace;
     --img-rest:grayscale(45%) brightness(.68) contrast(1.05) saturate(.6);
     --img-hover:grayscale(0%) brightness(1) contrast(1) saturate(1);
-    --canvas-max:1760px;
-    --canvas-pad:clamp(20px,5vw,64px);
+    --canvas-max:1680px;
+    --canvas-pad:clamp(24px,7vw,110px);
 }
 *{box-sizing:border-box;min-width:0}
 html{scroll-behavior:smooth}
@@ -143,8 +143,8 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 /* SPLIT (about / intro sections) */
 .split{display:flex;flex-direction:column;gap:2.5rem}
 .split-copy{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem}
-.split-photo{width:100%;height:300px;max-width:420px;margin:0 auto}
-@media(min-width:768px){.split{flex-direction:row;gap:4rem;align-items:center}.split-copy{flex:1}.split-photo{flex:1;height:460px;max-width:none;margin:0}}
+.split-photo{width:100%;max-width:420px;margin:0 auto}
+@media(min-width:768px){.split{flex-direction:row;gap:4rem;align-items:center}.split-copy{flex:1}.split-photo{flex:1;max-width:none;margin:0}}
 
 /* WORK CARD */
 .work-grid{display:grid;grid-template-columns:1fr;gap:3.5rem;justify-content:center}
@@ -199,9 +199,13 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .gallery-grid img{width:100%;height:220px;object-fit:cover;object-position:top;filter:var(--img-rest);border:2px solid var(--paper);cursor:zoom-in;transition:filter .6s ease,transform .4s ease}
 .gallery-grid img:hover{filter:var(--img-hover);transform:scale(1.03)}
 
-.hero-media{max-height:640px}
-.hero-media .image-frame{height:clamp(280px,60vw,600px)}
-@media(min-width:768px){.hero-media .image-frame{height:600px}}
+/* Project hero — a bold, clean fixed rectangle (crop is fine here, this is
+   a case-study poster shot, not a personal photo with faces to protect). */
+.hero-media{max-height:720px}
+.hero-media .image-frame{height:clamp(320px,62vw,680px)}
+@media(min-width:768px){.hero-media .image-frame{height:680px}}
+.hero-media .image-frame .frame-box{background:var(--ink)}
+.hero-media .image-frame .frame-box img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:top}
 
 /* VIDEO (testimonial + project video) — full frame always visible, never
    force-cropped to fit a box; the frame sizes to the video's own ratio. */
@@ -232,16 +236,33 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 /* GRAIN CANVAS */
 #grain-canvas{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:overlay}
 
-/* PRELOADER */
-#preloader{position:fixed;inset:0;z-index:500;background:var(--ink)}
+/* ============ PRELOADER ============
+   A full-viewport cinematic scene, not a centered spinner. Stacking order
+   (back to front): .preloader-content (name/bio, revealed as the cover
+   clears) < #preloader-canvas (the 3D cover + character; becomes
+   transparent where the cover mesh has moved away) < .preloader-fallback
+   (CSS-only cover+character for mobile/no-WebGL, same reveal trick using
+   an opaque DOM panel instead of a canvas). Everything here is oversized
+   and edge-to-edge on purpose. */
+#preloader{position:fixed;inset:0;z-index:500;background:var(--ink);overflow:hidden}
 html.no-preloader #preloader{display:none}
-.preloader-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:3}
-.preloader-name{font-family:var(--grunge);text-transform:uppercase;font-size:clamp(1.8rem,7vw,3.5rem);text-align:center;letter-spacing:-.01em}
-.preloader-pct{font-family:var(--mono);font-size:1rem;color:var(--muted)}
-.preloader-panel{position:absolute;inset:0;background:var(--base-200);transform:translateY(0);z-index:2}
-.preloader-reveal{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;z-index:1;text-align:center;padding:0 2rem}
-.preloader-reveal .preloader-name{font-size:clamp(2.2rem,8vw,5rem)}
 #preloader.done{pointer-events:none}
+#preloader-canvas{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%}
+.preloader-content{position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;text-align:center;padding:0 4vw}
+.preloader-name-mask,.preloader-bio-mask{overflow:hidden}
+.preloader-name{font-family:var(--grunge);text-transform:uppercase;letter-spacing:-.01em;line-height:.88;font-size:clamp(3.2rem,14vw,10rem);margin:0;color:var(--paper)}
+.preloader-bio{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:clamp(.85rem,2.6vw,1.4rem);color:var(--muted);margin:0}
+.preloader-pct{position:absolute;left:4vw;bottom:4vw;z-index:2;font-family:var(--mono);font-size:clamp(2rem,6vw,4rem);color:var(--paper);letter-spacing:-.01em}
+/* CSS/DOM fallback path (mobile or no-WebGL): same reveal concept without Three.js */
+.preloader-fallback{display:none;position:absolute;inset:0;z-index:1}
+.preloader-fallback.active{display:block}
+.preloader-fallback-cover{position:absolute;inset:0;background:var(--ink);border-right:2px solid var(--paper)}
+.preloader-fallback-char{position:absolute;bottom:8vh;left:50%;width:90px;height:150px;transform:translateX(-50%)}
+.pfc-head{position:absolute;top:0;left:50%;width:46px;height:46px;margin-left:-23px;border-radius:50%;background:var(--paper)}
+.pfc-body{position:absolute;top:40px;left:50%;width:56px;height:80px;margin-left:-28px;border-radius:28px;background:var(--paper)}
+.pfc-arm{position:absolute;top:52px;width:14px;height:64px;border-radius:7px;background:var(--paper);transform-origin:top center}
+.pfc-arm-l{left:14px}
+.pfc-arm-r{right:14px}
 
 /* TAGS */
 .tag-list{display:flex;flex-wrap:wrap;gap:.6rem}
@@ -257,10 +278,8 @@ html.no-preloader #preloader{display:none}
 .contact-item a,.contact-item p{overflow-wrap:anywhere}
 
 /* CREDENTIALS */
-.credential-grid{display:grid;grid-template-columns:1fr;gap:2.5rem}
-@media(min-width:768px){.credential-grid{grid-template-columns:repeat(2,1fr)}}
-.credential-card .image-frame{height:clamp(260px,50vw,420px)}
-.credential-card .h5{margin-top:1.5rem}
+.credential-single{max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;align-items:center}
+.credential-single .image-frame{height:clamp(300px,55vw,460px);width:100%}
 
 /* FOOTER */
 footer{padding:4rem 0 2rem;position:relative;z-index:20}
