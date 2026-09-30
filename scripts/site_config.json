@@ -25,6 +25,13 @@
     "Custom Post Types", "Taxonomies", "Responsive UI", "Hosting & Domains", "SEO-aware Development",
     "Shopify", "Liquid", "APIs & Integrations", "AI Chatbots", "Automation"
   ],
+  "faq": [
+    ["What's your typical project timeline?", "It depends on scope. A landing page or brand site can land in 1-2 weeks, while a full WordPress build, e-commerce store or custom plugin usually runs 3-6 weeks including revisions."],
+    ["Do you work with WordPress page builders or custom code?", "Both. Most projects start in Elementor or a similar builder for speed, then move into custom PHP, JavaScript and CSS wherever the build needs something a page builder can't do on its own."],
+    ["Can you take over an existing website?", "Yes. A lot of the work in this portfolio is maintenance, fixes and new features added to sites I did not originally build."],
+    ["Do you work with clients remotely?", "Yes, all of the projects in this portfolio were delivered remotely. Updates happen over calls, chat and shared previews as the build progresses."],
+    ["What do you need from me to get started?", "Access to the hosting/domain (or a plan for getting it), any brand assets you already have, and a short description of what the site needs to do. I can help fill in the gaps from there."]
+  ],
   "experience": [
     ["Lead Website Developer", "CULTUR FM", "Current", "Full-time website development work across WordPress, custom templates, responsive implementation, e-commerce architecture, integrations and ongoing improvements."],
     ["Web Developer / Digital Product Builder", "Odgrande Digital", "Independent", "Client websites, e-commerce platforms, custom WordPress functionality, frontend work, branding support and product experiments."]
