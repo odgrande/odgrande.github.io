@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://odgrande.github.io/sitemap.xml

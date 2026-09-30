@@ -6,9 +6,14 @@ from urllib.parse import quote
 ROOT=Path(__file__).resolve().parents[1]
 ASSETS=ROOT/"assets"
 SOURCE=ASSETS/"Odunayo Portfolio Assets"
-LEGACY=ASSETS/"projects"
 SITE=ROOT/"site"
 CONFIG=json.loads((ROOT/"scripts/site_config.json").read_text())
+
+# Non-project buckets that live directly under assets/ or under the
+# authoritative "Odunayo Portfolio Assets" folder. These are handled by
+# personal_images()/awards()/certificates(), never treated as projects, and
+# the deprecated slugified "projects" collection is never scanned.
+NON_PROJECT_DIRS={"projects","credentials","personal","odunayo portfolio assets","certifications","personal images","personal videos"}
 
 IMG_EXT={".jpg",".jpeg",".png",".webp",".gif",".avif",".svg"}
 VID_EXT={".mp4",".webm",".mov",".m4v",".ogg"}
@@ -17,19 +22,20 @@ def esc(v):
     return str(v).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'","&#39;")
 
 def slugify(s):
-    return re.sub(r"[^a-z0-9]+","-",s.lower()).strip("-")
+    slug=re.sub(r"[^a-z0-9]+","-",s.lower()).strip("-")
+    return "borrowacam-project" if slug=="borrowacamera-project" else slug
 
 def path_url(*parts):
     return "/"+"/".join(quote(str(x)) for x in parts)
 
 def meta(slug, folder=None):
     m=dict(CONFIG["projects"].get(slug,{}))
-    folder=folder or LEGACY/slug
-    for name in ("project.json","meta.json"):
-        f=folder/name
-        if f.exists():
-            try:m.update(json.loads(f.read_text()))
-            except Exception:pass
+    if folder:
+        for name in ("project.json","meta.json"):
+            f=folder/name
+            if f.exists():
+                try:m.update(json.loads(f.read_text()))
+                except Exception:pass
     m.setdefault("title"," ".join(x.capitalize() for x in slug.split("-")))
     m.setdefault("client",m["title"]);m.setdefault("category","Project Archive")
     m.setdefault("services",["Web / Digital"]);m.setdefault("year","Archive")
@@ -37,25 +43,34 @@ def meta(slug, folder=None):
     m.setdefault("featured",False);m["slug"]=slug
     return m
 
-def source_for(slug):
+def discover_project_dirs():
+    """Discover project asset folders from the new collection only.
+
+    The authoritative source is assets/Odunayo Portfolio Assets/. Renamed
+    project folders that live directly under assets/ (outside that folder)
+    are also picked up, since a project may only have been renamed/moved at
+    the top level so far. When a project exists in both places, the copy
+    inside "Odunayo Portfolio Assets" wins. The deprecated slugified
+    assets/projects/ collection is never consulted.
+    """
+    found={}
+    if ASSETS.exists():
+        for d in ASSETS.iterdir():
+            if d.is_dir() and d.name.casefold() not in NON_PROJECT_DIRS:
+                found[slugify(d.name)]=d
     if SOURCE.exists():
         for d in SOURCE.iterdir():
-            if d.is_dir() and slugify(d.name)==slug:
-                return d
-    return LEGACY/slug if (LEGACY/slug).exists() else None
+            if d.is_dir() and d.name.casefold() not in NON_PROJECT_DIRS:
+                found[slugify(d.name)]=d
+    return found
+
+def source_for(slug):
+    return discover_project_dirs().get(slug)
 
 def scan_projects():
-    found={}
-    roots=[]
-    if SOURCE.exists(): roots += [d for d in SOURCE.iterdir() if d.is_dir() and d.name.casefold() not in {"personal images","personal videos","certifications"}]
-    if LEGACY.exists():
-        roots += [d for d in LEGACY.iterdir() if d.is_dir()]
-    for d in roots:
-        slug=slugify(d.name)
-        if slug=="borrowacamera-project":slug="borrowacam-project"
-        if slug not in found or d.parent==SOURCE: found[slug]=d
+    found=discover_project_dirs()
     projects=[]
-    for slug,m0 in CONFIG["projects"].items():
+    for slug in CONFIG["projects"]:
         d=found.get(slug)
         m=meta(slug,d);m["images"]=[];m["videos"]=[]
         if d:
@@ -83,9 +98,9 @@ def copy_assets():
         d=source_for(p["slug"])
         if d: selected[p["slug"]]=d
     for slug,d in selected.items():shutil.copytree(d,target/slug,dirs_exist_ok=True)
-    pi=SOURCE/"Personal images"
-    pv=SOURCE/"Personal Videos"
-    cert=SOURCE/"Certifications"
+    pi=SOURCE/"Personal images" if (SOURCE/"Personal images").exists() else ASSETS/"Personal images"
+    pv=SOURCE/"Personal Videos" if (SOURCE/"Personal Videos").exists() else ASSETS/"Personal Videos"
+    cert=SOURCE/"Certifications" if (SOURCE/"Certifications").exists() else ASSETS/"Certifications"
     if pi.exists():shutil.copytree(pi,SITE/"assets"/"personal"/"images",dirs_exist_ok=True)
     if pv.exists():shutil.copytree(pv,SITE/"assets"/"personal"/"videos",dirs_exist_ok=True)
     awards=pi/"Award Images"
