@@ -130,6 +130,7 @@ def copy_assets():
     (SITE/"assets"/"css").mkdir(parents=True);(SITE/"assets"/"js").mkdir(parents=True)
     shutil.copy2(ROOT/"scripts"/"styles.css",SITE/"assets"/"css"/"styles.css")
     shutil.copy2(ROOT/"scripts"/"script.js",SITE/"assets"/"js"/"script.js")
+    shutil.copy2(ROOT/"scripts"/"uplink-loader.html",SITE/"assets"/"theme"/"uplink-loader.html")
 
 # ---------- shell / chrome ----------
 
@@ -155,26 +156,20 @@ def nav():
 <div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
 
 def preloader():
-    site=CONFIG["site"]
-    first,*rest=site["name"].split(" ")
-    last=" ".join(rest)
-    return f'''<div id="preloader">
-<div class="preloader-content">
-<div class="preloader-name-mask"><h1 class="preloader-name">{esc(first)}<br>{esc(last)}</h1></div>
-<div class="preloader-bio-mask"><p class="preloader-bio">{esc(site["title"])}</p></div>
-</div>
-<div class="preloader-pct"><span id="preloader-count">0</span>%</div>
-<canvas id="preloader-canvas"></canvas>
-<div class="preloader-fallback">
-<div class="preloader-fallback-cover"></div>
-<div class="preloader-fallback-char"><div class="pfc-head"></div><div class="pfc-body"></div><div class="pfc-arm pfc-arm-l"></div><div class="pfc-arm pfc-arm-r"></div></div>
-</div>
-</div>'''
+    return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
 PRELOADER_SKIP_INLINE='<script>if(sessionStorage.getItem("odIntroSeen")||window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}</script>'
 
-def shell(title,desc,body,canonical="/"):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{footer()}</div><script src="/assets/js/script.js" defer></script></body></html>'''
+def shell(title,desc,body,canonical="/",show_cta=True):
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div><script src="/assets/js/script.js" defer></script></body></html>'''
+
+def cta_band():
+    return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">
+<p class="t-md text-center">What's next?</p>
+<h2 class="h2 text-center cta-rotate">Let's work together.</h2>
+<p class="t-sm text-center" style="max-width:34rem">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
+<a class="btn" href="/contact/">Start a project</a>
+</div></section>'''
 
 def socials_list():
     site=CONFIG["site"]
@@ -227,6 +222,22 @@ def accordion_box(items,resume=False):
     return f'<div class="accordion-box">{"".join(rows)}</div>{bottom_mark()}'
 
 CHEVRON='<svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8"><path fill="#eeeade" d="M1.5 1L0 2.5l4 4l4-4L6.5 1L4 3.5L1.5 1z"/></svg>'
+
+JOURNEY_STEPS=[
+    ("First","Website Design.","GenM apprenticeship, 2018."),
+    ("Then","Freelance Development.","Delivering for clients on Upwork, 2021."),
+    ("Today","I bridge design and code.","Founder, Odgrande Digital — full-stack digital products."),
+]
+
+def journey_stepper():
+    steps="".join(
+        f'<div class="journey-step"><span class="t-md">{esc(label)}</span><p class="h3">{esc(line)}</p><p class="t-sm">{esc(sub)}</p></div>'
+        for label,line,sub in JOURNEY_STEPS
+    )
+    return f'''<section class="container container-md" data-reveal>
+<h2 class="h2 text-center">My Journey</h2>
+<div class="journey-pin">{steps}</div>
+</section>'''
 
 def work_card(p):
     img=p["images"][0] if p.get("images") else ""
@@ -475,6 +486,8 @@ def page_about():
 </div>
 </section>
 
+{journey_stepper()}
+
 {f'''<section class="container container-xl" data-reveal>
 <div class="split split-reverse">
 <div class="split-photo">{image_frame(magic_standing,"Let's create website magic")}</div>
@@ -564,7 +577,7 @@ def page_contact():
 <section class="container container-md">
 <div class="contact-grid">{cards}</div>
 </section>'''
-    return shell("Contact",f"Contact {site['name']} for WordPress development, e-commerce and digital product work.",body,"/contact/")
+    return shell("Contact",f"Contact {site['name']} for WordPress development, e-commerce and digital product work.",body,"/contact/",show_cta=False)
 
 def main():
     projects=scan_projects();copy_assets()

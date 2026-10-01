@@ -236,32 +236,13 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 #grain-canvas{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.5;mix-blend-mode:overlay}
 
 /* ============ PRELOADER ============
-   A full-viewport cinematic scene, not a centered spinner. Stacking order
-   (back to front): .preloader-content (name/bio, revealed as the cover
-   clears) < #preloader-canvas (the 3D cover + character; becomes
-   transparent where the cover mesh has moved away) < .preloader-fallback
-   (CSS-only cover+character for mobile/no-WebGL, same reveal trick using
-   an opaque DOM panel instead of a canvas). Everything here is oversized
-   and edge-to-edge on purpose. */
-#preloader{position:fixed;inset:0;z-index:500;background:var(--ink);overflow:hidden}
+   UplinkLoader (ThreeUI) embedded verbatim in its own iframe/document so its
+   self-contained styles/fonts/shaders never collide with the site's own.
+   This wrapper only owns sizing + the fade-to-reveal transition. */
+#preloader{position:fixed;inset:0;z-index:500;background:#030806}
 html.no-preloader #preloader{display:none}
 #preloader.done{pointer-events:none}
-#preloader-canvas{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%}
-.preloader-content{position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.25rem;text-align:center;padding:0 4vw}
-.preloader-name-mask,.preloader-bio-mask{overflow:hidden}
-.preloader-name{font-family:var(--grunge);text-transform:uppercase;letter-spacing:-.01em;line-height:.88;font-size:clamp(3.2rem,14vw,10rem);margin:0;color:var(--paper)}
-.preloader-bio{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:clamp(.85rem,2.6vw,1.4rem);color:var(--muted);margin:0}
-.preloader-pct{position:absolute;left:4vw;bottom:4vw;z-index:2;font-family:var(--mono);font-size:clamp(2rem,6vw,4rem);color:var(--paper);letter-spacing:-.01em}
-/* CSS/DOM fallback path (mobile or no-WebGL): same reveal concept without Three.js */
-.preloader-fallback{display:none;position:absolute;inset:0;z-index:1}
-.preloader-fallback.active{display:block}
-.preloader-fallback-cover{position:absolute;inset:0;background:var(--ink);border-right:2px solid var(--paper)}
-.preloader-fallback-char{position:absolute;bottom:8vh;left:50%;width:90px;height:150px;transform:translateX(-50%)}
-.pfc-head{position:absolute;top:0;left:50%;width:46px;height:46px;margin-left:-23px;border-radius:50%;background:var(--paper)}
-.pfc-body{position:absolute;top:40px;left:50%;width:56px;height:80px;margin-left:-28px;border-radius:28px;background:var(--paper)}
-.pfc-arm{position:absolute;top:52px;width:14px;height:64px;border-radius:7px;background:var(--paper);transform-origin:top center}
-.pfc-arm-l{left:14px}
-.pfc-arm-r{right:14px}
+#preloader-frame{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
 
 /* TAGS */
 .tag-list{display:flex;flex-wrap:wrap;gap:.6rem}
@@ -279,6 +260,19 @@ html.no-preloader #preloader{display:none}
 /* CREDENTIALS */
 .credential-single{max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;align-items:center}
 .credential-single .image-frame{width:100%}
+
+/* JOURNEY STEPPER (about page) — phrases fade into focus one at a time as
+   each crosses the viewport centre while scrolling; falls back to a plain
+   stacked, always-visible list with no JS. */
+.journey-pin{display:flex;flex-direction:column;gap:3rem}
+.journey-step{display:flex;flex-direction:column;align-items:center;gap:.4rem;text-align:center;min-height:28vh;justify-content:center}
+.journey-step .t-md{color:var(--muted)}
+.journey-step .t-sm{color:var(--muted);max-width:30rem}
+
+/* CTA BAND (before footer) — an oversized heading that settles into place
+   (rotate + scale ease out) as it scrolls into view. */
+.cta-band{padding:4rem 0;border-top:1px solid rgba(238,238,230,.15)}
+.cta-rotate{will-change:transform}
 
 /* FOOTER */
 footer{padding:4rem 0 2rem;position:relative;z-index:20}

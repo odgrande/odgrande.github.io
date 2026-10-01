@@ -27,42 +27,24 @@
     img.addEventListener('click', () => showLightbox(img.currentSrc || img.src, img.alt));
   });
 
-  // ---------- preloader: a small cinematic scene, not a spinner ----------
-  // Sequence: site loads underneath -> the cover + character are visible
-  // and idling immediately -> percentage counts up (blended with real
-  // document.fonts/window-load signals) while the character idles -> once
-  // loading completes, the character (or, on small/no-WebGL screens, a CSS
-  // stand-in) leans into the full-bleed cover and physically pushes it off
-  // screen -> name + bio (sitting underneath the cover the whole time) are
-  // revealed -> preloader removes itself.
+  // ---------- preloader: UplinkLoader (ThreeUI), embedded verbatim via iframe ----------
+  // The loader document is fully self-contained (own styles/fonts/animation
+  // loop) and runs independently; this just times the outer wrapper's fade
+  // so it roughly lines up with the loader's own "UPLINK ESTABLISHED" beat
+  // (see the RUN/HOLD constants in uplink-loader.html) while also blending
+  // in a real page-load signal so the overlay never clears a half-built page.
   (() => {
     const el = document.getElementById('preloader');
     if (!el) return;
     if (document.documentElement.classList.contains('no-preloader')) { el.remove(); return; }
-
-    const countEl = document.getElementById('preloader-count');
-    const canvas = document.getElementById('preloader-canvas');
-    const fallback = document.querySelector('.preloader-fallback');
 
     const finish = () => {
       el.classList.add('done');
       try { sessionStorage.setItem('odIntroSeen', '1'); } catch (e) {}
       setTimeout(() => el.remove(), 500);
     };
-    // Failsafe: never let the intro outlive ~6.5s even if a signal above never fires.
-    const failsafe = setTimeout(finish, 6500);
+    const failsafe = setTimeout(finish, 6000);
 
-    if (!window.gsap) { setTimeout(finish, 300); return; }
-
-    const smallScreen = window.innerWidth < 760;
-    let hasWebGL = false;
-    try {
-      const t = document.createElement('canvas');
-      hasWebGL = !!window.THREE && !!(t.getContext('webgl') || t.getContext('experimental-webgl'));
-    } catch (e) { hasWebGL = false; }
-    const useWebGL = hasWebGL && !smallScreen;
-
-    // ---- percentage: animate to ~92%, then hold for the real load signal, then snap to 100 ----
     let realLoadDone = false;
     Promise.race([
       Promise.all([
@@ -72,181 +54,18 @@
       new Promise((r) => setTimeout(r, 2600))
     ]).then(() => { realLoadDone = true; });
 
-    const pct = { v: 0 };
-    const setPct = () => { if (countEl) countEl.textContent = String(Math.floor(pct.v)); };
-    gsap.to(pct, {
-      v: 92, duration: 1.3, ease: 'power2.out', onUpdate: setPct,
-      onComplete: function tick() {
-        if (realLoadDone) {
-          gsap.to(pct, { v: 100, duration: .3, ease: 'power1.out', onUpdate: setPct, onComplete: () => scene.push() });
-        } else {
-          setTimeout(tick, 70);
-        }
+    const MIN_SHOW = 3700; // matches the loader's own RUN(3200)+HOLD(500) first-cycle beat
+    const started = performance.now();
+    const tryReveal = () => {
+      if (realLoadDone && performance.now() - started >= MIN_SHOW) {
+        clearTimeout(failsafe);
+        if (window.gsap) gsap.to(el, { opacity: 0, duration: .45, ease: 'power1.out', onComplete: finish });
+        else { el.style.transition = 'opacity .45s ease'; el.style.opacity = '0'; setTimeout(finish, 450); }
+      } else {
+        setTimeout(tryReveal, 100);
       }
-    });
-
-    // `scene` exposes idle() (called once, immediately) and push() (called once loading hits 100%).
-    const scene = useWebGL ? buildWebGLScene() : buildFallbackScene();
-    scene.idle();
-
-    function buildFallbackScene() {
-      fallback.classList.add('active');
-      const cover = fallback.querySelector('.preloader-fallback-cover');
-      const armL = fallback.querySelector('.pfc-arm-l');
-      const armR = fallback.querySelector('.pfc-arm-r');
-      const body = fallback.querySelector('.pfc-body');
-      let idleTl;
-      return {
-        idle() {
-          idleTl = gsap.timeline({ repeat: -1, yoyo: true })
-            .to(body, { y: -4, duration: .9, ease: 'sine.inOut' })
-            .to([armL, armR], { rotation: 6, duration: .9, ease: 'sine.inOut' }, '<');
-        },
-        push() {
-          clearTimeout(failsafe);
-          idleTl.kill();
-          gsap.timeline({ onComplete: finish })
-            .to([armL, armR], { rotation: -30, duration: .22, ease: 'power2.out' })
-            .to(body, { scaleY: .93, y: 5, duration: .18, ease: 'power1.inOut' }, '<')
-            .to([armL, armR], { rotation: 8, duration: .28, ease: 'power3.out' })
-            .to(body, { scaleY: 1.04, y: -3, duration: .28, ease: 'power2.out' }, '<')
-            .to(cover, { x: '112%', duration: .75, ease: 'power3.inOut' }, '-=.08')
-            .to(el, { opacity: 0, duration: .35 }, '+=.1');
-        }
-      };
-    }
-
-    function buildWebGLScene() {
-      canvas.style.display = 'block';
-      let renderer;
-      try {
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, premultipliedAlpha: false });
-      } catch (e) { return buildFallbackScene(); }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x000000, 0);
-      renderer.setClearAlpha(0);
-
-      const sceneObj = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.z = 6;
-
-      sceneObj.add(new THREE.AmbientLight(0xffffff, .8));
-      const dLight = new THREE.DirectionalLight(0xffffff, .9);
-      dLight.position.set(2, 3, 4);
-      sceneObj.add(dLight);
-      const fillLight = new THREE.DirectionalLight(0x8899ff, .3);
-      fillLight.position.set(-3, -1, 2);
-      sceneObj.add(fillLight);
-
-      const frustum = () => {
-        const h = 2 * Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z;
-        return { w: h * camera.aspect, h };
-      };
-
-      const coverMat = new THREE.MeshBasicMaterial({ color: 0x151311 });
-      const cover = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), coverMat);
-      sceneObj.add(cover);
-
-      // ---- character: simple, rounded, editorial mascot built from primitives ----
-      const bodyColor = 0xeeeade, accent = 0xe6b83f;
-      const char = new THREE.Group();
-      const torsoMat = new THREE.MeshStandardMaterial({ color: bodyColor, roughness: .7 });
-      const torso = new THREE.Mesh(new THREE.SphereGeometry(.5, 24, 24), torsoMat);
-      torso.scale.set(.85, 1.25, .75);
-      char.add(torso);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(.32, 24, 24), torsoMat);
-      head.position.y = .95;
-      char.add(head);
-      const beltMat = new THREE.MeshStandardMaterial({ color: accent, roughness: .6 });
-      const belt = new THREE.Mesh(new THREE.TorusGeometry(.42, .06, 8, 24), beltMat);
-      belt.rotation.x = Math.PI / 2;
-      belt.position.y = -.1;
-      char.add(belt);
-
-      const makeArm = (side) => {
-        const pivot = new THREE.Group();
-        pivot.position.set(.5 * side, .45, .1);
-        const arm = new THREE.Mesh(new THREE.CylinderGeometry(.09, .1, .75, 8), torsoMat);
-        arm.position.y = -.37;
-        pivot.add(arm);
-        const hand = new THREE.Mesh(new THREE.SphereGeometry(.12, 12, 12), torsoMat);
-        hand.position.y = -.75;
-        pivot.add(hand);
-        pivot.rotation.x = -.85;
-        pivot.rotation.z = .15 * side;
-        char.add(pivot);
-        return pivot;
-      };
-      const armL = makeArm(-1), armR = makeArm(1);
-
-      const makeLeg = (side) => {
-        const leg = new THREE.Mesh(new THREE.CylinderGeometry(.12, .1, .6, 8), torsoMat);
-        leg.position.set(.22 * side, -.85, 0);
-        char.add(leg);
-      };
-      makeLeg(-1); makeLeg(1);
-
-      sceneObj.add(char);
-
-      const layout = () => {
-        const { w, h } = frustum();
-        cover.geometry.dispose();
-        cover.geometry = new THREE.PlaneGeometry(w, h);
-        const s = h * .19;
-        char.scale.setScalar(s);
-        char.position.set(-w * .24, -h * .05, .8);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        return { w, h };
-      };
-      let { w: viewW } = layout();
-      const onResize = () => { viewW = layout().w; };
-      window.addEventListener('resize', onResize);
-
-      const baseY = char.position.y, baseX = char.position.x;
-
-      let raf;
-      const tick = () => { renderer.render(sceneObj, camera); raf = requestAnimationFrame(tick); };
-      tick();
-
-      const cleanup = () => {
-        cancelAnimationFrame(raf);
-        window.removeEventListener('resize', onResize);
-        renderer.dispose();
-        finish();
-      };
-
-      let idleTl;
-      return {
-        idle() {
-          // character is already standing in frame, gently breathing/swaying while loading continues
-          idleTl = gsap.timeline({ repeat: -1, yoyo: true })
-            .to(char.position, { y: baseY + .05, duration: 1.1, ease: 'sine.inOut' })
-            .to(char.rotation, { z: .03, duration: 1.4, ease: 'sine.inOut' }, '<')
-            .to([armL.rotation, armR.rotation], { x: '+=0.05', duration: 1.1, ease: 'sine.inOut' }, '<');
-        },
-        push() {
-          clearTimeout(failsafe);
-          idleTl.kill();
-          char.position.y = baseY;
-          gsap.timeline({ onComplete: cleanup })
-            // anticipation: crouch + arms rise toward the cover
-            .to(char.scale, { y: char.scale.y * .92, duration: .22, ease: 'power1.inOut' })
-            .to(char.rotation, { y: -.15, duration: .25, ease: 'power1.out' }, '<')
-            .to([armL.rotation, armR.rotation], { x: -.35, duration: .3, ease: 'power2.out' }, '-=.1')
-            // the push: character extends, cover shoots away with a little resistance-then-release
-            .to(char.scale, { y: char.scale.y * 1.08, duration: .3, ease: 'power2.out' })
-            .to(char.position, { x: baseX + viewW * .08, duration: .5, ease: 'power2.out' }, '<')
-            .to(cover.position, { x: viewW * .18, duration: .18, ease: 'power1.in' }, '<')
-            .to(cover.position, { x: viewW * 1.3, duration: .7, ease: 'power3.in' })
-            .to([armL.rotation, armR.rotation], { x: .3, duration: .4, ease: 'power1.out' }, '-=.55')
-            // settle + fade the whole overlay once the cover has cleared
-            .to(char.position, { y: baseY - .08, duration: .25, ease: 'power1.inOut' })
-            .to(el, { opacity: 0, duration: .4 }, '+=.2');
-        }
-      };
-    }
+    };
+    tryReveal();
   })();
 
   // ---------- GSAP scroll reveals + motion ----------
@@ -303,6 +122,29 @@
 
     // Page fade-in on load
     gsap.from('.wrap', { opacity: 0, duration: 0.6, ease: 'power1.out' });
+
+    // Journey stepper (About page): each phrase fades into focus as it
+    // crosses the viewport centre, then dissolves as it passes — borrowed
+    // from the "first / then / today" scroll narrative on guillaumezhu.com.
+    document.querySelectorAll('.journey-step').forEach((step) => {
+      gsap.fromTo(step, { opacity: .15, y: 40 }, {
+        opacity: 1, y: 0, ease: 'none',
+        scrollTrigger: { trigger: step, start: 'top 75%', end: 'top 35%', scrub: true }
+      });
+      gsap.to(step, {
+        opacity: .15, ease: 'none',
+        scrollTrigger: { trigger: step, start: 'bottom 45%', end: 'bottom 10%', scrub: true }
+      });
+    });
+
+    // CTA band heading: settles from a slight tilt/oversize into place as it
+    // scrolls into view — same "what's next" idea, in the site's own type.
+    gsap.utils.toArray('.cta-rotate').forEach((el) => {
+      gsap.fromTo(el, { rotate: -4, scale: 1.08, opacity: .5 }, {
+        rotate: 0, scale: 1, opacity: 1, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 90%', end: 'top 55%', scrub: true }
+      });
+    });
   }
 
   // ---------- Three.js grain shader (progressive enhancement, never blocks the page) ----------
