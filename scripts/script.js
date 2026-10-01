@@ -67,14 +67,15 @@
     tryReveal();
   })();
 
-  // ---------- journey stepper: sticky stage, plain scroll listener ----------
-  // The "first / then / today" scroll narrative from guillaumezhu.com: the
-  // stage stays in view (native CSS position:sticky — no layout bugs, no
-  // scroll-jacking) while each phrase crossfades into the next underneath
-  // it. Deliberately has no GSAP dependency: a GSAP ScrollTrigger pin here
-  // kept mis-measuring against this page's late-loading images and once
-  // caused a visible scroll jump, so this sidesteps GSAP's pin machinery
-  // entirely in favour of the browser's own sticky positioning.
+  // ---------- journey stepper: sticky stage ----------
+  // The "first / then / today" scroll narrative: the stage stays in view
+  // via native CSS position:sticky (no GSAP pin — a pin here once
+  // mis-measured against this page's late-loading images and caused a
+  // visible scroll jump). Which step is "current" is tracked with a bare,
+  // un-attached ScrollTrigger (no tween/timeline wired into its own
+  // config — that shape was computing stale start/end on this page and
+  // never self-corrected on refresh); the actual motion is done with GSAP
+  // tweens fired from onUpdate, so the crossfade itself is still GSAP.
   document.querySelectorAll('.journey-pin').forEach((pin) => {
     const steps = [...pin.querySelectorAll('.journey-step')];
     if (steps.length < 2) return;
@@ -82,22 +83,47 @@
     pin.style.setProperty('--steps', steps.length);
     let active = 0;
     steps[0].classList.add('is-active');
-    let ticking = false;
-    const update = () => {
-      ticking = false;
-      const rect = pin.getBoundingClientRect();
-      const total = rect.height - window.innerHeight;
-      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      const idx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
-      if (idx === active) return;
-      steps[active].classList.remove('is-active');
-      steps[idx].classList.add('is-active');
-      active = idx;
-    };
-    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
+
+    if (window.gsap && window.ScrollTrigger) {
+      // GSAP owns opacity/transform here; the CSS transition on .journey-step
+      // is only for the no-GSAP fallback below, and would otherwise fight
+      // GSAP's own tween of the same properties every frame.
+      steps.forEach((s) => { s.style.transition = 'none'; });
+      gsap.set(steps, { opacity: 0, scale: .78, y: 22 });
+      gsap.set(steps[0], { opacity: 1, scale: 1, y: 0 });
+      const show = (el) => gsap.to(el, { opacity: 1, scale: 1, y: 0, duration: .6, ease: 'back.out(1.6)', overwrite: 'auto' });
+      const hide = (el) => gsap.to(el, { opacity: 0, scale: .78, y: -22, duration: .45, ease: 'power2.inOut', overwrite: 'auto' });
+      ScrollTrigger.create({
+        trigger: pin,
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => {
+          const idx = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
+          if (idx === active) return;
+          hide(steps[active]);
+          show(steps[idx]);
+          active = idx;
+        }
+      });
+    } else {
+      // No-GSAP fallback: plain scroll listener + CSS transitions.
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const rect = pin.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+        const idx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+        if (idx === active) return;
+        steps[active].classList.remove('is-active');
+        steps[idx].classList.add('is-active');
+        active = idx;
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
+    }
   });
 
   // ---------- GSAP scroll reveals + motion ----------
