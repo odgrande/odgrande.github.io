@@ -172,7 +172,7 @@ NAV_KEYS=["home","works","about","credentials","contact"]
 def nav():
     desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
     mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
-    close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="M9 16h2V8H9v8Zm4 0h2V8h-2v8Zm-1 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
+    close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" class="close-icon" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>'
     menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34" class="hamburger-icon" aria-hidden="true">
 <path class="bracket" d="M2 9V4.5A2.5 2.5 0 0 1 4.5 2H9" fill="none" stroke-width="2" stroke-linecap="round"/>
 <path class="bracket" d="M25 2h4.5A2.5 2.5 0 0 1 32 4.5V9" fill="none" stroke-width="2" stroke-linecap="round"/>
@@ -181,8 +181,7 @@ def nav():
 <rect x="9" y="14.5" width="16" height="2.4" rx="1.2"/>
 <rect x="9" y="19.5" width="11" height="2.4" rx="1.2"/>
 </svg>'''
-    logo='<a href="/" class="nav-logo" aria-label="Odunayo Bolarinwa — home"><img src="/assets/theme/logo.png" alt=""></a>'
-    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
 <div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
 
 def preloader():
@@ -208,7 +207,7 @@ def gate():
 <button class="btn" id="gateStillLeaving" type="button">I'm still leaving</button>
 </div>
 </div>
-<form class="gate-feedback" id="gateFeedback" data-email="{esc(site["email"])}">
+<form class="gate-feedback" id="gateFeedback" data-whatsapp="{esc(site["whatsapp"])}">
 <p class="t-xl">Alright, your loss. Mind telling me why?</p>
 <textarea name="reason" placeholder="What would have made you want to stay? (optional)"></textarea>
 <input type="email" name="email" placeholder="Your email (optional)">
@@ -242,7 +241,7 @@ def exit_popup():
 <button class="btn" id="exitDismiss" type="button">Maybe later</button>
 </div>
 </div>
-<form class="gate-feedback" id="exitForm" data-email="{esc(site["email"])}">
+<form class="gate-feedback" id="exitForm" data-whatsapp="{esc(site["whatsapp"])}">
 <p class="t-xl">Go on then, impress me.</p>
 <textarea name="idea" placeholder="My brilliant idea is..." required></textarea>
 <input type="email" name="email" placeholder="Where should I send updates? (optional)">
@@ -253,7 +252,7 @@ def exit_popup():
 </form>
 </div></div>'''
 
-PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip")}}catch(e){}</script>'
+PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip")}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
     return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
@@ -282,7 +281,7 @@ def footer():
     social_html="".join(f'<li><a href="{esc(u)}" target="_blank" rel="noopener">{esc(t)}</a></li>' for t,u in socials_list())
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{esc(t)}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
-    return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
+    return f'''<footer data-reveal><a href="/" class="footer-logo" aria-label="{esc(site["name"])} — home"><img src="/assets/theme/logo.png" alt="">{esc(site["name"])}</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
 <div class="footer-bottom"><p>Crafted with joy by {esc(site["name"])}</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
 
 # ---------- shared components ----------
