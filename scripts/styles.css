@@ -193,6 +193,24 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .masonry-item img{width:100%;height:auto;display:block;filter:var(--img-rest);transition:filter .6s ease,transform .5s ease}
 .masonry-item:hover img{filter:var(--img-hover);transform:scale(1.02)}
 
+/* ARCHIVE BOOK (Personal Archive) — a page-flip photo viewer: click the
+   arrows (or swipe/drag, or arrow keys) to turn between photos with a real
+   CSS 3D page-turn, rather than a static grid. */
+.archive-book{display:flex;flex-direction:column;align-items:center;gap:1rem;width:100%}
+.archive-stage{display:flex;align-items:center;gap:.75rem;width:100%;justify-content:center}
+.archive-3d{position:relative;flex:1 1 auto;min-width:0;max-width:640px;aspect-ratio:4/5;perspective:1800px;border:2px solid var(--paper);background:var(--base-300)}
+.archive-page{position:absolute;inset:0;overflow:hidden}
+.archive-page img{width:100%;height:100%;object-fit:cover;display:block;filter:var(--img-rest);transition:filter .6s ease}
+.archive-3d:hover .archive-page img{filter:var(--img-hover)}
+.archive-leaf{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:left center;transition:transform .7s cubic-bezier(.45,0,.2,1);z-index:5}
+.archive-leaf.flipping{transform:rotateY(-180deg)}
+.archive-leaf .face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden}
+.archive-leaf .face.back{transform:rotateY(180deg)}
+.archive-leaf .face img{width:100%;height:100%;object-fit:cover;display:block}
+.archive-arrow{flex:none;display:inline-flex;align-items:center;justify-content:center;padding:.5rem;color:var(--paper);transition:opacity .2s;min-height:44px;min-width:44px}
+.archive-arrow:hover{opacity:.6}
+.archive-caption{color:var(--muted);letter-spacing:.04em}
+
 /* legacy gallery grid still used where a uniform crop genuinely reads better */
 .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
 @media(min-width:768px){.gallery-grid{grid-template-columns:repeat(3,1fr)}}

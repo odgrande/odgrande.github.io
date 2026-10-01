@@ -183,6 +183,7 @@ def socials_list():
     if site.get("linkedin"):socials.append(("LINKEDIN",site["linkedin"]))
     if site.get("instagram"):socials.append(("INSTAGRAM",site["instagram"]))
     if site.get("facebook"):socials.append(("FACEBOOK",site["facebook"]))
+    if site.get("whatsapp"):socials.append(("WHATSAPP",site["whatsapp"]))
     if site.get("github"):socials.append(("GITHUB",site["github"]))
     if site.get("twitter"):socials.append(("TWITTER",site["twitter"]))
     return socials
@@ -201,6 +202,23 @@ def image_frame(src,alt,cls=""):
     if not src:
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
     return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" loading="lazy"></div></div>'''
+
+def archive_book(images,alt):
+    """A page-flip photo viewer for the Personal Archive — prev/next controls
+    flip between photos with a CSS 3D page-turn, instead of a static grid."""
+    if not images:return ""
+    payload=json.dumps(images).replace("</","<\\/")
+    arrow_l='<svg viewBox="0 0 14 44" width="14" height="44" fill="none"><polyline points="11,3 3,22 11,41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    arrow_r='<svg viewBox="0 0 14 44" width="14" height="44" fill="none"><polyline points="3,3 11,22 3,41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    return f'''<div class="archive-book" id="archiveBook" data-alt="{esc(alt)}">
+<div class="archive-stage">
+<button class="archive-arrow left" type="button" aria-label="Previous photo">{arrow_l}</button>
+<div class="archive-3d"><div class="archive-page"></div></div>
+<button class="archive-arrow right" type="button" aria-label="Next photo">{arrow_r}</button>
+</div>
+<p class="archive-caption t-xsm"></p>
+</div>
+<script type="application/json" id="archive-photos">{payload}</script>'''
 
 def masonry_gallery(images,alt):
     if not images:return ""
@@ -429,7 +447,7 @@ def page_home(projects):
 def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">Works</h1>
-<p class="t-sm text-center">{len(projects)} projects across WordPress, Shopify, Webflow, e-commerce and brand work.</p>
+<p class="t-sm text-center">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
 <div class="work-grid">{"".join(work_card(p) for p in projects)}</div>
 </section>'''
     return shell("Works","Websites, e-commerce builds, digital products, plugins and brand projects.",body,"/works/")
@@ -474,7 +492,7 @@ def page_about():
     education=accordion_box(CONFIG["education"],resume=True)
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])
     certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name in CONFIG.get("certifications",[]))
-    gallery=masonry_gallery(archive_images(),f'{site["name"]} personal archive')
+    gallery=archive_book(archive_images(),f'{site["name"]} personal archive')
     second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
     quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))

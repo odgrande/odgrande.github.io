@@ -11,6 +11,7 @@
     "linkedin": "https://www.linkedin.com/in/odunayo-bolarinwa-a45035160/",
     "instagram": "https://www.instagram.com/ceodgrande",
     "facebook": "https://www.facebook.com/odgrande",
+    "whatsapp": "https://wa.me/+2348027279797",
     "twitter": ""
   },
   "services": [
@@ -22,7 +23,7 @@
     ["Webflow & Framer", "No-code/low-code builds on Webflow and Framer for clients who need speed without giving up design control."]
   ],
   "capabilities": [
-    "HTML5", "CSS3", "JavaScript", "PHP", "Liquid", "Node.js", "REST APIs",
+    "HTML5", "CSS3", "JavaScript", "React", "PHP", "Liquid", "Node.js", "REST APIs",
     "WordPress", "WooCommerce", "Shopify", "Webflow", "Framer", "Elementor",
     "Stripe", "Moneris", "FunnelKit", "Apple Pay", "Google Pay",
     "Figma", "UI/UX", "Graphic Design", "Visual Identity", "Adobe Suite",
@@ -83,7 +84,7 @@
     "haloleander-project": {"title":"Halo Leander","client":"Halo Leander","category":"Web Project","services":["Web Development"],"year":"2026","featured":false,"liveSite":"https://www.haloleander.com/","description":"Website project from the portfolio archive."},
     "prepmaster-plugin-project": {"title":"PrepMaster","client":"PrepMaster","category":"WordPress Plugin / Product","services":["WordPress Plugin","PHP","JavaScript","Product Development"],"year":"2025","featured":false,"liveSite":"https://github.com/odgrande/prepmaster","description":"WordPress plugin work developed as a technical product project."},
     "djx-branding-project": {"title":"DJx Branding","client":"DJx","category":"Branding","services":["Visual Identity","Graphic Design"],"year":"2021","featured":false,"description":"Branding and visual design project from the portfolio archive."},
-    "olaedo-branding-project": {"title":"Olaedo Beauty","client":"Olaedo","category":"Branding","services":["Brand Identity","Packaging","Art Direction"],"year":"2021","featured":true,"heroImage":"Olaedo_beauty_logo_mockup_optimized.jpg","description":"Brand identity and visual direction project with supporting identity, packaging and presentation assets."},
+    "olaedo-branding-project": {"title":"Olaedo Beauty","client":"Olaedo","category":"Branding","services":["Brand Identity","Packaging","Art Direction"],"year":"2021","featured":true,"heroImage":"Olaedo_beauty_logo_mockup_optimized.jpg","featuredImage":"Use this has featured image.png","description":"Brand identity and visual direction project with supporting identity, packaging and presentation assets."},
     "viva-seduire-branding-project": {"title":"Viva Seduire","client":"Viva Seduire","category":"Branding","services":["Branding","Graphic Design"],"year":"2021","featured":false,"description":"Branding project from the portfolio archive."},
     "snap-and-stem-main-project": {"title":"Snap and Stem Main Project","client":"Snap and Stem Creative Studio","category":"Digital Project","services":["Web Development"],"year":"2025-2026","featured":false,"description":"Separate main-project portfolio entry, maintained independently from the photography project entry."}
   },

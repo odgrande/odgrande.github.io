@@ -68,6 +68,75 @@
     tryReveal();
   })();
 
+  // ---------- archive book: page-flip viewer for Personal Archive ----------
+  (() => {
+    const root = document.getElementById('archiveBook');
+    const dataEl = document.getElementById('archive-photos');
+    if (!root || !dataEl) return;
+    let photos = [];
+    try { photos = JSON.parse(dataEl.textContent || '[]'); } catch (e) { return; }
+    if (!photos.length) return;
+
+    const alt = root.dataset.alt || '';
+    const stage = root.querySelector('.archive-3d');
+    const base = stage.querySelector('.archive-page');
+    const baseImg = document.createElement('img');
+    base.appendChild(baseImg);
+    const caption = root.querySelector('.archive-caption');
+    const prevBtn = root.querySelector('.archive-arrow.left');
+    const nextBtn = root.querySelector('.archive-arrow.right');
+
+    let idx = 0, animating = false;
+
+    const render = () => {
+      baseImg.src = photos[idx];
+      baseImg.alt = alt;
+      caption.textContent = `${idx + 1} / ${photos.length}`;
+    };
+
+    const go = (dir) => {
+      if (animating || photos.length < 2) return;
+      const next = (idx + dir + photos.length) % photos.length;
+      animating = true;
+      base.style.visibility = 'hidden';
+      const leaf = document.createElement('div');
+      leaf.className = 'archive-leaf';
+      const front = document.createElement('div'); front.className = 'face front';
+      const frontImg = document.createElement('img'); frontImg.src = photos[idx]; frontImg.alt = alt;
+      front.appendChild(frontImg);
+      const back = document.createElement('div'); back.className = 'face back';
+      const backImg = document.createElement('img'); backImg.src = photos[next]; backImg.alt = alt;
+      back.appendChild(backImg);
+      leaf.appendChild(front); leaf.appendChild(back);
+      stage.appendChild(leaf);
+      requestAnimationFrame(() => requestAnimationFrame(() => leaf.classList.add('flipping')));
+      leaf.addEventListener('transitionend', () => {
+        idx = next;
+        render();
+        base.style.visibility = 'visible';
+        leaf.remove();
+        animating = false;
+      }, { once: true });
+    };
+
+    prevBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => go(1));
+    root.tabIndex = 0;
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(1);
+    });
+    let startX = null;
+    stage.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+    stage.addEventListener('pointerup', (e) => {
+      if (startX === null) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+      startX = null;
+    });
+    render();
+  })();
+
   // ---------- GSAP scroll reveals + motion ----------
   if (window.gsap && window.ScrollTrigger) {
     gsap.registerPlugin(ScrollTrigger);
