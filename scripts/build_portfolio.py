@@ -91,6 +91,12 @@ def scan_projects():
             if hero:
                 match=next((im for im in m["images"] if im.rsplit("/",1)[-1]==quote(hero)),None)
                 if match:m["images"]=[match]+[im for im in m["images"] if im!=match]
+            # Optional distinct thumbnail for the Home page's Featured Works
+            # card only — falls back to the project-page hero everywhere else
+            # (work card on /works/, related-projects) when not set.
+            featured_name=m.get("featuredImage")
+            if featured_name:
+                m["featuredHomeImage"]=next((im for im in m["images"] if im.rsplit("/",1)[-1]==quote(featured_name)),"")
         projects.append(m)
     known=set(CONFIG["projects"])
     for slug,d in found.items():
@@ -239,8 +245,8 @@ def journey_stepper():
 <div class="journey-pin">{steps}</div>
 </section>'''
 
-def work_card(p):
-    img=p["images"][0] if p.get("images") else ""
+def work_card(p,home=False):
+    img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
     thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy">' if img else f'<div class="empty-thumb"><span>{esc(p["title"][:2].upper())}</span></div>'
     return f'''<a class="work-card" href="/works/{esc(p["slug"])}/"><div class="frame"><div class="label"><span>{esc(p["category"])}</span><img src="/assets/theme/symbol.svg" alt=""></div><div class="texture"></div>{thumb}<div class="disk"></div></div><div class="meta"><h3 class="h4">{esc(p["title"])}</h3><p class="t-md">{esc(p["client"])}</p></div></a>'''
 
@@ -387,7 +393,7 @@ def page_home(projects):
 
 <section class="container container-lg" style="align-items:center" data-reveal>
 <h2 class="h2 text-center">Featured Works</h2>
-<div class="work-grid">{"".join(work_card(p) for p in featured)}</div>
+<div class="work-grid">{"".join(work_card(p,home=True) for p in featured)}</div>
 <a class="btn" href="/works/">All Works</a>
 </section>
 
