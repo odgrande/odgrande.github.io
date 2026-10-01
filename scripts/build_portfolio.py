@@ -167,7 +167,7 @@ def nav():
 <div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul>{theme_toggle()}</div>'''
 
 def preloader():
-    return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
+    return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
 def gate():
     site=CONFIG["site"]
@@ -181,13 +181,22 @@ def gate():
 <button class="btn" id="gateNo" type="button">No, not right now</button>
 </div>
 </div>
+<div class="gate-question" id="gatePersuade">
+<p class="t-md">Wait, really?</p>
+<h2 class="t-lg">15+ live products across Nigeria, the UK, Canada and the USA — and not one of them has caught fire. Give me 10 seconds of scrolling, I promise it's worth it.</h2>
+<div class="gate-actions">
+<button class="btn" id="gatePersuadeYes" type="button">Okay, you've convinced me</button>
+<button class="btn" id="gateStillLeaving" type="button">I'm still leaving</button>
+</div>
+</div>
 <form class="gate-feedback" id="gateFeedback" data-email="{esc(site["email"])}">
-<p class="t-xl">No worries — mind telling me why?</p>
-<textarea name="reason" placeholder="What would have made you want to stay?" required></textarea>
+<p class="t-xl">Alright, your loss. Mind telling me why?</p>
+<textarea name="reason" placeholder="What would have made you want to stay? (optional)"></textarea>
 <input type="email" name="email" placeholder="Your email (optional)">
 <div class="gate-actions">
-<button class="btn" type="submit">Send feedback</button>
-<button class="btn" id="gateSkip" type="button">Just take me in</button>
+<button class="btn" type="submit">Send feedback &amp; leave</button>
+<button class="btn" id="gateJustLeave" type="button">Just leave</button>
+<button class="btn" id="gateSkip" type="button">Actually, take me in</button>
 </div>
 </form>
 </div></div>'''
@@ -201,10 +210,34 @@ def cookie_banner():
 </div>
 </div>'''
 
-PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}</script>'
+def exit_popup():
+    site=CONFIG["site"]
+    return f'''<div id="exit-popup"><div class="exit-inner">
+<button class="exit-close" id="exitClose" type="button" aria-label="Close">&times;</button>
+<div class="exit-question" id="exitQuestion">
+<p class="t-md">Hold up — don't go yet</p>
+<h2 class="t-lg">Leaving without dropping your genius idea here is basically a crime against innovation.</h2>
+<p class="t-sm" style="color:var(--muted)">(Not a real crime. Please don't call the police.) Tell me what you're dreaming up — a website, an app, a wild 2am idea — and I'll turn it into something real.</p>
+<div class="gate-actions">
+<button class="btn" id="exitOpenForm" type="button">Okay, take my idea</button>
+<button class="btn" id="exitDismiss" type="button">Maybe later</button>
+</div>
+</div>
+<form class="gate-feedback" id="exitForm" data-email="{esc(site["email"])}">
+<p class="t-xl">Go on then, impress me.</p>
+<textarea name="idea" placeholder="My brilliant idea is..." required></textarea>
+<input type="email" name="email" placeholder="Where should I send updates? (optional)">
+<div class="gate-actions">
+<button class="btn" type="submit">Send my idea</button>
+<button class="btn" id="exitSkip" type="button">Never mind</button>
+</div>
+</form>
+</div></div>'''
+
+PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip")}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{gate()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}<script src="/assets/js/script.js" defer></script></body></html>'''
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">

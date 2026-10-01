@@ -34,43 +34,65 @@
   })();
 
   // ---------- landing gate: a two-way question before the site reveals ----------
-  // Shown once per session, after the preloader clears. "Yes" opens straight
-  // into the site; "No" swaps in a short feedback form (mailto:, since this
-  // is a static site with no backend to receive submissions) with a "take me
-  // in anyway" escape hatch so nobody is actually trapped.
+  // Shown once per session, FIRST — visible from first paint (see the CSS:
+  // this element defaults to visible, it's not waiting on JS to appear), so
+  // nothing underneath it is ever seen before the visitor answers. "Yes"
+  // opens straight into the site (the preloader then plays fresh, see
+  // below). "No" swaps in a creative one-more-try persuasion panel; if
+  // they're still leaving after that, a short optional feedback form
+  // appears and the tab then tries to close itself. Dispatches
+  // 'gate:closed' so the preloader knows when to start.
   (() => {
     const gate = document.getElementById('gate');
-    if (!gate) return;
+    if (!gate) { window.dispatchEvent(new Event('gate:closed')); return; }
     const KEY = 'odGateSeen';
     let seen;
     try { seen = sessionStorage.getItem(KEY); } catch (e) {}
-    if (seen) { gate.remove(); return; }
+    if (seen) { gate.remove(); window.dispatchEvent(new Event('gate:closed')); return; }
 
     const question = document.getElementById('gateQuestion');
+    const persuade = document.getElementById('gatePersuade');
     const feedback = document.getElementById('gateFeedback');
     const yesBtn = document.getElementById('gateYes');
     const noBtn = document.getElementById('gateNo');
+    const persuadeYesBtn = document.getElementById('gatePersuadeYes');
+    const stillLeavingBtn = document.getElementById('gateStillLeaving');
     const skipBtn = document.getElementById('gateSkip');
+    const justLeaveBtn = document.getElementById('gateJustLeave');
 
     const markSeen = () => { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
-    const closeGate = () => {
+    const enterSite = () => {
       markSeen();
+      window.dispatchEvent(new Event('gate:closed'));
       gate.classList.add('done');
       if (window.gsap) gsap.to(gate, { opacity: 0, duration: .5, ease: 'power1.out', onComplete: () => gate.remove() });
       else { gate.style.transition = 'opacity .5s ease'; gate.style.opacity = '0'; setTimeout(() => gate.remove(), 500); }
     };
-    const showGate = () => {
-      gate.classList.add('show');
-      if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
+    const swapPanel = (hide, show) => {
+      hide.style.display = 'none';
+      show.classList.add('show');
+      if (window.gsap) gsap.from(show, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
+    };
+    // Browsers only allow script to close tabs they themselves opened, so a
+    // tab the visitor navigated to directly can't always be force-closed —
+    // this is a best-effort attempt with a graceful, honest fallback.
+    const tryClose = () => {
+      markSeen();
+      try { window.open('', '_self'); } catch (e) {}
+      window.close();
+      setTimeout(() => {
+        if (document.hidden) return;
+        feedback.innerHTML = '<p class="t-xl">All set — you can close this tab now.</p><div class="gate-actions"><button class="btn" id="gateFallbackIn" type="button">Actually, take me in</button></div>';
+        document.getElementById('gateFallbackIn')?.addEventListener('click', enterSite);
+      }, 350);
     };
 
-    yesBtn?.addEventListener('click', closeGate);
-    skipBtn?.addEventListener('click', closeGate);
-    noBtn?.addEventListener('click', () => {
-      question.style.display = 'none';
-      feedback.classList.add('show');
-      if (window.gsap) gsap.from(feedback, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
-    });
+    yesBtn?.addEventListener('click', enterSite);
+    noBtn?.addEventListener('click', () => swapPanel(question, persuade));
+    persuadeYesBtn?.addEventListener('click', enterSite);
+    stillLeavingBtn?.addEventListener('click', () => swapPanel(persuade, feedback));
+    skipBtn?.addEventListener('click', enterSite);
+    justLeaveBtn?.addEventListener('click', tryClose);
     feedback?.addEventListener('submit', (e) => {
       e.preventDefault();
       const to = feedback.dataset.email || '';
@@ -79,13 +101,13 @@
       const subject = encodeURIComponent("Feedback from odgrande.github.io");
       const bodyLines = [reason, email ? `\nReply to: ${email}` : ''].join('\n');
       window.location.href = `mailto:${to}?subject=${subject}&body=${encodeURIComponent(bodyLines)}`;
-      closeGate();
+      tryClose();
     });
 
-    window.addEventListener('preloader:done', showGate, { once: true });
+    if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
   })();
 
-  // ---------- cookie banner: small, shows once per session ----------
+  // ---------- cookie banner: small, shows once per session, after the preloader clears ----------
   (() => {
     const banner = document.getElementById('cookie-banner');
     if (!banner) return;
@@ -103,8 +125,67 @@
     banner.querySelector('.cookie-close')?.addEventListener('click', dismiss);
 
     const reveal = () => setTimeout(() => banner.classList.add('show'), 600);
-    if (document.getElementById('gate')) window.addEventListener('preloader:done', () => setTimeout(reveal, 900), { once: true });
-    else reveal();
+    window.addEventListener('preloader:done', () => setTimeout(reveal, 900), { once: true });
+  })();
+
+  // ---------- exit-intent popup: comical "drop your idea" prompt ----------
+  // Armed only after the preloader clears (so it can't fire mid-load), shown
+  // once per session the moment the cursor leaves out the top of the
+  // viewport, and marked seen as soon as it's shown so it never nags twice.
+  (() => {
+    const popup = document.getElementById('exit-popup');
+    if (!popup) return;
+    const KEY = 'odExitSeen';
+
+    const question = document.getElementById('exitQuestion');
+    const form = document.getElementById('exitForm');
+    const openFormBtn = document.getElementById('exitOpenForm');
+    const dismissBtn = document.getElementById('exitDismiss');
+    const skipBtn = document.getElementById('exitSkip');
+    const closeBtn = document.getElementById('exitClose');
+
+    const closePopup = () => {
+      popup.classList.add('done');
+      if (window.gsap) gsap.to(popup, { opacity: 0, duration: .4, ease: 'power1.out', onComplete: () => popup.remove() });
+      else { popup.style.transition = 'opacity .4s ease'; popup.style.opacity = '0'; setTimeout(() => popup.remove(), 400); }
+    };
+    const showPopup = () => {
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+      popup.classList.add('show');
+      if (window.gsap) gsap.from(popup.querySelector('.exit-inner'), { opacity: 0, y: 40, scale: .92, duration: .6, ease: 'back.out(1.6)' });
+    };
+
+    closeBtn?.addEventListener('click', closePopup);
+    dismissBtn?.addEventListener('click', closePopup);
+    skipBtn?.addEventListener('click', closePopup);
+    openFormBtn?.addEventListener('click', () => {
+      question.style.display = 'none';
+      form.classList.add('show');
+      if (window.gsap) gsap.from(form, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
+    });
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const to = form.dataset.email || '';
+      const idea = form.idea.value.trim();
+      const email = form.email.value.trim();
+      const subject = encodeURIComponent("An idea from odgrande.github.io");
+      const bodyLines = [idea, email ? `\nReply to: ${email}` : ''].join('\n');
+      window.location.href = `mailto:${to}?subject=${subject}&body=${encodeURIComponent(bodyLines)}`;
+      closePopup();
+    });
+
+    const arm = () => {
+      let seen;
+      try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+      if (seen) { popup.remove(); return; }
+      const onLeave = (e) => {
+        if (e.clientY > 0) return;
+        document.removeEventListener('mouseleave', onLeave);
+        showPopup();
+      };
+      document.addEventListener('mouseleave', onLeave);
+    };
+    window.addEventListener('preloader:done', () => setTimeout(arm, 1200), { once: true });
   })();
 
   // ---------- lightbox ----------
@@ -127,39 +208,50 @@
   // so it roughly lines up with the loader's own "UPLINK ESTABLISHED" beat
   // (see the RUN/HOLD constants in uplink-loader.html) while also blending
   // in a real page-load signal so the overlay never clears a half-built page.
+  // Deliberately held back behind the landing gate — the iframe's src is
+  // only set once 'gate:closed' fires, so the loading animation plays fresh
+  // right after the visitor answers, instead of running unseen underneath.
   (() => {
     const el = document.getElementById('preloader');
     if (!el) { window.dispatchEvent(new Event('preloader:done')); return; }
     if (document.documentElement.classList.contains('no-preloader')) { el.remove(); window.dispatchEvent(new Event('preloader:done')); return; }
 
-    const finish = () => {
-      el.classList.add('done');
-      setTimeout(() => el.remove(), 500);
-      window.dispatchEvent(new Event('preloader:done'));
-    };
-    const failsafe = setTimeout(finish, 6000);
+    const start = () => {
+      const frame = document.getElementById('preloader-frame');
+      if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
 
-    let realLoadDone = false;
-    Promise.race([
-      Promise.all([
-        document.fonts ? document.fonts.ready : Promise.resolve(),
-        new Promise((r) => window.addEventListener('load', r, { once: true }))
-      ]),
-      new Promise((r) => setTimeout(r, 2600))
-    ]).then(() => { realLoadDone = true; });
+      const finish = () => {
+        el.classList.add('done');
+        setTimeout(() => el.remove(), 500);
+        window.dispatchEvent(new Event('preloader:done'));
+      };
+      const failsafe = setTimeout(finish, 6000);
 
-    const MIN_SHOW = 3700; // matches the loader's own RUN(3200)+HOLD(500) first-cycle beat
-    const started = performance.now();
-    const tryReveal = () => {
-      if (realLoadDone && performance.now() - started >= MIN_SHOW) {
-        clearTimeout(failsafe);
-        if (window.gsap) gsap.to(el, { opacity: 0, duration: .45, ease: 'power1.out', onComplete: finish });
-        else { el.style.transition = 'opacity .45s ease'; el.style.opacity = '0'; setTimeout(finish, 450); }
-      } else {
-        setTimeout(tryReveal, 100);
-      }
+      let realLoadDone = false;
+      Promise.race([
+        Promise.all([
+          document.fonts ? document.fonts.ready : Promise.resolve(),
+          new Promise((r) => window.addEventListener('load', r, { once: true }))
+        ]),
+        new Promise((r) => setTimeout(r, 2600))
+      ]).then(() => { realLoadDone = true; });
+
+      const MIN_SHOW = 3700; // matches the loader's own RUN(3200)+HOLD(500) first-cycle beat
+      const started = performance.now();
+      const tryReveal = () => {
+        if (realLoadDone && performance.now() - started >= MIN_SHOW) {
+          clearTimeout(failsafe);
+          if (window.gsap) gsap.to(el, { opacity: 0, duration: .45, ease: 'power1.out', onComplete: finish });
+          else { el.style.transition = 'opacity .45s ease'; el.style.opacity = '0'; setTimeout(finish, 450); }
+        } else {
+          setTimeout(tryReveal, 100);
+        }
+      };
+      tryReveal();
     };
-    tryReveal();
+
+    if (document.getElementById('gate')) window.addEventListener('gate:closed', start, { once: true });
+    else start();
   })();
 
   // ---------- journey stepper: stacked sticky cards ----------
