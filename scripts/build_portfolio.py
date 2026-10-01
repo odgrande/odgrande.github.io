@@ -326,6 +326,13 @@ def testimonial_video():
             return path_url("assets","personal","videos",*p.relative_to(d).parts)
     return ""
 
+def home_reel_video(projects):
+    p=next((x for x in projects if x["slug"]==HOME_REEL["slug"]),None)
+    d=source_for(HOME_REEL["slug"]) if p else None
+    if not d:return ""
+    f=d/HOME_REEL["filename"]
+    return path_url("assets","projects",HOME_REEL["slug"],f.name) if f.exists() else ""
+
 def award_dir():
     """The two mirrors of "Personal images" aren't always structured the same
     way: one may keep an "Award Images" subfolder, the other may have been
@@ -355,6 +362,7 @@ def page_home(projects):
     featured=[p for p in projects if p.get("featured")]
     services=accordion_box(CONFIG["services"])
     faq=accordion_box(CONFIG["faq"])
+    reel=home_reel_video(projects)
     body=f'''<section class="container container-xl hero" data-reveal>
 <p class="t-xl tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
 <div class="hero-main">
@@ -389,6 +397,11 @@ def page_home(projects):
 <div class="split-photo">{image_frame(about_portrait,site["name"])}</div>
 </div>
 </section>
+
+{f'''<section class="container container-md" style="align-items:center" data-reveal>
+<h2 class="h2 text-center">A Quick Hello</h2>
+<div class="video-frame"><video controls preload="metadata" playsinline><source src="{esc(reel)}"></video></div>
+</section>''' if reel else ""}
 
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center">FAQ</h2>
