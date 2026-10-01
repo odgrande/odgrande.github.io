@@ -138,6 +138,25 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 @media(min-width:768px){.nav .theme-toggle.desktop-only{display:flex}}
 .mobile-nav .theme-toggle{margin-top:1rem}
 
+/* ============ LANGUAGE SWITCHER ============
+   Tiny globe button that reveals a short dropdown of languages. Same
+   instance is reused in the nav (desktop + mobile) and pinned small in the
+   landing gate, so the choice is available right from the first banner. */
+.lang-switcher{position:relative;flex-shrink:0}
+.nav .lang-switcher.desktop-only{display:none;margin-left:.75rem}
+@media(min-width:768px){.nav .lang-switcher.desktop-only{display:block}}
+.mobile-nav .lang-switcher{margin-top:1rem;display:flex;justify-content:center}
+.lang-toggle{display:flex;align-items:center;gap:.35rem;height:38px;padding:0 .7rem;color:var(--paper);background:transparent;border:2px solid var(--paper);border-radius:999px;font-family:var(--mono);font-size:.75rem;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s}
+.lang-toggle:hover{background:var(--paper);color:var(--ink)}
+.lang-menu{display:none;position:absolute;top:calc(100% + .4rem);right:0;min-width:7.5rem;flex-direction:column;background:var(--ink);border:2px solid var(--paper);z-index:50}
+.lang-switcher.open .lang-menu{display:flex}
+.lang-option{width:100%;text-align:left;padding:.5rem .8rem;background:transparent;color:var(--paper);font-family:var(--mono);font-size:.8rem;cursor:pointer;transition:background .2s,color .2s}
+.lang-option:hover{background:var(--paper);color:var(--ink)}
+.lang-option[aria-current="true"]{font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.gate-lang{position:absolute;top:1rem;right:1rem}
+.gate-lang .lang-menu{right:0;left:auto}
+@media(max-width:599px){.gate-lang{position:static;align-self:flex-end;margin-bottom:-.5rem}}
+
 /* BUTTON / LINKS */
 .btn{display:inline-block;font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;font-size:1.3rem;padding:.7rem 1.6rem;border:2px solid var(--paper);transition:background .2s,color .2s;min-height:44px}
 .btn:hover{background:var(--paper);color:var(--ink)}
@@ -416,6 +435,7 @@ footer li{margin-bottom:.6rem}
 footer li a:hover{color:var(--muted)}
 .footer-bottom{text-align:center;margin-top:3rem}
 .footer-bottom p{margin:.3rem 0;font-size:.85rem}
+.footer-bottom p.t-xsm{font-size:.7rem;color:var(--muted)}
 
 /* ============ MOBILE QA ============ */
 @media(max-width:599px){

@@ -158,13 +158,24 @@ THEME_TOGGLE_ICON='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20
 def theme_toggle(cls=""):
     return f'<button class="theme-toggle {cls}" type="button" aria-label="Switch between dark and light mode" aria-pressed="false">{THEME_TOGGLE_ICON}</button>'
 
+LANGS=[("en","EN"),("pcm","Pidgin"),("yo","Yoruba"),("ha","Hausa")]
+
+def lang_switcher(cls=""):
+    options="".join(f'<button class="lang-option" type="button" data-lang="{code}">{esc(label)}</button>' for code,label in LANGS)
+    return f'''<div class="lang-switcher {cls}">
+<button class="lang-toggle" type="button" aria-label="Change language" aria-expanded="false">&#127760; <span class="lang-current">EN</span></button>
+<div class="lang-menu">{options}</div>
+</div>'''
+
+NAV_KEYS=["home","works","about","credentials","contact"]
+
 def nav():
-    desktop="".join(f'<li><a href="{u}">{i+1}. {t}</a></li>' for i,(t,u) in enumerate(NAV_LINKS))
-    mobile="".join(f'<li><a href="{u}">{t}</a></li>' for t,u in NAV_LINKS)
+    desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
+    mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="M9 16h2V8H9v8Zm4 0h2V8h-2v8Zm-1 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
     menu_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="m9.5 16.5l7-4.5l-7-4.5v9ZM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
-    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul>{theme_toggle()}</div>'''
+    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul>{theme_toggle()}{lang_switcher()}</div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
@@ -172,13 +183,14 @@ def preloader():
 def gate():
     site=CONFIG["site"]
     return f'''<div id="gate"><div class="gate-inner">
+{lang_switcher("gate-lang")}
 <div class="gate-question" id="gateQuestion">
-<p class="t-md">Before you take off</p>
-<h2 class="h2">Tighten your seatbelt — you're about to feel what I can build.</h2>
-<p class="t-sm" style="color:var(--muted)">Yes or no, the Captain (me) is waiting for boarding confirmation.</p>
+<p class="t-md" data-i18n="gate_eyebrow">Before you take off</p>
+<h2 class="h2" data-i18n="gate_headline">Tighten your seatbelt — you're about to feel what I can build.</h2>
+<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Yes or no, the Captain (me) is waiting for boarding confirmation.</p>
 <div class="gate-actions">
-<button class="btn" id="gateYes" type="button">Yes, buckle me in</button>
-<button class="btn" id="gateNo" type="button">No, I'll walk</button>
+<button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, buckle me in</button>
+<button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll walk</button>
 </div>
 </div>
 <div class="gate-question" id="gatePersuade">
@@ -242,8 +254,8 @@ def shell(title,desc,body,canonical="/",show_cta=True):
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">
 <p class="t-md text-center">What's next?</p>
-<h2 class="h2 text-center cta-rotate">Let's work together.</h2>
-<p class="t-sm text-center" style="max-width:34rem">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
+<h2 class="h2 text-center cta-rotate" data-i18n="footer_cta_heading">Let's work together.</h2>
+<p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
 <a class="btn" href="/contact/">Start a project</a>
 </div></section>'''
 
@@ -264,7 +276,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}">{esc(t)}</a></li>' for t,u in NAV_LINKS)
     return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p>Developed by Odgrande Digital</p><p>{esc(site["name"])} © 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
+<div class="footer-bottom"><p>Crafted with joy by {esc(site["name"])}</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -483,10 +495,10 @@ def page_home(projects):
     faq=accordion_box(CONFIG["faq"])
     reel=home_reel_video(projects)
     body=f'''<section class="container container-xl hero" data-reveal>
-<p class="t-xl tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
+<p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
 <div class="hero-main">
 <div class="hero-copy">
-<a class="btn" href="/contact/">Available for work</a>
+<a class="btn" href="/contact/"><span data-i18n="hero_badge">Available for work</span></a>
 <h1 class="h1" data-split-text>{esc(site["name"])}</h1>
 </div>
 <div class="hero-photo">{image_frame(hero_portrait,site["name"])}</div>
@@ -496,21 +508,21 @@ def page_home(projects):
 {marquee("Full-Stack Developer — Web Designer — WordPress — Shopify — Webflow — React")}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
-<h2 class="h2 text-center">Featured Works</h2>
+<h2 class="h2 text-center" data-i18n="featured_heading">Featured Works</h2>
 <div class="work-grid">{"".join(work_card(p,home=True) for p in featured)}</div>
 <a class="btn" href="/works/">All Works</a>
 </section>
 
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Services</h2>
+<h2 class="h2 text-center" data-i18n="services_heading">Services</h2>
 {services}
 </section>
 
 <section class="container container-xl" data-reveal>
-<h2 class="h2 text-center">About</h2>
+<h2 class="h2 text-center" data-i18n="about_heading">About</h2>
 <div class="split">
 <div class="split-copy">
-<p class="t-xl">I'm a Full-Stack Web Developer and Web Designer who enjoys the point where a design stops being a picture and becomes a working product.</p>
+<p class="t-xl" data-i18n="about_intro">I'm a Full-Stack Web Developer and Web Designer who enjoys the point where a design stops being a picture and becomes a working product.</p>
 <p class="t-sm">I build, customize and maintain WordPress, WooCommerce and Shopify stores, Webflow sites and custom front-end work for clients across Nigeria, the UK, Canada and the USA.</p>
 <p class="t-sm">When I'm not building for a client, I'm usually improving my own tools, or picking apart a site to see how it was put together.</p>
 <a class="btn" href="/about/">More about me</a>
@@ -527,7 +539,7 @@ def page_home(projects):
 {marquee("Let's Build Something Great — Open For Work")}
 
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">FAQ</h2>
+<h2 class="h2 text-center" data-i18n="faq_heading">FAQ</h2>
 {faq}
 </section>'''
     return shell("Home",site["description"],body,"/")

@@ -54,6 +54,99 @@
     }).catch(() => {});
   })();
 
+  // ---------- language switcher: Pidgin / Yoruba / Hausa ----------
+  // Covers the landing gate plus the home page's key sections (full-site
+  // translation wasn't practical to hand-author at launch). English is the
+  // default and is never overwritten — switching back to EN just reloads
+  // the page's original text via location semantics (no stored diff needed
+  // since every [data-i18n] element's server-rendered text IS the English
+  // copy already present in the DOM).
+  (() => {
+    const TRANSLATIONS = {
+      pcm: {
+        nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
+        gate_eyebrow: "Before you fly", gate_headline: "Tie your seatbelt well well — you dey about to feel wetin I fit build.",
+        gate_subtext: "Yes or no, Captain (na me) dey wait make you confam say you dey enter.",
+        gate_yes: "Yes, tie me well", gate_no: "No, I go waka",
+        hero_tagline: "How far! I be Full-Stack Web Developer & Web Designer wey get 5+ years experience dey build digital products for clients for Nigeria, UK, Canada and USA.",
+        hero_badge: "I dey available for work",
+        featured_heading: "Works Wey Sweet Pass", services_heading: "Wetin I Dey Do",
+        about_heading: "Who I Be", about_intro: "I be Full-Stack Web Developer and Web Designer wey like the point wey design no be just picture again, e don turn to work wey dey functional.",
+        faq_heading: "Questions Wey People Dey Ask",
+        footer_cta_heading: "Make we build something together.",
+        footer_cta_sub: "If you get WordPress build, e-commerce store or any digital product for mind, make we yarn about am."
+      },
+      yo: {
+        nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
+        gate_eyebrow: "Kí o tó fò", gate_headline: "Di àmùrè rẹ mú — o fẹ́ bẹ̀rẹ̀ sí nímọ̀lára ohun tí mo lè kọ́.",
+        gate_subtext: "Bẹ́ẹ̀ni tàbí rárá, Kapútánì (èmi ni) ń dúró de ìjẹ́rìí wíwọ̀ ọkọ̀.",
+        gate_yes: "Bẹ́ẹ̀ni, di mi mú", gate_no: "Rárá, màá rìn",
+        hero_tagline: "Báwo! Èmi ni Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        hero_badge: "Mo wà ní àyè fún iṣẹ́",
+        featured_heading: "Àwọn Iṣẹ́ Tó Dára Jùlọ", services_heading: "Àwọn Iṣẹ́ Tí Mo Ń Ṣe",
+        about_heading: "Nípa Mi", about_intro: "Èmi ni Full-Stack Web Developer àti Web Designer tí inú rẹ̀ dùn sí ibi tí àpẹẹrẹ (design) ti máa dá ṣiṣẹ́ gẹ́gẹ́ bí ọjà gidi.",
+        faq_heading: "Àwọn Ìbéèrè Tí Wọ́n Sábà Máa Ń Béèrè",
+        footer_cta_heading: "Jẹ́ ká ṣiṣẹ́ papọ̀.",
+        footer_cta_sub: "Tó bá jẹ́ pé o ní WordPress build, ilé ìtajà e-commerce tàbí ọjà dígítà èyíkéyìí lọ́kàn, jẹ́ ká sọ̀rọ̀ nípa rẹ̀."
+      },
+      ha: {
+        nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
+        gate_eyebrow: "Kafin ka tashi", gate_headline: "Ka ɗaura bel ɗinka — kana gab da jin abin da zan iya ginawa.",
+        gate_subtext: "E ko a'a, Kyaftin (ni ne) yana jiran tabbacin shiga jirgin.",
+        gate_yes: "E, ɗaura ni", gate_no: "A'a, zan yi tafiya",
+        hero_tagline: "Sannu! Ni ne Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen gina kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        hero_badge: "Ina samuwa don aiki",
+        featured_heading: "Ayyukan Da Aka Fi So", services_heading: "Ayyukan Da Nake Yi",
+        about_heading: "Game da Ni", about_intro: "Ni ne Full-Stack Web Developer da Web Designer wanda ke jin daɗin lokacin da zane ya daina zama hoto kawai ya koma kayan aiki mai amfani.",
+        faq_heading: "Tambayoyin Da Ake Yawan Yi",
+        footer_cta_heading: "Bari mu gina wani abu tare.",
+        footer_cta_sub: "Idan kana da shirin WordPress, kantin e-commerce ko wani kayan dijital a zuciya, bari mu tattauna game da shi."
+      }
+    };
+    const LABELS = { en: "EN", pcm: "Pidgin", yo: "Yoruba", ha: "Hausa" };
+    const KEY = 'odLang';
+    const originals = new Map();
+    document.querySelectorAll('[data-i18n]').forEach((el) => originals.set(el, el.textContent));
+
+    const apply = (lang) => {
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        const dict = TRANSLATIONS[lang];
+        el.textContent = (dict && dict[key]) || originals.get(el);
+      });
+      document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = LABELS[lang] || 'EN'; });
+      document.querySelectorAll('.lang-option').forEach((btn) => {
+        btn.setAttribute('aria-current', btn.dataset.lang === lang ? 'true' : 'false');
+      });
+    };
+
+    let saved;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved && saved !== 'en') apply(saved);
+    else document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = 'EN'; });
+
+    document.querySelectorAll('.lang-switcher').forEach((sw) => {
+      const toggle = sw.querySelector('.lang-toggle');
+      toggle?.addEventListener('click', () => {
+        const open = sw.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+    document.querySelectorAll('.lang-option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        try { localStorage.setItem(KEY, lang); } catch (e) {}
+        apply(lang);
+        btn.closest('.lang-switcher')?.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', (e) => {
+      document.querySelectorAll('.lang-switcher.open').forEach((sw) => {
+        if (!sw.contains(e.target)) sw.classList.remove('open');
+      });
+    });
+  })();
+
   // ---------- theme toggle (dark default, light on request) ----------
   (() => {
     const KEY = 'odTheme';
