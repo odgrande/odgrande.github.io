@@ -12,11 +12,11 @@
     /* design canvas: 1200 x 800 units, scaled to fit the viewport */
     --s: 1;
 
-    --bg:        #030806;
-    --green:     #2fe07d;
-    --green-dim: rgba(55,225,130,.26);
-    --line:      rgba(120,255,185,.46);
-    --ink-hi:    #d9f4e6;
+    --bg:        #272421;
+    --green:     #a9a7a4;
+    --green-dim: rgba(172,170,167,.26);
+    --line:      rgba(208,207,204,.46);
+    --ink-hi:    #e8e6e3;
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
@@ -32,7 +32,7 @@
   .pool{
     position:fixed; inset:0; pointer-events:none;
     background:radial-gradient(ellipse 60% 44% at 50% 52%,
-      rgba(24,150,92,.17) 0%, rgba(16,104,66,.08) 38%, rgba(10,58,38,.025) 66%, transparent 100%);
+      rgba(123,121,118,.17) 0%, rgba(96,93,90,.08) 38%, rgba(69,66,63,.025) 66%, transparent 100%);
   }
 
   /* ── stage ── */
@@ -51,11 +51,11 @@
   }
   .plate::after{
     content:""; position:absolute; inset:1.2px;
-    background:linear-gradient(180deg,#07251a,#041a12);
+    background:linear-gradient(180deg,#393633,#322f2c);
     clip-path:polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
   }
   .plate.hit{animation:plateHit .5s ease-out}
-  @keyframes plateHit{0%{background:#c8ffe2}100%{background:var(--line)}}
+  @keyframes plateHit{0%{background:#e8e7e4}100%{background:var(--line)}}
 
   .brk{width:9px;height:9px;pointer-events:none}
   .brk::before,.brk::after{content:""; position:absolute; background:var(--green); opacity:.9}
@@ -67,7 +67,7 @@
     left:530px; top:284.9px; width:140px; height:0;
     text-align:center; line-height:1; white-space:pre;
     color:var(--green);
-    text-shadow:0 0 4px rgba(70,235,145,.6), 0 0 14px rgba(48,210,125,.55), 0 0 36px rgba(32,175,105,.4);
+    text-shadow:0 0 4px rgba(182,180,177,.6), 0 0 14px rgba(162,160,157,.55), 0 0 36px rgba(139,137,134,.4);
     animation:neon 4.3s steps(1,end) infinite;
   }
   .readout b{font-size:47px; font-weight:280; letter-spacing:2.4px}
@@ -85,8 +85,8 @@
     width:calc(var(--lit-w,0px) + 250px); height:250px;
     transform:translate(-125px,-128px);
     background:radial-gradient(ellipse 50% 50% at center,
-      rgba(56,225,140,.26) 0%, rgba(46,200,126,.17) 22%,
-      rgba(38,170,108,.082) 45%, rgba(30,140,90,.024) 70%, transparent 100%);
+      rgba(173,171,168,.26) 0%, rgba(157,155,152,.17) 22%,
+      rgba(138,136,133,.082) 45%, rgba(120,117,114,.024) 70%, transparent 100%);
     filter:blur(6px);
     transition:width .16s linear;
   }
@@ -98,24 +98,24 @@
   .tick{width:5.4px; height:32px; background:var(--green-dim); transform:skewX(12deg)}
   .tick.mk{height:44px}
   .tick.on{
-    background:#33cf76;
-    box-shadow:0 0 4px rgba(95,240,155,.6), 0 0 11px rgba(55,205,125,.32), 0 0 24px rgba(40,175,105,.16);
+    background:#a19f9c;
+    box-shadow:0 0 4px rgba(192,190,187,.6), 0 0 11px rgba(161,160,157,.32), 0 0 24px rgba(141,139,136,.16);
   }
   .tick.flash{animation:ignite .32s ease-out}
   @keyframes ignite{
-    0%{background:#dcffec; box-shadow:0 0 11px rgba(200,255,225,1),0 0 28px rgba(85,230,150,.85),0 0 54px rgba(50,190,120,.45)}
-    100%{background:#33cf76; box-shadow:0 0 4px rgba(95,240,155,.6),0 0 11px rgba(55,205,125,.32),0 0 24px rgba(40,175,105,.16)}
+    0%{background:#eeedea; box-shadow:0 0 11px rgba(232,231,228,1),0 0 28px rgba(184,182,179,.85),0 0 54px rgba(152,150,147,.45)}
+    100%{background:#a19f9c; box-shadow:0 0 4px rgba(192,190,187,.6),0 0 11px rgba(161,160,157,.32),0 0 24px rgba(141,139,136,.16)}
   }
 
   .barlabel{left:298px; top:396.4px; font-size:20.4px; font-weight:500; letter-spacing:.9px;
     line-height:1; color:var(--ink-hi);
-    text-shadow:0 0 3px rgba(200,250,225,.34), 0 0 11px rgba(120,235,175,.3), 0 0 26px rgba(60,195,130,.22)}
+    text-shadow:0 0 3px rgba(230,229,226,.34), 0 0 11px rgba(197,196,193,.3), 0 0 26px rgba(158,156,153,.22)}
 
   .status{
     left:0; top:507px; width:1200px; text-align:center;
     font-size:14px; font-weight:500; line-height:1; letter-spacing:1.42px; text-indent:1.42px;
-    color:#9fd0b6; white-space:pre;
-    text-shadow:0 0 3px rgba(185,240,215,.3), 0 0 10px rgba(110,220,160,.22);
+    color:#c3c1be; white-space:pre;
+    text-shadow:0 0 3px rgba(220,219,216,.3), 0 0 10px rgba(186,184,181,.22);
   }
   .status .dots{letter-spacing:-1.9px; margin-left:-6px}
 
@@ -130,7 +130,7 @@
   .marker .dia{
     left:-4px; top:-4px; width:8px; height:8px; opacity:1;
     background:var(--green); transform:rotate(45deg);
-    box-shadow:0 0 6px rgba(70,235,145,.7);
+    box-shadow:0 0 6px rgba(182,180,177,.7);
     animation:diaPulse 3.2s ease-in-out infinite;
   }
   @keyframes diaPulse{0%,100%{opacity:.55; transform:rotate(45deg) scale(.8)}50%{opacity:1; transform:rotate(45deg) scale(1)}}
@@ -143,25 +143,25 @@
   .rail.right{transform:scaleX(-1)}
   .rail > *{position:absolute}
 
-  .rail .wire{left:104px; top:433px; width:92px; height:1.4px; background:rgba(120,255,185,.24)}
-  .rail .cap{top:428px; height:5px; background:#2bd074; box-shadow:0 0 5px rgba(70,235,145,.6)}
+  .rail .wire{left:104px; top:433px; width:92px; height:1.4px; background:rgba(208,207,204,.24)}
+  .rail .cap{top:428px; height:5px; background:#9f9d9a; box-shadow:0 0 5px rgba(182,180,177,.6)}
   .rail .cap.a{left:104px; width:10px}
   .rail .cap.b{left:181px; width:15px; animation:capPulse 2.4s ease-in-out infinite}
   @keyframes capPulse{0%,100%{opacity:1}50%{opacity:.5}}
 
   .mod{left:204px; top:404px; width:36px; height:62px}
   .mod > *{position:absolute; left:0}
-  .mod .hatch{top:0; width:36px; height:2px; background:#cfe8da}
+  .mod .hatch{top:0; width:36px; height:2px; background:#deddda}
   .mod .ret{top:8px; left:3px; width:30px; height:30px; border-radius:50%;
-            border:1.3px solid rgba(206,235,220,.82)}
-  .mod .ret::before,.mod .ret::after{content:""; position:absolute; background:rgba(206,235,220,.45)}
+            border:1.3px solid rgba(223,222,219,.82)}
+  .mod .ret::before,.mod .ret::after{content:""; position:absolute; background:rgba(223,222,219,.45)}
   .mod .ret::before{left:-3.5px; top:13.6px; width:35px; height:1px}
   .mod .ret::after{left:13.6px; top:-3.5px; width:1px; height:35px}
   .mod .dot{top:12.5px; left:15.5px; width:5px; height:5px; border-radius:50%; background:var(--green);
-            box-shadow:0 0 6px rgba(70,235,145,.9); animation:diaPulse 2.6s ease-in-out infinite}
-  .mod .slab{top:46px; width:36px; height:5px; background:#dcefe4;
+            box-shadow:0 0 6px rgba(182,180,177,.9); animation:diaPulse 2.6s ease-in-out infinite}
+  .mod .slab{top:46px; width:36px; height:5px; background:#e6e4e1;
              clip-path:polygon(0 0,100% 0,100% 100%,5px 100%)}
-  .mod .led{top:55px; height:2.6px; background:#9dc3b0}
+  .mod .led{top:55px; height:2.6px; background:#bbb9b6}
   .mod .led:nth-of-type(1){left:0;     width:3px}
   .mod .led:nth-of-type(2){left:4.5px; width:4px}
   .mod .led:nth-of-type(3){left:27px;  width:4px}
@@ -170,7 +170,7 @@
   /* ── overlays ── */
   .scan{position:fixed; inset:0; pointer-events:none; opacity:.18;
     background:repeating-linear-gradient(to bottom,
-      rgba(160,255,205,.05) 0 calc(1px * var(--s)),
+      rgba(220,219,216,.05) 0 calc(1px * var(--s)),
       transparent calc(1px * var(--s)) calc(3px * var(--s)))}
 
   .grain{position:fixed; inset:-60px; pointer-events:none;

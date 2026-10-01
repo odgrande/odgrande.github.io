@@ -40,7 +40,6 @@
 
     const finish = () => {
       el.classList.add('done');
-      try { sessionStorage.setItem('odIntroSeen', '1'); } catch (e) {}
       setTimeout(() => el.remove(), 500);
     };
     const failsafe = setTimeout(finish, 6000);
@@ -68,74 +67,38 @@
     tryReveal();
   })();
 
-  // ---------- archive book: page-flip viewer for Personal Archive ----------
-  (() => {
-    const root = document.getElementById('archiveBook');
-    const dataEl = document.getElementById('archive-photos');
-    if (!root || !dataEl) return;
-    let photos = [];
-    try { photos = JSON.parse(dataEl.textContent || '[]'); } catch (e) { return; }
-    if (!photos.length) return;
-
-    const alt = root.dataset.alt || '';
-    const stage = root.querySelector('.archive-3d');
-    const base = stage.querySelector('.archive-page');
-    const baseImg = document.createElement('img');
-    base.appendChild(baseImg);
-    const caption = root.querySelector('.archive-caption');
-    const prevBtn = root.querySelector('.archive-arrow.left');
-    const nextBtn = root.querySelector('.archive-arrow.right');
-
-    let idx = 0, animating = false;
-
-    const render = () => {
-      baseImg.src = photos[idx];
-      baseImg.alt = alt;
-      caption.textContent = `${idx + 1} / ${photos.length}`;
+  // ---------- journey stepper: sticky stage, plain scroll listener ----------
+  // The "first / then / today" scroll narrative from guillaumezhu.com: the
+  // stage stays in view (native CSS position:sticky — no layout bugs, no
+  // scroll-jacking) while each phrase crossfades into the next underneath
+  // it. Deliberately has no GSAP dependency: a GSAP ScrollTrigger pin here
+  // kept mis-measuring against this page's late-loading images and once
+  // caused a visible scroll jump, so this sidesteps GSAP's pin machinery
+  // entirely in favour of the browser's own sticky positioning.
+  document.querySelectorAll('.journey-pin').forEach((pin) => {
+    const steps = [...pin.querySelectorAll('.journey-step')];
+    if (steps.length < 2) return;
+    pin.classList.add('is-pinned');
+    pin.style.setProperty('--steps', steps.length);
+    let active = 0;
+    steps[0].classList.add('is-active');
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const rect = pin.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      const idx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
+      if (idx === active) return;
+      steps[active].classList.remove('is-active');
+      steps[idx].classList.add('is-active');
+      active = idx;
     };
-
-    const go = (dir) => {
-      if (animating || photos.length < 2) return;
-      const next = (idx + dir + photos.length) % photos.length;
-      animating = true;
-      base.style.visibility = 'hidden';
-      const leaf = document.createElement('div');
-      leaf.className = 'archive-leaf';
-      const front = document.createElement('div'); front.className = 'face front';
-      const frontImg = document.createElement('img'); frontImg.src = photos[idx]; frontImg.alt = alt;
-      front.appendChild(frontImg);
-      const back = document.createElement('div'); back.className = 'face back';
-      const backImg = document.createElement('img'); backImg.src = photos[next]; backImg.alt = alt;
-      back.appendChild(backImg);
-      leaf.appendChild(front); leaf.appendChild(back);
-      stage.appendChild(leaf);
-      requestAnimationFrame(() => requestAnimationFrame(() => leaf.classList.add('flipping')));
-      leaf.addEventListener('transitionend', () => {
-        idx = next;
-        render();
-        base.style.visibility = 'visible';
-        leaf.remove();
-        animating = false;
-      }, { once: true });
-    };
-
-    prevBtn.addEventListener('click', () => go(-1));
-    nextBtn.addEventListener('click', () => go(1));
-    root.tabIndex = 0;
-    root.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') go(-1);
-      if (e.key === 'ArrowRight') go(1);
-    });
-    let startX = null;
-    stage.addEventListener('pointerdown', (e) => { startX = e.clientX; });
-    stage.addEventListener('pointerup', (e) => {
-      if (startX === null) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
-      startX = null;
-    });
-    render();
-  })();
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  });
 
   // ---------- GSAP scroll reveals + motion ----------
   if (window.gsap && window.ScrollTrigger) {
@@ -201,16 +164,6 @@
 
     // Page fade-in on load
     gsap.from('.wrap', { opacity: 0, duration: 0.6, ease: 'power1.out' });
-
-    // Journey stepper (About page): each phrase fades into focus as it
-    // crosses the viewport centre, then dissolves as it passes — borrowed
-    // from the "first / then / today" scroll narrative on guillaumezhu.com.
-    document.querySelectorAll('.journey-step').forEach((step) => {
-      gsap.from(step, {
-        opacity: 0, y: 40, duration: .8, ease: 'power3.out',
-        scrollTrigger: { trigger: step, start: 'top 80%', once: true }
-      });
-    });
 
     // CTA band heading: settles from a slight tilt/oversize into place as it
     // scrolls into view — same "what's next" idea, in the site's own type.

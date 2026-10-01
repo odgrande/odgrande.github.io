@@ -55,10 +55,11 @@
     ["Apprenticeship Certificate, Website Design", "GenM", "2018 - 2019", "Apprenticeship-style training in website design, the starting point for a full-time move into web development."]
   ],
   "certifications": [
-    ["IBM", "Digital Nation – Web Development Badge"],
-    ["IBM", "HTML & CSS Certificate"],
-    ["Acadium", "Apprenticeship Completion Certificate"],
-    ["GenM", "Digital Marketing Apprenticeship"]
+    ["IBM", "Digital Nation – Web Development Badge", "https://www.credly.com/badges/dd590240-7d0e-4de7-ac8d-7c6281411403", "/assets/credentials/certificates/PDFs/IBM-Digital-Nation-Web-Development.pdf"],
+    ["IBM", "HTML & CSS Certificate", "https://www.credly.com/badges/20defbc2-2314-4543-80a6-17982937551a", "/assets/credentials/certificates/PDFs/IBM-HTML-CSS-Certificate.pdf"],
+    ["Acadium", "Apprenticeship, One by One Design (India)", "https://www.credential.net/511b1ebd-2aaa-4277-8fb6-b8ff0edd0ef6", "/assets/credentials/certificates/PDFs/Acadium-One-by-One-Design-India.pdf"],
+    ["Acadium", "Apprenticeship, OrangeBee Money Global (FL, USA)", "https://www.credential.net/e4b5040d-f974-4457-8e1e-ad374f2d4ffd#acc.2jkieJqu", "/assets/credentials/certificates/PDFs/Acadium-OrangeBee-Money-Global.pdf"],
+    ["Acadium", "Apprenticeship, The Miranda Team (Keyes Company)", "https://www.credential.net/400cec72-5610-4976-8f36-1c8a97b8dfb2#acc.bOzFYTpg", "/assets/credentials/certificates/PDFs/Acadium-Miranda-Team-Keyes-Company.pdf"]
   ],
   "testimonials": [
     {"quote":"We love it from the very first look! The design looks amazing, clean, and exactly what we envisioned. This is what really matters — bringing our vision to life. Great work! Looking forward to the next phase.","name":"Founder","company":"MailOptin"},

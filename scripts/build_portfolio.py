@@ -164,7 +164,7 @@ def nav():
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
-PRELOADER_SKIP_INLINE='<script>if(sessionStorage.getItem("odIntroSeen")||window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}</script>'
+PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
     return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div><script src="/assets/js/script.js" defer></script></body></html>'''
@@ -202,23 +202,6 @@ def image_frame(src,alt,cls=""):
     if not src:
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
     return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" loading="lazy"></div></div>'''
-
-def archive_book(images,alt):
-    """A page-flip photo viewer for the Personal Archive — prev/next controls
-    flip between photos with a CSS 3D page-turn, instead of a static grid."""
-    if not images:return ""
-    payload=json.dumps(images).replace("</","<\\/")
-    arrow_l='<svg viewBox="0 0 14 44" width="14" height="44" fill="none"><polyline points="11,3 3,22 11,41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    arrow_r='<svg viewBox="0 0 14 44" width="14" height="44" fill="none"><polyline points="3,3 11,22 3,41" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    return f'''<div class="archive-book" id="archiveBook" data-alt="{esc(alt)}">
-<div class="archive-stage">
-<button class="archive-arrow left" type="button" aria-label="Previous photo">{arrow_l}</button>
-<div class="archive-3d"><div class="archive-page"></div></div>
-<button class="archive-arrow right" type="button" aria-label="Next photo">{arrow_r}</button>
-</div>
-<p class="archive-caption t-xsm"></p>
-</div>
-<script type="application/json" id="archive-photos">{payload}</script>'''
 
 def masonry_gallery(images,alt):
     if not images:return ""
@@ -260,7 +243,7 @@ def journey_stepper():
     )
     return f'''<section class="container container-md" data-reveal>
 <h2 class="h2 text-center">My Journey</h2>
-<div class="journey-pin">{steps}</div>
+<div class="journey-pin"><div class="journey-sticky">{steps}</div></div>
 </section>'''
 
 def work_card(p,home=False):
@@ -435,7 +418,7 @@ def page_home(projects):
 
 {f'''<section class="container container-md" style="align-items:center" data-reveal>
 <h2 class="h2 text-center">A Quick Hello</h2>
-<div class="video-frame"><video controls preload="metadata" playsinline><source src="{esc(reel)}"></video></div>
+<div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(reel)}"></video></div>
 </section>''' if reel else ""}
 
 <section class="container container-md" data-reveal>
@@ -468,7 +451,7 @@ def page_project(p,projects):
     live_btn=f'<a class="btn" href="{esc(p["liveSite"])}" target="_blank" rel="noopener">Live Site</a>' if p.get("liveSite") else ""
     video_html=""
     if p.get("videos"):
-        video_html="".join(f'<div class="project-video"><video controls preload="metadata" playsinline><source src="{esc(v)}"></video></div>' for v in p["videos"])
+        video_html="".join(f'<div class="project-video"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(v)}"></video></div>' for v in p["videos"])
     gallery=masonry_gallery(rest,p["title"])
     body=f'''<section class="container container-xl" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">{esc(p["title"])}</h1>
@@ -491,12 +474,12 @@ def page_about():
     experience=accordion_box(CONFIG["experience"],resume=True)
     education=accordion_box(CONFIG["education"],resume=True)
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])
-    certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name in CONFIG.get("certifications",[]))
-    gallery=archive_book(archive_images(),f'{site["name"]} personal archive')
+    certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name,_,_ in CONFIG.get("certifications",[]))
+    gallery=masonry_gallery(archive_images(),f'{site["name"]} personal archive')
     second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
     quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))
-    video_html=f'<div class="video-frame"><video controls preload="metadata" playsinline><source src="{esc(video)}"></video></div>' if video else ""
+    video_html=f'<div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(video)}"></video></div>' if video else ""
     body=f'''<section class="container container-xl" data-reveal>
 <h1 class="h1 text-center">Meet {esc(site["name"].split()[0])}</h1>
 {f'<div class="magic-hero">{image_frame(magic_hero,"Let\'s create magic together")}</div>' if magic_hero else ""}
@@ -564,10 +547,10 @@ def page_about():
 def page_credentials():
     a=awards()
     award_html=f'<div class="credential-single">{image_frame(a[0],"Designer Of The Year award")}<h3 class="h5 text-center">Designer Of The Year</h3></div>' if a else '<p class="t-sm text-center">No award image yet.</p>'
-    cert_cards="".join(
-        f'<div class="contact-item"><div class="row"><span class="t-lg">{esc(org)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div><a class="t-sm link-inline" href="#" target="_blank" rel="noopener">{esc(name)}</a></div>'
-        for org,name in CONFIG.get("certifications",[])
-    )
+    cert_cards=""
+    for org,name,url,pdf in CONFIG.get("certifications",[]):
+        pdf_link=f'<a class="t-xsm link-inline" href="{esc(pdf)}" target="_blank" rel="noopener">View PDF</a>' if pdf else ""
+        cert_cards+=f'<div class="contact-item"><div class="row"><span class="t-lg">{esc(org)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div><a class="t-sm link-inline" href="{esc(url or "#")}" target="_blank" rel="noopener">{esc(name)}</a>{pdf_link}</div>'
     body=f'''<section class="container container-md" data-reveal>
 <h1 class="h1 text-center">Credentials</h1>
 {award_html}
