@@ -54,13 +54,15 @@
     }).catch(() => {});
   })();
 
-  // ---------- language switcher: Pidgin / Yoruba / Hausa ----------
-  // Covers the landing gate plus the home page's key sections (full-site
-  // translation wasn't practical to hand-author at launch). English is the
-  // default and is never overwritten — switching back to EN just reloads
-  // the page's original text via location semantics (no stored diff needed
-  // since every [data-i18n] element's server-rendered text IS the English
-  // copy already present in the DOM).
+  // ---------- language switcher: Pidgin / Yoruba / Hausa / French ----------
+  // Covers the gate plus every page's headings, intro copy, buttons and the
+  // home FAQ (full project names, categories, skill/tech tags and legal
+  // body text are intentionally left in English — see the comment on
+  // TRANSLATIONS below). Switching language SETS localStorage then reloads
+  // the page, rather than live-patching the DOM: translations are applied
+  // once, on load, from the server-rendered English text, which is the only
+  // way that's reliably correct on every page regardless of what else ran
+  // before the switch.
   (() => {
     const TRANSLATIONS = {
       pcm: {
@@ -84,7 +86,31 @@
         faq_q_3: "You dey work with clients remotely?",
         faq_a_3: "Yes, every project for this portfolio na remote I deliver am, for clients wey dey Nigeria, UK, Canada and USA.",
         faq_q_4: "Wetin you need from me make we start?",
-        faq_a_4: "Access to the hosting/domain (or plan to get am), any brand assets wey you don already get, and short description of wetin the site need to do. I fit helep fill the gaps from there."
+        faq_a_4: "Access to the hosting/domain (or plan to get am), any brand assets wey you don already get, and short description of wetin the site need to do. I fit helep fill the gaps from there.",
+        about_meet: "Meet",
+        about_build_text: "I dey build, customize and maintain websites for businesses, organizations and digital products.",
+        about_work_text: "My work dey sit between visual implementation and practical engineering. I sabi work inside WordPress and page builders, then I go enter PHP, JavaScript and CSS when the problem need more than visual editor.",
+        about_bio_text: "Full-Stack Web Developer and Web Designer wey get 5+ years experience dey build and maintain digital products for clients for Nigeria, UK, Canada and USA.",
+        magic_heading: "Make we create website magic.",
+        magic_text: "Whatever the brief be — new WordPress build, e-commerce store, or digital product wey need to feel alive — I go like helep build am.",
+        start_project_btn: "Start a project",
+        experience_heading: "Experience", education_heading: "Education", toolkit_heading: "Toolkit",
+        certifications_heading: "Certifications", designer_award_heading: "Designer Of The Year",
+        testimonials_heading: "Wetin Pipo Talk", archive_heading: "Personal Archive",
+        view_credentials_btn: "View Credentials", view_cv_btn: "View CV", view_full_cv_btn: "View Full CV", view_pdf_btn: "View PDF",
+        works_heading: "Works", all_works_btn: "All Works", more_about_btn: "Sabi more about me",
+        credentials_heading: "Credentials", contact_heading: "Contact",
+        contact_tagline: "Make we build something together.",
+        contact_sub: "You get website, e-commerce build, WordPress problem or digital product for mind? Tell me wetin you dey work on and I go reach you back within one or two days.",
+        contact_label_email: "Email", contact_label_phone: "Phone", contact_label_location: "Location",
+        footer_socials_heading: "Socials", footer_nav_heading: "Navigation",
+        footer_privacy: "Privacy", footer_cookies: "Cookies", footer_sitemap: "Sitemap",
+        footer_whats_next: "Wetin dey come next?",
+        sitemap_sub: "Every page wey dey this site, for one place.",
+        sitemap_main_pages: "Main Pages", sitemap_legal: "Legal",
+        privacy_heading: "Privacy Policy", cookies_heading: "Cookie Policy",
+        fact_client: "Client", fact_category: "Category", fact_services: "Services", fact_year: "Year",
+        live_site_btn: "Live Site"
       },
       yo: {
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
@@ -107,7 +133,31 @@
         faq_q_3: "Ṣé o máa ń ṣiṣẹ́ pẹ̀lú àwọn oníbàárà láti ọ̀nà jíjìn?",
         faq_a_3: "Bẹ́ẹ̀ni, gbogbo iṣẹ́ nínú portfolio yìí ni mo ṣe láti ọ̀nà jíjìn, fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
         faq_q_4: "Kí ni o nílò lọ́wọ́ mi kí a tó bẹ̀rẹ̀?",
-        faq_a_4: "Ààyè sí hosting/domain (tàbí ìpinnu láti rí i gbà), àwọn èròjà àmì-ọjà tí o ti ní, àti ọ̀rọ̀ kúkúrú nípa ohun tí ojúlé náà nílò láti ṣe. Mo lè ràn ọ́ lọ́wọ́ láti kún àwọn àlàfo yòókù láti ibẹ̀."
+        faq_a_4: "Ààyè sí hosting/domain (tàbí ìpinnu láti rí i gbà), àwọn èròjà àmì-ọjà tí o ti ní, àti ọ̀rọ̀ kúkúrú nípa ohun tí ojúlé náà nílò láti ṣe. Mo lè ràn ọ́ lọ́wọ́ láti kún àwọn àlàfo yòókù láti ibẹ̀.",
+        about_meet: "Pàdé",
+        about_build_text: "Mo máa ń kọ́, ṣe àtúnṣe àti bójútó àwọn ojúlé fún àwọn iṣẹ́, àjọ àti àwọn ọjà dígítà.",
+        about_work_text: "Iṣẹ́ mi wà láàrin ìmúṣẹ wíwo àti ìmọ̀-ẹ̀rọ amúlò. Mo mọ bí a ṣe ń ṣiṣẹ́ nínú WordPress àti page builders, lẹ́yìn náà kí n wọ inú PHP, JavaScript àti CSS nígbà tí ìṣòro náà bá nílò ju ohun tí visual editor lè ṣe lọ.",
+        about_bio_text: "Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àti bíbójútó àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        magic_heading: "Jẹ́ ká ṣẹ̀dá idán ojúlé.",
+        magic_text: "Ohunkóhun tí ìbéèrè náà bá jẹ́ — WordPress tuntun, ilé ìtajà e-commerce, tàbí ọjà dígítà tí ó nílò láti dà bí ẹni tí ó wà láàyè — màá fẹ́ràn láti ran ọ́ lọ́wọ́ láti kọ́ ọ.",
+        start_project_btn: "Bẹ̀rẹ̀ iṣẹ́ kan",
+        experience_heading: "Ìrírí", education_heading: "Ẹ̀kọ́", toolkit_heading: "Àwọn Irinṣẹ́",
+        certifications_heading: "Àwọn Ẹ̀rí", designer_award_heading: "Oníṣẹ́-aṣàpẹẹrẹ Ọdún",
+        testimonials_heading: "Ọ̀rọ̀ Wọn", archive_heading: "Àkójọpọ̀ Ti Ara Ẹni",
+        view_credentials_btn: "Wo Àwọn Ẹ̀rí", view_cv_btn: "Wo CV", view_full_cv_btn: "Wo CV Kíkún", view_pdf_btn: "Wo PDF",
+        works_heading: "Iṣẹ́", all_works_btn: "Gbogbo Iṣẹ́", more_about_btn: "Kàwé síwájú sí mi",
+        credentials_heading: "Àwọn Ẹ̀rí", contact_heading: "Kàn Sí Mi",
+        contact_tagline: "Jẹ́ ká ṣiṣẹ́ papọ̀.",
+        contact_sub: "Ṣé o ní ojúlé, e-commerce, ìṣòro WordPress tàbí ọjà dígítà lọ́kàn? Sọ ohun tí o ń ṣiṣẹ́ lé e fún mi, màá dá ọ padà láàrin ọjọ́ kan tàbí méjì.",
+        contact_label_email: "Imeèlì", contact_label_phone: "Fóònù", contact_label_location: "Ibùdó",
+        footer_socials_heading: "Àwùjọ", footer_nav_heading: "Ìtọ́sọ́nà",
+        footer_privacy: "Àṣírí", footer_cookies: "Kúkì", footer_sitemap: "Àwòrán Ojúlé",
+        footer_whats_next: "Kí ni ó kàn?",
+        sitemap_sub: "Gbogbo ojú-ewé lórí ojúlé yìí, ní ibì kan.",
+        sitemap_main_pages: "Àwọn Ojú-Ewé Pàtàkì", sitemap_legal: "Òfin",
+        privacy_heading: "Ìlànà Àṣírí", cookies_heading: "Ìlànà Kúkì",
+        fact_client: "Oníbàárà", fact_category: "Ẹ̀ka", fact_services: "Iṣẹ́", fact_year: "Ọdún",
+        live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
@@ -130,30 +180,111 @@
         faq_q_3: "Kana aiki da abokan ciniki daga nesa?",
         faq_a_3: "E, kowane aiki a cikin wannan portfolio an kai shi daga nesa, ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
         faq_q_4: "Me kake bukata daga gare ni mu fara?",
-        faq_a_4: "Shiga cikin hosting/domain (ko shiri na samunsa), duk wasu kayan alama da ka riga ka samu, da ɗan taƙaitaccen bayani game da abin da shafin yake bukata ya yi. Zan iya taimaka cike giɓi daga nan."
+        faq_a_4: "Shiga cikin hosting/domain (ko shiri na samunsa), duk wasu kayan alama da ka riga ka samu, da ɗan taƙaitaccen bayani game da abin da shafin yake bukata ya yi. Zan iya taimaka cike giɓi daga nan.",
+        about_meet: "Haɗu da",
+        about_build_text: "Ina ginawa, daidaitawa da kula da shafukan yanar gizo don kasuwanci, ƙungiyoyi da kayayyakin dijital.",
+        about_work_text: "Aikina yana tsakanin aiwatar da gani da injiniyanci mai amfani. Ina jin daɗin yin aiki a cikin WordPress da page builders, sannan in shiga PHP, JavaScript da CSS idan matsalar ta bukaci fiye da abin da visual editor zai iya yi.",
+        about_bio_text: "Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen ginawa da kula da kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        magic_heading: "Bari mu ƙirƙiri sihirin shafin yanar gizo.",
+        magic_text: "Duk abin da buƙatar take — sabon shirin WordPress, kantin e-commerce, ko kayan dijital da yake bukatar jin rai — zan so in taimaka gina shi.",
+        start_project_btn: "Fara aiki",
+        experience_heading: "Gogewa", education_heading: "Ilimi", toolkit_heading: "Kayan Aiki",
+        certifications_heading: "Takardun Shaida", designer_award_heading: "Mai Zane Na Shekara",
+        testimonials_heading: "Abin Da Suka Ce", archive_heading: "Tarin Hotuna Na Kai",
+        view_credentials_btn: "Duba Takardun Shaida", view_cv_btn: "Duba CV", view_full_cv_btn: "Duba Cikakken CV", view_pdf_btn: "Duba PDF",
+        works_heading: "Ayyuka", all_works_btn: "Dukkan Ayyuka", more_about_btn: "Ƙarin bayani game da ni",
+        credentials_heading: "Takardun Shaida", contact_heading: "Tuntuɓe Ni",
+        contact_tagline: "Bari mu gina wani abu tare.",
+        contact_sub: "Kana da shafin yanar gizo, kantin e-commerce, matsalar WordPress ko kayan dijital a zuciya? Gaya mani abin da kake aiki akai, zan amsa maka cikin kwana ɗaya ko biyu.",
+        contact_label_email: "Imel", contact_label_phone: "Waya", contact_label_location: "Wuri",
+        footer_socials_heading: "Hanyoyin Sada Zumunta", footer_nav_heading: "Kewayawa",
+        footer_privacy: "Sirri", footer_cookies: "Cookies", footer_sitemap: "Taswirar Shafi",
+        footer_whats_next: "Mene ne na gaba?",
+        sitemap_sub: "Kowane shafi a wannan gidan yanar gizo, a wuri ɗaya.",
+        sitemap_main_pages: "Manyan Shafuka", sitemap_legal: "Shari'a",
+        privacy_heading: "Manufar Sirri", cookies_heading: "Manufar Cookies",
+        fact_client: "Abokin Ciniki", fact_category: "Rukuni", fact_services: "Ayyuka", fact_year: "Shekara",
+        live_site_btn: "Shafin Yanar Gizo"
+      },
+      fr: {
+        nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
+        gate_eyebrow: "Avant de décoller", gate_headline: "Attachez votre ceinture — vous allez ressentir ce que je peux construire.",
+        gate_subtext: "Oui ou non, le Capitaine (c'est moi) attend la confirmation d'embarquement.",
+        gate_yes: "Oui, attachez-moi", gate_no: "Non, je vais marcher",
+        hero_tagline: "Salut ! Je suis Développeur Web Full-Stack & Designer Web avec plus de 5 ans d'expérience dans la création de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        hero_badge: "Disponible pour travailler",
+        featured_heading: "Projets Phares", services_heading: "Services",
+        about_heading: "À propos", about_intro: "Je suis Développeur Web Full-Stack et Designer Web qui aime le moment où un design cesse d'être une image pour devenir un produit fonctionnel.",
+        faq_heading: "FAQ",
+        footer_cta_heading: "Travaillons ensemble.",
+        footer_cta_sub: "Vous avez un projet WordPress, une boutique e-commerce ou un produit numérique en tête ? Parlons-en.",
+        faq_q_0: "Quel est le délai habituel d'un projet ?",
+        faq_a_0: "Cela dépend de l'ampleur du projet. Une landing page ou un site de marque peut être prêt en 1 à 2 semaines, tandis qu'un site WordPress complet, une boutique e-commerce ou un plugin sur mesure prend généralement 3 à 6 semaines, révisions incluses.",
+        faq_q_1: "Travaillez-vous avec des constructeurs de pages WordPress ou du code sur mesure ?",
+        faq_a_1: "Les deux. La plupart des projets démarrent sur Elementor ou un outil similaire pour aller vite, puis passent au PHP, JavaScript et CSS sur mesure partout où le projet a besoin de quelque chose qu'un constructeur de pages ne peut pas faire seul.",
+        faq_q_2: "Pouvez-vous reprendre un site existant ?",
+        faq_a_2: "Oui. Une grande partie du travail présenté dans ce portfolio consiste en maintenance, corrections et nouvelles fonctionnalités ajoutées à des sites que je n'ai pas construits à l'origine.",
+        faq_q_3: "Travaillez-vous avec des clients à distance ?",
+        faq_a_3: "Oui, chaque projet de ce portfolio a été livré à distance, pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        faq_q_4: "De quoi avez-vous besoin de ma part pour commencer ?",
+        faq_a_4: "L'accès à l'hébergement/domaine (ou un plan pour l'obtenir), tous les éléments de marque que vous avez déjà, et une courte description de ce que le site doit faire. Je peux aider à combler les lacunes à partir de là.",
+        about_meet: "Rencontrez",
+        about_build_text: "Je construis, personnalise et maintiens des sites web pour des entreprises, des organisations et des produits numériques.",
+        about_work_text: "Mon travail se situe entre la mise en œuvre visuelle et l'ingénierie pratique. Je suis à l'aise avec WordPress et les constructeurs de pages, puis je passe au PHP, JavaScript et CSS quand le problème demande plus qu'un éditeur visuel.",
+        about_bio_text: "Développeur Web Full-Stack et Designer Web avec plus de 5 ans d'expérience dans la création et la maintenance de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        magic_heading: "Créons de la magie web.",
+        magic_text: "Quel que soit le besoin — un nouveau site WordPress, une boutique e-commerce, ou un produit numérique qui doit sembler vivant — j'aimerais vous aider à le construire.",
+        start_project_btn: "Démarrer un projet",
+        experience_heading: "Expérience", education_heading: "Formation", toolkit_heading: "Boîte à outils",
+        certifications_heading: "Certifications", designer_award_heading: "Designer De L'Année",
+        testimonials_heading: "Leurs Témoignages", archive_heading: "Archives Personnelles",
+        view_credentials_btn: "Voir les qualifications", view_cv_btn: "Voir le CV", view_full_cv_btn: "Voir le CV complet", view_pdf_btn: "Voir le PDF",
+        works_heading: "Travaux", all_works_btn: "Tous les travaux", more_about_btn: "En savoir plus sur moi",
+        credentials_heading: "Qualifications", contact_heading: "Contact",
+        contact_tagline: "Construisons quelque chose ensemble.",
+        contact_sub: "Vous avez un site web, un projet e-commerce, un problème WordPress ou un produit numérique en tête ? Dites-moi sur quoi vous travaillez et je vous répondrai sous un jour ou deux.",
+        contact_label_email: "E-mail", contact_label_phone: "Téléphone", contact_label_location: "Lieu",
+        footer_socials_heading: "Réseaux", footer_nav_heading: "Navigation",
+        footer_privacy: "Confidentialité", footer_cookies: "Cookies", footer_sitemap: "Plan du site",
+        footer_whats_next: "Et maintenant ?",
+        sitemap_sub: "Toutes les pages de ce site, au même endroit.",
+        sitemap_main_pages: "Pages Principales", sitemap_legal: "Mentions Légales",
+        privacy_heading: "Politique de Confidentialité", cookies_heading: "Politique de Cookies",
+        fact_client: "Client", fact_category: "Catégorie", fact_services: "Services", fact_year: "Année",
+        live_site_btn: "Site en ligne"
       }
     };
-    const LABELS = { en: "EN", pcm: "Pidgin", yo: "Yoruba", ha: "Hausa" };
+    // Project names, client names, categories, service/tech tags (WordPress,
+    // Shopify, PHP, etc.), the Toolkit tag list and the full Privacy/Cookie
+    // policy body text are deliberately NOT translated above — they're
+    // proper nouns or technical terms that don't have a meaningful
+    // translation, or (for the legal body copy) too long to hand-translate
+    // reliably across four languages at launch.
+    const LABELS = { en: "EN", pcm: "Pidgin", yo: "Yoruba", ha: "Hausa", fr: "Français" };
     const KEY = 'odLang';
-    const originals = new Map();
-    document.querySelectorAll('[data-i18n]').forEach((el) => originals.set(el, el.textContent));
 
     const apply = (lang) => {
+      const dict = TRANSLATIONS[lang];
+      if (!dict) return;
       document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.dataset.i18n;
-        const dict = TRANSLATIONS[lang];
-        el.textContent = (dict && dict[key]) || originals.get(el);
+        if (dict[key]) el.textContent = dict[key];
       });
-      document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = LABELS[lang] || 'EN'; });
-      document.querySelectorAll('.lang-option').forEach((btn) => {
-        btn.setAttribute('aria-current', btn.dataset.lang === lang ? 'true' : 'false');
-      });
+      // Keep <html lang> honest once real translated text is on the page —
+      // otherwise Chrome's own "Translate this page" can trigger on the
+      // mismatch and silently rewrite everything back to the browser's
+      // preferred language.
+      document.documentElement.lang = lang;
     };
 
     let saved;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
     if (saved && saved !== 'en') apply(saved);
-    else document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = 'EN'; });
+
+    document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = LABELS[saved] || 'EN'; });
+    document.querySelectorAll('.lang-option').forEach((btn) => {
+      btn.setAttribute('aria-current', btn.dataset.lang === (saved || 'en') ? 'true' : 'false');
+    });
 
     document.querySelectorAll('.lang-switcher').forEach((sw) => {
       const toggle = sw.querySelector('.lang-toggle');
@@ -166,8 +297,7 @@
       btn.addEventListener('click', () => {
         const lang = btn.dataset.lang;
         try { localStorage.setItem(KEY, lang); } catch (e) {}
-        apply(lang);
-        btn.closest('.lang-switcher')?.classList.remove('open');
+        location.reload();
       });
     });
     document.addEventListener('click', (e) => {

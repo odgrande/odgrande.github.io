@@ -158,7 +158,7 @@ THEME_TOGGLE_ICON='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20
 def theme_toggle(cls=""):
     return f'<button class="theme-toggle {cls}" type="button" aria-label="Switch between dark and light mode" aria-pressed="false">{THEME_TOGGLE_ICON}</button>'
 
-LANGS=[("en","EN"),("pcm","Pidgin"),("yo","Yoruba"),("ha","Hausa")]
+LANGS=[("en","EN"),("pcm","Pidgin"),("yo","Yoruba"),("ha","Hausa"),("fr","Français")]
 
 def lang_switcher(cls=""):
     options="".join(f'<button class="lang-option" type="button" data-lang="{code}">{esc(label)}</button>' for code,label in LANGS)
@@ -253,10 +253,10 @@ def shell(title,desc,body,canonical="/",show_cta=True):
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">
-<p class="t-md text-center">What's next?</p>
+<p class="t-md text-center" data-i18n="footer_whats_next">What's next?</p>
 <h2 class="h2 text-center cta-rotate" data-i18n="footer_cta_heading">Let's work together.</h2>
 <p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
-<a class="btn" href="/contact/">Start a project</a>
+<a class="btn" href="/contact/"><span data-i18n="start_project_btn">Start a project</span></a>
 </div></section>'''
 
 def socials_list():
@@ -274,9 +274,9 @@ def footer():
     site=CONFIG["site"]
     social_html="".join(f'<li><a href="{esc(u)}" target="_blank" rel="noopener">{esc(t)}</a></li>' for t,u in socials_list())
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
-    nav_html="".join(f'<li><a href="{u}">{esc(t)}</a></li>' for t,u in NAV_LINKS)
-    return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p>Crafted with joy by {esc(site["name"])}</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
+    nav_html="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{esc(t)}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
+    return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
+<div class="footer-bottom"><p>Crafted with joy by {esc(site["name"])}</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -285,9 +285,8 @@ def image_frame(src,alt,cls=""):
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
     return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" loading="lazy"></div></div>'''
 
-def marquee(text):
-    item=f'<span class="marquee-item">{esc(text)}</span>'
-    group=item*6
+def marquee(phrases):
+    group="".join(f'<span class="marquee-item">{esc(p)}</span>' for p in phrases)
     return f'<div class="marquee" aria-hidden="true"><div class="marquee-track">{group}{group}</div></div>'
 
 def masonry_gallery(images,alt,shots=False):
@@ -376,13 +375,14 @@ ALWAYS_EXCLUDE={
 # the studio portrait variant, and a spread of the AltSchool moments — rather
 # than every file in the folder.
 CURATED_ARCHIVE=[
+    "WhatsApp Image 2026-09-29 at 1.25.13 PM.jpeg",
+    "WhatsApp Image 2026-09-29 at 1.25.13.jpeg",
     "IQO_8465-1_optimized.jpg",
     "20250129_092329_optimized.jpg",
     "20250128_095634_optimized.jpg",
     "IMG_20250125_163210_281.jpg",
     "20250129_092347_optimized.jpg",
     "IMG_20250125_163444_645.jpg",
-    "WhatsApp Image 2026-09-29 at 1.25.13 PM.jpeg",
     "IMG_20250125_163806_325.jpg",
 ]
 
@@ -423,7 +423,6 @@ def archive_images():
     return [path_url("assets","personal","images",name) for name in CURATED_ARCHIVE if name in files and name not in exclude]
 
 PERSONAL_FOLDERS=[
-    ("Internship - CareerXpress","CareerXpress Internship"),
     ("ALTSCHOOL - Course","AltSchool Africa"),
     ("OSUN Creative Conference- MEMBER","Osun SDG Creative Conference"),
 ]
@@ -503,16 +502,16 @@ def page_home(projects):
 <a class="btn" href="/contact/"><span data-i18n="hero_badge">Available for work</span></a>
 <h1 class="h1" data-split-text>{esc(site["name"])}</h1>
 </div>
-<div class="hero-photo">{image_frame(hero_portrait,site["name"])}</div>
+<div class="hero-photo">{image_frame(hero_portrait,site["name"],"portrait")}</div>
 </div>
 </section>
 
-{marquee("Full-Stack Developer — Web Designer — WordPress — Shopify — Webflow — React")}
+{marquee(["Full-Stack Developer","Web Designer","WordPress","Shopify","Webflow","React"])}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
 <h2 class="h2 text-center" data-i18n="featured_heading">Featured Works</h2>
 <div class="work-grid">{"".join(work_card(p,home=True) for p in featured)}</div>
-<a class="btn" href="/works/">All Works</a>
+<a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a>
 </section>
 
 <section class="container container-md" data-reveal>
@@ -527,9 +526,9 @@ def page_home(projects):
 <p class="t-xl" data-i18n="about_intro">I'm a Full-Stack Web Developer and Web Designer who enjoys the point where a design stops being a picture and becomes a working product.</p>
 <p class="t-sm">I build, customize and maintain WordPress, WooCommerce and Shopify stores, Webflow sites and custom front-end work for clients across Nigeria, the UK, Canada and the USA.</p>
 <p class="t-sm">When I'm not building for a client, I'm usually improving my own tools, or picking apart a site to see how it was put together.</p>
-<a class="btn" href="/about/">More about me</a>
+<a class="btn" href="/about/"><span data-i18n="more_about_btn">More about me</span></a>
 </div>
-<div class="split-photo">{image_frame(about_portrait,site["name"])}</div>
+<div class="split-photo">{image_frame(about_portrait,site["name"],"portrait")}</div>
 </div>
 </section>
 
@@ -538,7 +537,7 @@ def page_home(projects):
 <div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(reel)}"></video></div>
 </section>''' if reel else ""}
 
-{marquee("Let's Build Something Great — Open For Work")}
+{marquee(["Let's Build Something Great","Open For Work"])}
 
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center" data-i18n="faq_heading">FAQ</h2>
@@ -548,11 +547,11 @@ def page_home(projects):
 
 def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
-<h1 class="h1 text-center">Works</h1>
+<h1 class="h1 text-center" data-i18n="works_heading">Works</h1>
 <p class="t-sm text-center">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
 </section>
 
-{marquee(f"{len(projects)} Projects — 4 Countries — Zero Templates")}
+{marquee([f"{len(projects)} Projects","4 Countries","Zero Templates"])}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
 <div class="work-grid">{"".join(work_card(p) for p in projects)}</div>
@@ -570,9 +569,9 @@ def related_projects(p,projects):
 def page_project(p,projects):
     hero=p["images"][0] if p.get("images") else ""
     rest=p["images"][1:] if p.get("images") else []
-    facts=[("Client",p["client"]),("Category",p["category"]),("Services"," · ".join(p["services"])),("Year",p.get("year",""))]
-    facts_html="".join(f'<div class="fact"><h4 class="h5">{esc(k)}</h4><p class="t-sm">{esc(v)}</p></div>' for k,v in facts)
-    live_btn=f'<a class="btn" href="{esc(p["liveSite"])}" target="_blank" rel="noopener">Live Site</a>' if p.get("liveSite") else ""
+    facts=[("Client","fact_client",p["client"]),("Category","fact_category",p["category"]),("Services","fact_services"," · ".join(p["services"])),("Year","fact_year",p.get("year",""))]
+    facts_html="".join(f'<div class="fact"><h4 class="h5" data-i18n="{k_i18n}">{esc(k)}</h4><p class="t-sm">{esc(v)}</p></div>' for k,k_i18n,v in facts)
+    live_btn=f'<a class="btn" href="{esc(p["liveSite"])}" target="_blank" rel="noopener"><span data-i18n="live_site_btn">Live Site</span></a>' if p.get("liveSite") else ""
     video_html=""
     if p.get("videos"):
         video_html="".join(f'<div class="project-video"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(v)}"></video></div>' for v in p["videos"])
@@ -585,7 +584,7 @@ def page_project(p,projects):
 <div style="max-width:48rem"><p class="t-xl">{esc(p["description"])}</p></div>
 {video_html}
 {gallery}
-<a class="btn" href="/works/">All Works</a>
+<a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a>
 </section>
 {related_projects(p,projects)}'''
     return shell(p["title"],p["description"],body,f'/works/{p["slug"]}/')
@@ -606,15 +605,15 @@ def page_about():
     quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))
     video_html=f'<div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(video)}"></video></div>' if video else ""
     body=f'''<section class="container container-xl" data-reveal>
-<h1 class="h1 text-center">Meet {esc(site["name"].split()[0])}</h1>
+<h1 class="h1 text-center"><span data-i18n="about_meet">Meet</span> {esc(site["name"].split()[0])}</h1>
 {f'<div class="magic-hero">{image_frame(magic_hero,"Let\'s create magic together")}</div>' if magic_hero else ""}
 <div class="split">
 <div class="split-copy">
-<p class="t-xl">I build, customize and maintain websites for businesses, organizations and digital products.</p>
-<p class="t-sm">My work sits between visual implementation and practical engineering. I am comfortable working inside WordPress and page builders, then dropping into PHP, JavaScript and CSS when the problem needs more than a visual editor.</p>
-<p class="t-sm">Full-Stack Web Developer and Web Designer with 5+ years of experience building and maintaining digital products for clients across Nigeria, the UK, Canada and the USA.</p>
+<p class="t-xl" data-i18n="about_build_text">I build, customize and maintain websites for businesses, organizations and digital products.</p>
+<p class="t-sm" data-i18n="about_work_text">My work sits between visual implementation and practical engineering. I am comfortable working inside WordPress and page builders, then dropping into PHP, JavaScript and CSS when the problem needs more than a visual editor.</p>
+<p class="t-sm" data-i18n="about_bio_text">Full-Stack Web Developer and Web Designer with 5+ years of experience building and maintaining digital products for clients across Nigeria, the UK, Canada and the USA.</p>
 </div>
-<div class="split-photo">{image_frame(portrait,site["name"])}</div>
+<div class="split-photo">{image_frame(portrait,site["name"],"portrait")}</div>
 </div>
 </section>
 
@@ -624,93 +623,93 @@ def page_about():
 <div class="split split-reverse">
 <div class="split-photo">{image_frame(magic_standing,"Let's create website magic")}</div>
 <div class="split-copy">
-<p class="t-xl">Let's create website magic.</p>
-<p class="t-sm">Whatever the brief — a brand-new WordPress build, an e-commerce store, or a digital product that needs to feel alive — I'd love to help build it.</p>
-<a class="btn" href="/contact/">Start a project</a>
+<p class="t-xl" data-i18n="magic_heading">Let's create website magic.</p>
+<p class="t-sm" data-i18n="magic_text">Whatever the brief — a brand-new WordPress build, an e-commerce store, or a digital product that needs to feel alive — I'd love to help build it.</p>
+<a class="btn" href="/contact/"><span data-i18n="start_project_btn">Start a project</span></a>
 <div class="social-row">{"".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" class="link-inline">{esc(t)}</a>' for t,u in socials_list())}</div>
 </div>
 </div>
 </section>''' if magic_standing else ""}
 
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Experience</h2>
+<h2 class="h2 text-center" data-i18n="experience_heading">Experience</h2>
 {experience}
 </section>
 
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Education</h2>
+<h2 class="h2 text-center" data-i18n="education_heading">Education</h2>
 {education}
 </section>
 
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Toolkit</h2>
+<h2 class="h2 text-center" data-i18n="toolkit_heading">Toolkit</h2>
 <div class="tag-list">{tags}</div>
 </section>
 
 {f'''<section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Certifications</h2>
+<h2 class="h2 text-center" data-i18n="certifications_heading">Certifications</h2>
 <div class="tag-list">{certs}</div>
 </section>''' if certs else ""}
 
 {f'''<section class="container container-md" data-reveal>
-<div class="credential-single">{image_frame(second_award,"Designer Of The Year award")}<h3 class="h5 text-center">Designer Of The Year</h3></div>
+<div class="credential-single">{image_frame(second_award,"Designer Of The Year award")}<h3 class="h5 text-center" data-i18n="designer_award_heading">Designer Of The Year</h3></div>
 </section>''' if second_award else ""}
 
 {f'''<section class="container container-xl" data-reveal>
-<h2 class="h2 text-center">In Their Words</h2>
+<h2 class="h2 text-center" data-i18n="testimonials_heading">In Their Words</h2>
 <div class="testimonial-grid">{quotes}</div>
 {video_html}
 </section>''' if quotes or video else ""}
 
 <section class="container container-xl" data-reveal>
-<h2 class="h2 text-center">Personal Archive</h2>
+<h2 class="h2 text-center" data-i18n="archive_heading">Personal Archive</h2>
 {gallery}
 {sliders}
 <div class="gate-actions" style="justify-content:center">
-<a class="btn" href="/credentials/">View Credentials</a>
-<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View CV</a>
+<a class="btn" href="/credentials/"><span data-i18n="view_credentials_btn">View Credentials</span></a>
+<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener"><span data-i18n="view_cv_btn">View CV</span></a>
 </div>
 </section>'''
     return shell("About",f"About {site['name']}, Full-Stack Web Developer and Web Designer.",body,"/about/")
 
 def page_credentials():
     a=awards()
-    award_html=f'<div class="credential-single">{image_frame(a[0],"Designer Of The Year award")}<h3 class="h5 text-center">Designer Of The Year</h3></div>' if a else '<p class="t-sm text-center">No award image yet.</p>'
+    award_html=f'<div class="credential-single">{image_frame(a[0],"Designer Of The Year award")}<h3 class="h5 text-center" data-i18n="designer_award_heading">Designer Of The Year</h3></div>' if a else '<p class="t-sm text-center">No award image yet.</p>'
     cert_cards=""
     for org,name,url,pdf in CONFIG.get("certifications",[]):
-        pdf_link=f'<a class="t-xsm link-inline" href="{esc(pdf)}" target="_blank" rel="noopener">View PDF</a>' if pdf else ""
+        pdf_link=f'<a class="t-xsm link-inline" href="{esc(pdf)}" target="_blank" rel="noopener"><span data-i18n="view_pdf_btn">View PDF</span></a>' if pdf else ""
         cert_cards+=f'<div class="contact-item"><div class="row"><span class="t-lg">{esc(org)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div><a class="t-sm link-inline" href="{esc(url or "#")}" target="_blank" rel="noopener">{esc(name)}</a>{pdf_link}</div>'
     body=f'''<section class="container container-md" data-reveal>
-<h1 class="h1 text-center">Credentials</h1>
+<h1 class="h1 text-center" data-i18n="credentials_heading">Credentials</h1>
 {award_html}
 </section>
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Certifications</h2>
+<h2 class="h2 text-center" data-i18n="certifications_heading">Certifications</h2>
 <div class="contact-grid">{cert_cards}</div>
 <div class="gate-actions" style="justify-content:center;margin-top:2rem">
-<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View Full CV</a>
+<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener"><span data-i18n="view_full_cv_btn">View Full CV</span></a>
 </div>
 </section>'''
     return shell("Credentials","Credentials and recognition archive.",body,"/credentials/")
 
 def page_contact():
     site=CONFIG["site"]
-    items=[("Email",site["email"],f'mailto:{site["email"]}')]
-    if site.get("phone"):items.append(("Phone",site["phone"],f'tel:{site["phone"]}'))
-    if site.get("location"):items.append(("Location",site["location"],None))
+    items=[("Email","contact_label_email",site["email"],f'mailto:{site["email"]}')]
+    if site.get("phone"):items.append(("Phone","contact_label_phone",site["phone"],f'tel:{site["phone"]}'))
+    if site.get("location"):items.append(("Location","contact_label_location",site["location"],None))
     for label,url in socials_list():
-        items.append((label.title(),url,url))
+        items.append((label.title(),None,url,url))
     cards="".join(
-        f'<div class="contact-item"><div class="row"><span class="t-lg">{esc(k)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div>'
+        (lambda attr: f'<div class="contact-item"><div class="row"><span class="t-lg"{attr}>{esc(k)}</span><img src="/assets/theme/symbol-white.svg" alt=""></div><div class="divider"></div>'
         + (f'<a class="t-sm link-inline" href="{esc(href)}" target="_blank" rel="noopener">{esc(v)}</a>' if href else f'<p class="t-sm">{esc(v)}</p>')
-        + '</div>'
-        for k,v,href in items
+        + '</div>')(f' data-i18n="{k_i18n}"' if k_i18n else '')
+        for k,k_i18n,v,href in items
     )
     body=f'''<section class="container container-xl text-center" style="align-items:center" data-reveal>
-<h1 class="h1">Contact</h1>
+<h1 class="h1" data-i18n="contact_heading">Contact</h1>
 <div style="max-width:44rem;display:flex;flex-direction:column;gap:1rem">
-<p class="t-xl">Let's build something together.</p>
-<p class="t-sm">Have a website, e-commerce build, WordPress problem or digital product in mind? Tell me what you're working on and I'll get back to you within a day or two.</p>
+<p class="t-xl" data-i18n="contact_tagline">Let's build something together.</p>
+<p class="t-sm" data-i18n="contact_sub">Have a website, e-commerce build, WordPress problem or digital product in mind? Tell me what you're working on and I'll get back to you within a day or two.</p>
 </div>
 </section>
 <section class="container container-md">
@@ -718,13 +717,14 @@ def page_contact():
 </section>'''
     return shell("Contact",f"Contact {site['name']} for WordPress development, e-commerce and digital product work.",body,"/contact/",show_cta=False)
 
-def legal_page(title,desc,canonical,sections):
+def legal_page(title,desc,canonical,sections,i18n_key=None):
     body_sections="".join(
         f'<div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">{esc(h)}</h2><p class="t-sm">{p}</p></div>'
         for h,p in sections
     )
+    title_attr=f' data-i18n="{i18n_key}"' if i18n_key else ""
     body=f'''<section class="container container-md" data-reveal>
-<h1 class="h1 text-center">{esc(title)}</h1>
+<h1 class="h1 text-center"{title_attr}>{esc(title)}</h1>
 <p class="t-sm text-center" style="color:var(--muted)">Last updated October 2026.</p>
 <div style="display:flex;flex-direction:column;gap:2.5rem;margin-top:1rem">{body_sections}</div>
 </section>'''
@@ -740,7 +740,7 @@ def page_privacy():
         ("Hosting","This site is hosted on GitHub Pages. GitHub may keep standard server access logs (such as IP address and request time) as part of operating its hosting infrastructure; that is governed by GitHub's own privacy policy, not this one, since this site has no access to those logs."),
         ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
     ]
-    return legal_page("Privacy Policy",f"Privacy policy for {site['name']}'s portfolio site.","/privacy/",sections)
+    return legal_page("Privacy Policy",f"Privacy policy for {site['name']}'s portfolio site.","/privacy/",sections,"privacy_heading")
 
 def page_cookies():
     site=CONFIG["site"]
@@ -748,14 +748,36 @@ def page_cookies():
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
 <li><code>odTheme</code> — your light/dark mode choice, kept until you change it again (local storage).</li>
+<li><code>odLang</code> — your chosen site language, kept until you change it again (local storage).</li>
 <li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
 <li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>
+<li><code>odExitSeen</code> — whether the exit-intent popup has already shown this session (session storage).</li>
+<li><code>odVisitorGeo</code> — the country/timezone result from the footer's one-time IP lookup, cached for the rest of the session so it isn't requested again (session storage). See the <a class="link-inline" href="/privacy/">Privacy Policy</a> for how that lookup works.</li>
 </ul>'''),
         ("Third parties","Fonts are loaded from Google Fonts, and the animation libraries (GSAP, Three.js) are loaded from the cdnjs CDN. Both may see a standard request (your IP address, browser user-agent) as part of serving those files, the same as any site that loads a web font or script from a CDN — this site doesn't add any tracking on top of that."),
         ("Your control","Clearing your browser's site data for odgrande.github.io removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end."),
         ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
     ]
-    return legal_page("Cookie Policy",f"Cookie and local storage policy for {site['name']}'s portfolio site.","/cookies/",sections)
+    return legal_page("Cookie Policy",f"Cookie and local storage policy for {site['name']}'s portfolio site.","/cookies/",sections,"cookies_heading")
+
+def page_sitemap(projects):
+    site=CONFIG["site"]
+    def col(heading,i18n_key,links):
+        items="".join(f'<li><a class="link-inline" href="{u}">{esc(t)}</a></li>' for t,u in links)
+        return f'<div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h5" data-i18n="{i18n_key}">{esc(heading)}</h2><ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem">{items}</ul></div>'
+    main_pages=[("Home","/"),("Works","/works/"),("About","/about/"),("Credentials","/credentials/"),("Contact","/contact/")]
+    legal_pages=[("Privacy Policy","/privacy/"),("Cookie Policy","/cookies/"),("Sitemap","/sitemap/")]
+    project_links=[(p["title"],f'/works/{p["slug"]}/') for p in projects]
+    body=f'''<section class="container container-md" data-reveal>
+<h1 class="h1 text-center" data-i18n="footer_sitemap">Sitemap</h1>
+<p class="t-sm text-center" style="color:var(--muted)" data-i18n="sitemap_sub">Every page on this site, in one place.</p>
+<div style="display:flex;flex-direction:column;gap:2.5rem;margin-top:1rem">
+{col("Main Pages","sitemap_main_pages",main_pages)}
+{col("Works","works_heading",project_links)}
+{col("Legal","sitemap_legal",legal_pages)}
+</div>
+</section>'''
+    return shell("Sitemap",f"Full page listing for {site['name']}'s portfolio site.",body,"/sitemap/",show_cta=False)
 
 def main():
     projects=scan_projects();copy_assets()
@@ -769,6 +791,7 @@ def main():
     (SITE/"contact").mkdir();(SITE/"contact"/"index.html").write_text(page_contact(),encoding="utf-8")
     (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
     (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
+    (SITE/"sitemap").mkdir();(SITE/"sitemap"/"index.html").write_text(page_sitemap(projects),encoding="utf-8")
     print(f"Built {len(projects)} projects")
 
 if __name__=="__main__":main()
