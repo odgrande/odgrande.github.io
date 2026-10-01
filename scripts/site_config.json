@@ -23,10 +23,11 @@
     ["Webflow & Framer", "No-code/low-code builds on Webflow and Framer for clients who need speed without giving up design control."]
   ],
   "capabilities": [
-    "HTML5", "CSS3", "JavaScript", "React", "PHP", "Liquid", "Node.js", "REST APIs",
+    "HTML5", "CSS3", "JavaScript", "React", "PHP", "Python", "Django", "Liquid", "Node.js", "REST APIs",
+    "Neon", "PostgreSQL", "Vercel",
     "WordPress", "WooCommerce", "Shopify", "Webflow", "Framer", "Elementor",
     "Stripe", "Moneris", "FunnelKit", "Apple Pay", "Google Pay",
-    "Figma", "UI/UX", "Graphic Design", "Visual Identity", "Adobe Suite",
+    "Figma", "UI/UX", "Graphic Design", "Visual Identity", "Adobe Illustrator", "Adobe Photoshop",
     "Claude API", "AI Chat Interfaces", "Email Automation", "MailOptin"
   ],
   "faq": [
@@ -45,7 +46,8 @@
     ["Senior Website Designer", "The 234 Project Foundation", "May 2022 - Present", "Designed and continue to maintain the foundation's digital presence since 2022, structuring content and interfaces around its community outreach programmes."],
     ["Lead Web Designer", "Daffodils Africa", "Sep 2023 - Present", "Built and continue to maintain a purpose-built website for an Africa-focused organisation, shaping its online identity around its broader mission."],
     ["Lead Digital Designer", "OrangeBee Money Global", "Mar 2020 - May 2025", "Led digital design for a US-based fintech company over a five-year engagement, managing its website, visual identity and digital marketing assets."],
-    ["Freelance Web Developer", "Upwork", "May 2021 - Present", "Delivered web development and design projects for international clients across multiple industries, handling everything from brief through implementation, revisions and deployment."]
+    ["Freelance Web Developer", "Upwork", "May 2021 - Present", "Delivered web development and design projects for international clients across multiple industries, handling everything from brief through implementation, revisions and deployment."],
+    ["Senior Content Editor", "Reterdeen", "Jan 2019 - Aug 2020", "Based in Lagos, Nigeria. Joined a 6-person editorial team as an editor and was promoted to Senior Editor within a month, going on to lead the team, oversee editorial content strategy from concept to publication across written and visual formats, and mentor and manage the junior editorial staff, driving consistency and quality across all output."]
   ],
   "education": [
     ["Diploma in Cloud Engineering", "AltSchoolAfrica.com", "In-view", ""],
@@ -66,7 +68,7 @@
     {"quote":"I just wanted to say a big thank you for delivering the Youzed Interiors website. We've reviewed everything, and we're really impressed with the final result. The site looks amazing, clean, modern and perfectly captures our brand and the kind of spaces we create. The whole process was smooth and professional from start to finish.","name":"Uzo","company":"Founder, Youzed Interiors"}
   ],
   "projects": {
-    "cultur-fm-main-project": {"title":"CULTUR FM","client":"CULTUR FM","location":"London, UK","category":"WordPress Development","services":["WordPress","Elementor","WooCommerce","Custom Ticketing Plugin","SoundCloud"],"year":"2024-2026","featured":true,"heroImage":"CULTUR-FM-09-29-2026_02_09_PM.png","liveSite":"https://cultur.fm/","description":"Official CULTUR FM digital platform: homepage, events, mixes, ticketing and a bespoke WordPress ticketing plugin with QR-code generation, PDF tickets, Stripe integration and progressive pricing."},
+    "cultur-fm-main-project": {"title":"CULTUR FM","client":"CULTUR FM","location":"London, UK","category":"WordPress Development","services":["WordPress","Elementor","WooCommerce","Custom Ticketing Plugin","Custom Webhook Plugin","Custom Waitlist & Signup Plugin","SoundCloud"],"year":"2024-2026","featured":true,"heroImage":"CULTUR-FM-09-29-2026_02_09_PM.png","liveSite":"https://cultur.fm/","description":"Official CULTUR FM digital platform: homepage, events, mixes, ticketing and a bespoke WordPress ticketing plugin with QR-code generation, PDF tickets, Stripe integration and progressive pricing — plus a custom webhook plugin that automates form-drop submissions straight into Excel, and a custom waitlist & sign-up plugin."},
     "cultur-totes-project": {"title":"CULTUR FM Totes","client":"CULTUR FM","location":"London, UK","category":"E-commerce","services":["WooCommerce","E-commerce","Product UI"],"year":"2026","featured":true,"heroImage":"Single project page hero.png","featuredImage":"Featured image home page.png","liveSite":"https://cultur.fm/totes/","description":"E-commerce storefront for CULTUR FM's limited-edition Face Totes merchandise, built as part of the brand's wider digital platform."},
     "youzed-project": {"title":"Youzed Interiors","client":"Youzed Interiors","category":"Web & Brand Design","services":["Web Design","WordPress","Client Delivery"],"year":"2026","featured":true,"heroImage":"YouZed-Interiors-09-30-2026_02_53_PM.png","featuredImage":"Featured image on home page.png","description":"Website design and delivery for Youzed Interiors, an interior design business, from brief through a handed-over, client-approved site."},
     "1seven4-project": {"title":"1seven4","client":"1seven4","location":"UK","category":"Web Development","services":["WordPress","DJ Management Site"],"year":"2026","featured":false,"heroImage":"HEro..Home.png","description":"Website for a UK-based DJ management and artist development company."},

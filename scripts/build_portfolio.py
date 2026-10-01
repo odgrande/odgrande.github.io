@@ -130,7 +130,7 @@ def copy_assets():
     theme=ASSETS/"theme"
     if theme.exists():shutil.copytree(theme,SITE/"assets"/"theme",dirs_exist_ok=True)
     public=ROOT/"public"
-    for n in ("favicon.svg","og-image.png","odunayo-bolarinwa-portfolio.pdf"):
+    for n in ("favicon.svg","og-image.png","odunayo-bolarinwa-portfolio.pdf","odunayo-bolarinwa-cv.pdf"):
         f=public/n
         if f.exists():shutil.copy2(f,SITE/n)
     (SITE/"assets"/"css").mkdir(parents=True);(SITE/"assets"/"js").mkdir(parents=True)
@@ -216,7 +216,7 @@ def exit_popup():
 <button class="exit-close" id="exitClose" type="button" aria-label="Close">&times;</button>
 <div class="exit-question" id="exitQuestion">
 <p class="t-md">Hold up — don't go yet</p>
-<h2 class="t-lg">Leaving without dropping your genius idea here is basically a crime against innovation.</h2>
+<h2 class="t-xl">Leaving without dropping your genius idea here is basically a crime against innovation.</h2>
 <p class="t-sm" style="color:var(--muted)">(Not a real crime. Please don't call the police.) Tell me what you're dreaming up — a website, an app, a wild 2am idea — and I'll turn it into something real.</p>
 <div class="gate-actions">
 <button class="btn" id="exitOpenForm" type="button">Okay, take my idea</button>
@@ -273,10 +273,16 @@ def image_frame(src,alt,cls=""):
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
     return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" loading="lazy"></div></div>'''
 
-def masonry_gallery(images,alt):
+def marquee(text):
+    item=f'<span class="marquee-item">{esc(text)}</span>'
+    group=item*6
+    return f'<div class="marquee" aria-hidden="true"><div class="marquee-track">{group}{group}</div></div>'
+
+def masonry_gallery(images,alt,shots=False):
     if not images:return ""
     items="".join(f'<div class="masonry-item"><img src="{esc(x)}" alt="{esc(alt)}" loading="lazy"></div>' for x in images)
-    return f'<div class="masonry">{items}</div>'
+    cls="masonry masonry-shots" if shots else "masonry"
+    return f'<div class="{cls}">{items}</div>'
 
 def bottom_mark():
     return '<div class="bottom-mark"><img class="symbol" src="/assets/theme/symbol-white.svg" alt=""><img class="barcode" src="/assets/theme/barcode.svg" alt=""></div>'
@@ -364,10 +370,7 @@ CURATED_ARCHIVE=[
     "20250129_092347_optimized.jpg",
     "IMG_20250125_163444_645.jpg",
     "WhatsApp Image 2026-09-29 at 1.25.13 PM.jpeg",
-    "20250129_092335_optimized.jpg",
     "IMG_20250125_163806_325.jpg",
-    "20250129_092352_optimized.jpg",
-    "IMG_20250125_164016_488.jpg",
 ]
 
 def resolve_dir(name):
@@ -462,6 +465,8 @@ def page_home(projects):
 </div>
 </section>
 
+{marquee("Full-Stack Developer — Web Designer — WordPress — Shopify — Webflow — React")}
+
 <section class="container container-lg" style="align-items:center" data-reveal>
 <h2 class="h2 text-center">Featured Works</h2>
 <div class="work-grid">{"".join(work_card(p,home=True) for p in featured)}</div>
@@ -491,6 +496,8 @@ def page_home(projects):
 <div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(reel)}"></video></div>
 </section>''' if reel else ""}
 
+{marquee("Let's Build Something Great — Open For Work")}
+
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center">FAQ</h2>
 {faq}
@@ -501,6 +508,11 @@ def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">Works</h1>
 <p class="t-sm text-center">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
+</section>
+
+{marquee(f"{len(projects)} Projects — 4 Countries — Zero Templates")}
+
+<section class="container container-lg" style="align-items:center" data-reveal>
 <div class="work-grid">{"".join(work_card(p) for p in projects)}</div>
 </section>'''
     return shell("Works","Websites, e-commerce builds, digital products, plugins and brand projects.",body,"/works/")
@@ -522,7 +534,7 @@ def page_project(p,projects):
     video_html=""
     if p.get("videos"):
         video_html="".join(f'<div class="project-video"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(v)}"></video></div>' for v in p["videos"])
-    gallery=masonry_gallery(rest,p["title"])
+    gallery=masonry_gallery(rest,p["title"],shots=True)
     body=f'''<section class="container container-xl" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">{esc(p["title"])}</h1>
 <div class="hero-media" style="width:100%">{image_frame(hero,p["title"])}</div>
@@ -610,7 +622,10 @@ def page_about():
 <section class="container container-xl" data-reveal>
 <h2 class="h2 text-center">Personal Archive</h2>
 {gallery}
+<div class="gate-actions" style="justify-content:center">
 <a class="btn" href="/credentials/">View Credentials</a>
+<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View CV</a>
+</div>
 </section>'''
     return shell("About",f"About {site['name']}, Full-Stack Web Developer and Web Designer.",body,"/about/")
 
@@ -628,6 +643,9 @@ def page_credentials():
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center">Certificates</h2>
 <div class="contact-grid">{cert_cards}</div>
+<div class="gate-actions" style="justify-content:center;margin-top:2rem">
+<a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View Full CV</a>
+</div>
 </section>'''
     return shell("Credentials","Credentials and recognition archive.",body,"/credentials/")
 

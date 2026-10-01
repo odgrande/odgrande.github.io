@@ -229,6 +229,11 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .masonry-item{break-inside:avoid;margin-bottom:1rem;border:2px solid var(--paper);overflow:hidden;cursor:zoom-in}
 .masonry-item img{width:100%;height:auto;display:block;filter:var(--img-rest);transition:filter .6s ease,transform .5s ease}
 .masonry-item:hover img{filter:var(--img-hover);transform:scale(1.02)}
+/* Project-screenshot galleries (full-page site captures, wildly varying raw
+   heights) get a capped crop so the grid reads as neat tiles rather than a
+   few towering columns next to short ones — the personal photo archive's
+   masonry (true variable-aspect photos) is untouched. */
+.masonry-shots .masonry-item img{max-height:420px;object-fit:cover;object-position:top}
 
 /* legacy gallery grid still used where a uniform crop genuinely reads better */
 .gallery-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
@@ -306,6 +311,17 @@ html.gate-skip #gate{display:none}
 .gate-feedback textarea{min-height:110px;resize:vertical}
 .gate-feedback textarea:focus,.gate-feedback input:focus{outline:2px solid var(--muted);outline-offset:2px}
 .gate-feedback::placeholder{color:var(--muted)}
+
+/* ============ MARQUEE ============
+   Full-bleed slanted scrolling ticker. The track holds two identical copies
+   of the phrase group back to back, so animating translateX from 0 to -50%
+   loops with no visible seam. Always rendered in the fixed paper/ink tokens
+   so the band reads the same in light or dark theme. */
+.marquee{width:100vw;margin:2.5rem 0;margin-left:calc(50% - 50vw);overflow:hidden;background:var(--paper-fixed);border-top:2px solid var(--ink-fixed);border-bottom:2px solid var(--ink-fixed);transform:rotate(-2deg);padding:.85rem 0}
+.marquee-track{display:flex;width:max-content;animation:marquee-scroll 26s linear infinite}
+.marquee-item{font-family:var(--grunge);text-transform:uppercase;font-size:clamp(1.2rem,3.2vw,2.1rem);letter-spacing:.02em;color:var(--ink-fixed);white-space:nowrap;padding:0 1.25rem;display:inline-flex;align-items:center;gap:1.25rem}
+.marquee-item::after{content:"✦";opacity:.6}
+@keyframes marquee-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* COOKIE BANNER */
 #cookie-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:300;max-width:34rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between;border:2px solid var(--paper);background:var(--ink);padding:1rem 1.25rem;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .4s ease,transform .4s ease}
@@ -404,4 +420,5 @@ html,body{max-width:100%;overflow-x:clip}
 @media (prefers-reduced-motion: reduce){
     *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
     #preloader{display:none!important}
+    .marquee-track{animation:none!important}
 }
