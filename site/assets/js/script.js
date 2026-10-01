@@ -13,6 +13,100 @@
     trigger?.addEventListener('click', () => item.classList.toggle('open'));
   });
 
+  // ---------- theme toggle (dark default, light on request) ----------
+  (() => {
+    const KEY = 'odTheme';
+    const root = document.documentElement;
+    const apply = (theme) => {
+      if (theme === 'light') root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
+      document.querySelectorAll('.theme-toggle').forEach((btn) => {
+        btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      });
+    };
+    document.querySelectorAll('.theme-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        apply(next);
+        try { localStorage.setItem(KEY, next); } catch (e) {}
+      });
+    });
+  })();
+
+  // ---------- landing gate: a two-way question before the site reveals ----------
+  // Shown once per session, after the preloader clears. "Yes" opens straight
+  // into the site; "No" swaps in a short feedback form (mailto:, since this
+  // is a static site with no backend to receive submissions) with a "take me
+  // in anyway" escape hatch so nobody is actually trapped.
+  (() => {
+    const gate = document.getElementById('gate');
+    if (!gate) return;
+    const KEY = 'odGateSeen';
+    let seen;
+    try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+    if (seen) { gate.remove(); return; }
+
+    const question = document.getElementById('gateQuestion');
+    const feedback = document.getElementById('gateFeedback');
+    const yesBtn = document.getElementById('gateYes');
+    const noBtn = document.getElementById('gateNo');
+    const skipBtn = document.getElementById('gateSkip');
+
+    const markSeen = () => { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
+    const closeGate = () => {
+      markSeen();
+      gate.classList.add('done');
+      if (window.gsap) gsap.to(gate, { opacity: 0, duration: .5, ease: 'power1.out', onComplete: () => gate.remove() });
+      else { gate.style.transition = 'opacity .5s ease'; gate.style.opacity = '0'; setTimeout(() => gate.remove(), 500); }
+    };
+    const showGate = () => {
+      gate.classList.add('show');
+      if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
+    };
+
+    yesBtn?.addEventListener('click', closeGate);
+    skipBtn?.addEventListener('click', closeGate);
+    noBtn?.addEventListener('click', () => {
+      question.style.display = 'none';
+      feedback.classList.add('show');
+      if (window.gsap) gsap.from(feedback, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
+    });
+    feedback?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const to = feedback.dataset.email || '';
+      const reason = feedback.reason.value.trim();
+      const email = feedback.email.value.trim();
+      const subject = encodeURIComponent("Feedback from odgrande.github.io");
+      const bodyLines = [reason, email ? `\nReply to: ${email}` : ''].join('\n');
+      window.location.href = `mailto:${to}?subject=${subject}&body=${encodeURIComponent(bodyLines)}`;
+      closeGate();
+    });
+
+    window.addEventListener('preloader:done', showGate, { once: true });
+  })();
+
+  // ---------- cookie banner: small, shows once per session ----------
+  (() => {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    const KEY = 'odCookieNoticeSeen';
+    let seen;
+    try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+    if (seen) { banner.remove(); return; }
+
+    const dismiss = () => {
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+      banner.classList.remove('show');
+      setTimeout(() => banner.remove(), 400);
+    };
+    banner.querySelector('.cookie-accept')?.addEventListener('click', dismiss);
+    banner.querySelector('.cookie-close')?.addEventListener('click', dismiss);
+
+    const reveal = () => setTimeout(() => banner.classList.add('show'), 600);
+    if (document.getElementById('gate')) window.addEventListener('preloader:done', () => setTimeout(reveal, 900), { once: true });
+    else reveal();
+  })();
+
   // ---------- lightbox ----------
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
@@ -35,12 +129,13 @@
   // in a real page-load signal so the overlay never clears a half-built page.
   (() => {
     const el = document.getElementById('preloader');
-    if (!el) return;
-    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); return; }
+    if (!el) { window.dispatchEvent(new Event('preloader:done')); return; }
+    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); window.dispatchEvent(new Event('preloader:done')); return; }
 
     const finish = () => {
       el.classList.add('done');
       setTimeout(() => el.remove(), 500);
+      window.dispatchEvent(new Event('preloader:done'));
     };
     const failsafe = setTimeout(finish, 6000);
 

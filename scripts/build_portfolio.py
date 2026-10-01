@@ -153,21 +153,58 @@ def head(title,desc,canonical):
 
 NAV_LINKS=[("HOME","/"),("WORKS","/works/"),("ABOUT","/about/"),("CREDENTIALS","/credentials/"),("CONTACT","/contact/")]
 
+THEME_TOGGLE_ICON='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a6 6 0 1 1 0-12a6 6 0 0 1 0 12Zm0-16a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.7.71a1 1 0 1 1-1.41 1.41l-.71-.7a1 1 0 0 1 0-1.42Zm13.44 13.44a1 1 0 0 1 1.42 0l.7.71a1 1 0 1 1-1.41 1.41l-.71-.7a1 1 0 0 1 0-1.42ZM1 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H2a1 1 0 0 1-1-1Zm18 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1ZM4.22 19.78a1 1 0 0 1 0-1.42l.7-.7a1 1 0 1 1 1.42 1.41l-.71.71a1 1 0 0 1-1.41 0Zm13.44-13.44a1 1 0 0 1 0-1.42l.71-.7a1 1 0 1 1 1.41 1.41l-.7.71a1 1 0 0 1-1.42 0Z"/></svg>'
+
+def theme_toggle(cls=""):
+    return f'<button class="theme-toggle {cls}" type="button" aria-label="Switch between dark and light mode" aria-pressed="false">{THEME_TOGGLE_ICON}</button>'
+
 def nav():
     desktop="".join(f'<li><a href="{u}">{i+1}. {t}</a></li>' for i,(t,u) in enumerate(NAV_LINKS))
     mobile="".join(f'<li><a href="{u}">{t}</a></li>' for t,u in NAV_LINKS)
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="M9 16h2V8H9v8Zm4 0h2V8h-2v8Zm-1 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
     menu_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="m9.5 16.5l7-4.5l-7-4.5v9ZM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
-    return f'''<nav class="nav"><ul>{desktop}</ul><button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
+    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul>{theme_toggle()}</div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
-PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}</script>'
+def gate():
+    site=CONFIG["site"]
+    return f'''<div id="gate"><div class="gate-inner">
+<div class="gate-question" id="gateQuestion">
+<p class="t-md">Before you go in</p>
+<h2 class="h2">Do you want to experience my work?</h2>
+<p class="t-sm" style="color:var(--muted)">A quick yes or no — either way, thanks for stopping by.</p>
+<div class="gate-actions">
+<button class="btn" id="gateYes" type="button">Yes, let's go</button>
+<button class="btn" id="gateNo" type="button">No, not right now</button>
+</div>
+</div>
+<form class="gate-feedback" id="gateFeedback" data-email="{esc(site["email"])}">
+<p class="t-xl">No worries — mind telling me why?</p>
+<textarea name="reason" placeholder="What would have made you want to stay?" required></textarea>
+<input type="email" name="email" placeholder="Your email (optional)">
+<div class="gate-actions">
+<button class="btn" type="submit">Send feedback</button>
+<button class="btn" id="gateSkip" type="button">Just take me in</button>
+</div>
+</form>
+</div></div>'''
+
+def cookie_banner():
+    return '''<div id="cookie-banner">
+<p class="t-sm">This site uses a little local storage to remember your theme preference and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
+<div class="cookie-actions">
+<button class="btn cookie-accept" type="button">Got it</button>
+<button class="cookie-close" type="button" aria-label="Dismiss">&times;</button>
+</div>
+</div>'''
+
+PRELOADER_SKIP_INLINE='<script>if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div><script src="/assets/js/script.js" defer></script></body></html>'''
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{preloader()}{gate()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}<script src="/assets/js/script.js" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">
@@ -194,7 +231,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}">{esc(t)}</a></li>' for t,u in NAV_LINKS)
     return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p>Developed by Odgrande Digital</p><p>{esc(site["name"])} © 2026 All Rights Reserved</p></div></footer>'''
+<div class="footer-bottom"><p>Developed by Odgrande Digital</p><p>{esc(site["name"])} © 2026 All Rights Reserved · <a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -586,6 +623,44 @@ def page_contact():
 </section>'''
     return shell("Contact",f"Contact {site['name']} for WordPress development, e-commerce and digital product work.",body,"/contact/",show_cta=False)
 
+def legal_page(title,desc,canonical,sections):
+    body_sections="".join(
+        f'<div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">{esc(h)}</h2><p class="t-sm">{p}</p></div>'
+        for h,p in sections
+    )
+    body=f'''<section class="container container-md" data-reveal>
+<h1 class="h1 text-center">{esc(title)}</h1>
+<p class="t-sm text-center" style="color:var(--muted)">Last updated October 2026.</p>
+<div style="display:flex;flex-direction:column;gap:2.5rem;margin-top:1rem">{body_sections}</div>
+</section>'''
+    return shell(title,desc,body,canonical,show_cta=False)
+
+def page_privacy():
+    site=CONFIG["site"]
+    sections=[
+        ("What this site is","This is Odunayo Bolarinwa's personal portfolio — a static site with no user accounts, no server-side database and no backend application. There is no tracking pixel, analytics script or advertising network installed on any page."),
+        ("What's stored on your device","A few small, non-identifying values in your browser's own local and session storage: your light/dark theme choice, and whether you've already seen the one-time landing question and the cookie notice this session. None of this is sent anywhere or shared with any third party — see the <a class=\"link-inline\" href=\"/cookies/\">Cookie Policy</a> for the exact list."),
+        ("Information you choose to send","If you use the Contact page, the landing question's feedback form, or email/WhatsApp links directly, your message goes straight to Odunayo's inbox (or WhatsApp) the normal way your email client or WhatsApp sends it — this site has no form backend of its own and never stores what you write."),
+        ("Hosting","This site is hosted on GitHub Pages. GitHub may keep standard server access logs (such as IP address and request time) as part of operating its hosting infrastructure; that is governed by GitHub's own privacy policy, not this one, since this site has no access to those logs."),
+        ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
+    ]
+    return legal_page("Privacy Policy",f"Privacy policy for {site['name']}'s portfolio site.","/privacy/",sections)
+
+def page_cookies():
+    site=CONFIG["site"]
+    sections=[
+        ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
+        ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
+<li><code>odTheme</code> — your light/dark mode choice, kept until you change it again (local storage).</li>
+<li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
+<li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>
+</ul>'''),
+        ("Third parties","Fonts are loaded from Google Fonts, and the animation libraries (GSAP, Three.js) are loaded from the cdnjs CDN. Both may see a standard request (your IP address, browser user-agent) as part of serving those files, the same as any site that loads a web font or script from a CDN — this site doesn't add any tracking on top of that."),
+        ("Your control","Clearing your browser's site data for odgrande.github.io removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end."),
+        ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
+    ]
+    return legal_page("Cookie Policy",f"Cookie and local storage policy for {site['name']}'s portfolio site.","/cookies/",sections)
+
 def main():
     projects=scan_projects();copy_assets()
     (SITE/"index.html").write_text(page_home(projects),encoding="utf-8")
@@ -596,6 +671,8 @@ def main():
     (SITE/"about").mkdir();(SITE/"about"/"index.html").write_text(page_about(),encoding="utf-8")
     (SITE/"credentials").mkdir();(SITE/"credentials"/"index.html").write_text(page_credentials(),encoding="utf-8")
     (SITE/"contact").mkdir();(SITE/"contact"/"index.html").write_text(page_contact(),encoding="utf-8")
+    (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
+    (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
     print(f"Built {len(projects)} projects")
 
 if __name__=="__main__":main()

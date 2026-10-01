@@ -15,7 +15,37 @@
     --img-hover:sepia(0) grayscale(0%) brightness(1) contrast(1) saturate(1);
     --canvas-max:1680px;
     --canvas-pad:clamp(24px,7vw,110px);
+    /* Fixed (never flips with theme) — for the handful of decorative marks
+       (the work-card paper tag, the barcode/symbol marks drawn straight onto
+       the page) that are meant to read as cream-paper-with-black-ink always,
+       not as "background vs foreground" that inverts with the rest of the
+       site. */
+    --paper-fixed:oklch(98% 0.001 106.423);
+    --ink-fixed:oklch(14% 0.004 49.25);
 }
+/* LIGHT MODE — the whole site is built on --ink (background) and --paper
+   (text/borders), so redefining just those two tokens (plus the base-*
+   scale and --muted, used for secondary surfaces/text) inverts the entire
+   site in one place rather than touching every rule that uses them. */
+:root[data-theme="light"]{
+    --ink:oklch(98% 0.001 106.423);
+    --base-200:oklch(93% 0.004 56.043);
+    --base-300:oklch(89% 0.005 34.298);
+    --base-400:oklch(80% 0.008 67.558);
+    --base-500:oklch(72% 0.009 73.639);
+    --muted:oklch(42% 0.015 56.259);
+    --base-800:oklch(22% 0.006 56.366);
+    --paper:oklch(16% 0.004 49.25);
+}
+[data-theme="light"] body{background-image:none}
+[data-theme="light"] body:before{opacity:.05}
+/* These marks are baked white-on-transparent SVGs drawn straight onto the
+   page background (not inside a fixed-color card), so they need to flip to
+   black ink when the background itself flips to light. */
+[data-theme="light"] .image-frame img.barcode,
+[data-theme="light"] .bottom-mark img.symbol,
+[data-theme="light"] .bottom-mark img.barcode,
+[data-theme="light"] .contact-item .row img{filter:invert(1)}
 *{box-sizing:border-box;min-width:0}
 html{scroll-behavior:smooth}
 html.no-preloader #preloader{display:none}
@@ -101,6 +131,13 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .mobile-nav ul{display:flex;flex-direction:column;gap:1.5rem;text-align:center;padding:1.5rem}
 .mobile-nav a{font-family:var(--grunge);font-size:2.6rem;text-transform:uppercase;display:inline-block;padding:.4rem}
 
+/* THEME TOGGLE */
+.theme-toggle{display:flex;align-items:center;justify-content:center;width:38px;height:38px;color:var(--paper);border:2px solid var(--paper);border-radius:50%;transition:background .2s,color .2s;flex-shrink:0}
+.theme-toggle:hover{background:var(--paper);color:var(--ink)}
+.nav .theme-toggle.desktop-only{display:none;margin-left:1.5rem}
+@media(min-width:768px){.nav .theme-toggle.desktop-only{display:flex}}
+.mobile-nav .theme-toggle{margin-top:1rem}
+
 /* BUTTON / LINKS */
 .btn{display:inline-block;font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;font-size:1.3rem;padding:.7rem 1.6rem;border:2px solid var(--paper);transition:background .2s,color .2s;min-height:44px}
 .btn:hover{background:var(--paper);color:var(--ink)}
@@ -151,7 +188,7 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 @media(min-width:600px){.work-grid{grid-template-columns:repeat(2,minmax(0,420px));gap:3.5rem 2rem}}
 .work-card{display:block;width:100%;max-width:420px;margin:0 auto}
 .work-card .frame{position:relative;width:100%;aspect-ratio:1/1;overflow:visible}
-.work-card .label{position:absolute;top:8px;left:8px;z-index:40;background:var(--paper);border:2px solid var(--ink);color:var(--ink);padding:2px 14px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 60px)}
+.work-card .label{position:absolute;top:8px;left:8px;z-index:40;background:var(--paper-fixed);border:2px solid var(--ink-fixed);color:var(--ink-fixed);padding:2px 14px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 60px)}
 .work-card .label span{font-family:var(--grunge);font-size:1.15rem;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .work-card .label img{width:26px;flex-shrink:0}
 .work-card .texture{position:absolute;inset:0;z-index:30;background-image:url("/assets/theme/vinyl-texture.jpg");background-size:cover;opacity:.4}
@@ -243,6 +280,39 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 html.no-preloader #preloader{display:none}
 #preloader.done{pointer-events:none}
 #preloader-frame{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+
+/* ============ LANDING GATE ============
+   A two-way question shown once per session, right after the preloader
+   clears. "No" swaps the question for a short feedback form rather than
+   just dismissing — see script.js for the mailto: submit, since this is a
+   static site with no form backend. */
+#gate{position:fixed;inset:0;z-index:400;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:2rem var(--canvas-pad);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s ease}
+#gate.show{opacity:1;visibility:visible;pointer-events:auto}
+#gate.done{pointer-events:none}
+.gate-inner{max-width:38rem;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.gate-question{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.gate-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.gate-feedback{display:none;flex-direction:column;align-items:center;gap:1.25rem;width:100%;max-width:30rem}
+.gate-feedback.show{display:flex}
+.gate-feedback textarea,.gate-feedback input{width:100%;background:transparent;border:2px solid var(--paper);color:var(--paper);padding:.8rem 1rem;font-family:var(--mono);font-size:1rem}
+.gate-feedback textarea{min-height:110px;resize:vertical}
+.gate-feedback textarea:focus,.gate-feedback input:focus{outline:2px solid var(--muted);outline-offset:2px}
+.gate-feedback::placeholder{color:var(--muted)}
+
+/* COOKIE BANNER */
+#cookie-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:300;max-width:34rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between;border:2px solid var(--paper);background:var(--ink);padding:1rem 1.25rem;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+#cookie-banner.show{opacity:1;transform:translateY(0);pointer-events:auto}
+#cookie-banner p{margin:0;flex:1 1 16rem}
+.cookie-actions{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.cookie-accept{font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;border:2px solid var(--paper);padding:.4rem 1rem;min-height:40px;transition:background .2s,color .2s}
+.cookie-accept:hover{background:var(--paper);color:var(--ink)}
+.cookie-close{font-size:1.4rem;line-height:1;padding:.2rem .5rem;color:var(--muted)}
+.cookie-close:hover{color:var(--paper)}
+
+/* LEGAL PAGES */
+.legal-link{text-decoration:underline;text-underline-offset:2px}
+.legal-link:hover{color:var(--muted)}
+code{font-family:var(--mono);background:var(--base-300);padding:.1em .4em;font-size:.9em}
 
 /* TAGS */
 .tag-list{display:flex;flex-wrap:wrap;gap:.6rem}
