@@ -243,8 +243,8 @@ def journey_stepper():
     )
     return f'''<section class="container container-md" data-reveal>
 <h2 class="h2 text-center">My Journey</h2>
-<div class="journey-pin"><div class="journey-sticky">{steps}</div></div>
-</section>'''
+</section>
+<div class="journey-pin">{steps}</div>'''
 
 def work_card(p,home=False):
     img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")

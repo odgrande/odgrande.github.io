@@ -67,62 +67,29 @@
     tryReveal();
   })();
 
-  // ---------- journey stepper: sticky stage ----------
-  // The "first / then / today" scroll narrative: the stage stays in view
-  // via native CSS position:sticky (no GSAP pin — a pin here once
-  // mis-measured against this page's late-loading images and caused a
-  // visible scroll jump). Which step is "current" is tracked with a bare,
-  // un-attached ScrollTrigger (no tween/timeline wired into its own
-  // config — that shape was computing stale start/end on this page and
-  // never self-corrected on refresh); the actual motion is done with GSAP
-  // tweens fired from onUpdate, so the crossfade itself is still GSAP.
+  // ---------- journey stepper: stacked sticky cards ----------
+  // The "first / then / today" scroll narrative: each phrase is its own
+  // full-height sticky card; later cards stack over earlier ones (z-index)
+  // as they scroll up and "stick" at the top, so only one is ever visible
+  // at a time — and scrolling back up un-stacks them in the same order for
+  // free, since it's native CSS sticky behaviour, not scroll-position math.
+  // (A GSAP ScrollTrigger pin/scrub drove the earlier version and kept
+  // mis-measuring against this page's late-loading images; this sidesteps
+  // that class of bug entirely. GSAP still does the actual motion: each
+  // card's own text fades/scales in the first time it's reached.)
   document.querySelectorAll('.journey-pin').forEach((pin) => {
     const steps = [...pin.querySelectorAll('.journey-step')];
     if (steps.length < 2) return;
     pin.classList.add('is-pinned');
-    pin.style.setProperty('--steps', steps.length);
-    let active = 0;
-    steps[0].classList.add('is-active');
+    steps.forEach((s, i) => { s.style.zIndex = i + 1; });
 
     if (window.gsap && window.ScrollTrigger) {
-      // GSAP owns opacity/transform here; the CSS transition on .journey-step
-      // is only for the no-GSAP fallback below, and would otherwise fight
-      // GSAP's own tween of the same properties every frame.
-      steps.forEach((s) => { s.style.transition = 'none'; });
-      gsap.set(steps, { opacity: 0, scale: .78, y: 22 });
-      gsap.set(steps[0], { opacity: 1, scale: 1, y: 0 });
-      const show = (el) => gsap.to(el, { opacity: 1, scale: 1, y: 0, duration: .6, ease: 'back.out(1.6)', overwrite: 'auto' });
-      const hide = (el) => gsap.to(el, { opacity: 0, scale: .78, y: -22, duration: .45, ease: 'power2.inOut', overwrite: 'auto' });
-      ScrollTrigger.create({
-        trigger: pin,
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: (self) => {
-          const idx = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
-          if (idx === active) return;
-          hide(steps[active]);
-          show(steps[idx]);
-          active = idx;
-        }
+      steps.forEach((step) => {
+        gsap.from(step.children, {
+          opacity: 0, scale: .82, y: 30, duration: .7, ease: 'back.out(1.6)', stagger: .08,
+          scrollTrigger: { trigger: step, start: 'top top', once: true }
+        });
       });
-    } else {
-      // No-GSAP fallback: plain scroll listener + CSS transitions.
-      let ticking = false;
-      const update = () => {
-        ticking = false;
-        const rect = pin.getBoundingClientRect();
-        const total = rect.height - window.innerHeight;
-        const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-        const idx = Math.min(steps.length - 1, Math.floor(progress * steps.length));
-        if (idx === active) return;
-        steps[active].classList.remove('is-active');
-        steps[idx].classList.add('is-active');
-        active = idx;
-      };
-      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      update();
     }
   });
 

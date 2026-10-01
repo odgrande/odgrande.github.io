@@ -14,8 +14,8 @@
 
     --bg:        #000000;
     --green:     #a9a7a4;
-    --green-dim: rgba(172,170,167,.26);
-    --line:      rgba(208,207,204,.46);
+    --green-dim: rgba(172,170,167,0.143);
+    --line:      rgba(208,207,204,0.253);
     --ink-hi:    #e8e6e3;
   }
 
@@ -32,7 +32,7 @@
   .pool{
     position:fixed; inset:0; pointer-events:none;
     background:radial-gradient(ellipse 60% 44% at 50% 52%,
-      rgba(123,121,118,.17) 0%, rgba(96,93,90,.08) 38%, rgba(69,66,63,.025) 66%, transparent 100%);
+      rgba(123,121,118,0.0935) 0%, rgba(96,93,90,0.044) 38%, rgba(69,66,63,0.0138) 66%, transparent 100%);
   }
 
   /* ── stage ── */
@@ -67,7 +67,7 @@
     left:530px; top:284.9px; width:140px; height:0;
     text-align:center; line-height:1; white-space:pre;
     color:var(--green);
-    text-shadow:0 0 4px rgba(182,180,177,.6), 0 0 14px rgba(162,160,157,.55), 0 0 36px rgba(139,137,134,.4);
+    text-shadow:0 0 4px rgba(182,180,177,0.33), 0 0 14px rgba(162,160,157,0.3025), 0 0 36px rgba(139,137,134,0.22);
     animation:neon 4.3s steps(1,end) infinite;
   }
   .readout b{font-size:47px; font-weight:280; letter-spacing:2.4px}
@@ -85,8 +85,8 @@
     width:calc(var(--lit-w,0px) + 250px); height:250px;
     transform:translate(-125px,-128px);
     background:radial-gradient(ellipse 50% 50% at center,
-      rgba(173,171,168,.26) 0%, rgba(157,155,152,.17) 22%,
-      rgba(138,136,133,.082) 45%, rgba(120,117,114,.024) 70%, transparent 100%);
+      rgba(173,171,168,0.143) 0%, rgba(157,155,152,0.0935) 22%,
+      rgba(138,136,133,0.0451) 45%, rgba(120,117,114,0.0132) 70%, transparent 100%);
     filter:blur(6px);
     transition:width .16s linear;
   }
@@ -99,23 +99,23 @@
   .tick.mk{height:44px}
   .tick.on{
     background:#a19f9c;
-    box-shadow:0 0 4px rgba(192,190,187,.6), 0 0 11px rgba(161,160,157,.32), 0 0 24px rgba(141,139,136,.16);
+    box-shadow:0 0 4px rgba(192,190,187,0.33), 0 0 11px rgba(161,160,157,0.176), 0 0 24px rgba(141,139,136,0.088);
   }
   .tick.flash{animation:ignite .32s ease-out}
   @keyframes ignite{
-    0%{background:#eeedea; box-shadow:0 0 11px rgba(232,231,228,1),0 0 28px rgba(184,182,179,.85),0 0 54px rgba(152,150,147,.45)}
-    100%{background:#a19f9c; box-shadow:0 0 4px rgba(192,190,187,.6),0 0 11px rgba(161,160,157,.32),0 0 24px rgba(141,139,136,.16)}
+    0%{background:#eeedea; box-shadow:0 0 11px rgba(232,231,228,0.55),0 0 28px rgba(184,182,179,0.4675),0 0 54px rgba(152,150,147,0.2475)}
+    100%{background:#a19f9c; box-shadow:0 0 4px rgba(192,190,187,0.33),0 0 11px rgba(161,160,157,0.176),0 0 24px rgba(141,139,136,0.088)}
   }
 
   .barlabel{left:298px; top:396.4px; font-size:20.4px; font-weight:500; letter-spacing:.9px;
     line-height:1; color:var(--ink-hi);
-    text-shadow:0 0 3px rgba(230,229,226,.34), 0 0 11px rgba(197,196,193,.3), 0 0 26px rgba(158,156,153,.22)}
+    text-shadow:0 0 3px rgba(230,229,226,0.187), 0 0 11px rgba(197,196,193,0.165), 0 0 26px rgba(158,156,153,0.121)}
 
   .status{
     left:0; top:507px; width:1200px; text-align:center;
     font-size:14px; font-weight:500; line-height:1; letter-spacing:1.42px; text-indent:1.42px;
     color:#c3c1be; white-space:pre;
-    text-shadow:0 0 3px rgba(220,219,216,.3), 0 0 10px rgba(186,184,181,.22);
+    text-shadow:0 0 3px rgba(220,219,216,0.165), 0 0 10px rgba(186,184,181,0.121);
   }
   .status .dots{letter-spacing:-1.9px; margin-left:-6px}
 
@@ -130,7 +130,7 @@
   .marker .dia{
     left:-4px; top:-4px; width:8px; height:8px; opacity:1;
     background:var(--green); transform:rotate(45deg);
-    box-shadow:0 0 6px rgba(182,180,177,.7);
+    box-shadow:0 0 6px rgba(182,180,177,0.385);
     animation:diaPulse 3.2s ease-in-out infinite;
   }
   @keyframes diaPulse{0%,100%{opacity:.55; transform:rotate(45deg) scale(.8)}50%{opacity:1; transform:rotate(45deg) scale(1)}}
@@ -143,8 +143,8 @@
   .rail.right{transform:scaleX(-1)}
   .rail > *{position:absolute}
 
-  .rail .wire{left:104px; top:433px; width:92px; height:1.4px; background:rgba(208,207,204,.24)}
-  .rail .cap{top:428px; height:5px; background:#9f9d9a; box-shadow:0 0 5px rgba(182,180,177,.6)}
+  .rail .wire{left:104px; top:433px; width:92px; height:1.4px; background:rgba(208,207,204,0.132)}
+  .rail .cap{top:428px; height:5px; background:#9f9d9a; box-shadow:0 0 5px rgba(182,180,177,0.33)}
   .rail .cap.a{left:104px; width:10px}
   .rail .cap.b{left:181px; width:15px; animation:capPulse 2.4s ease-in-out infinite}
   @keyframes capPulse{0%,100%{opacity:1}50%{opacity:.5}}
@@ -153,12 +153,12 @@
   .mod > *{position:absolute; left:0}
   .mod .hatch{top:0; width:36px; height:2px; background:#deddda}
   .mod .ret{top:8px; left:3px; width:30px; height:30px; border-radius:50%;
-            border:1.3px solid rgba(223,222,219,.82)}
-  .mod .ret::before,.mod .ret::after{content:""; position:absolute; background:rgba(223,222,219,.45)}
+            border:1.3px solid rgba(223,222,219,0.451)}
+  .mod .ret::before,.mod .ret::after{content:""; position:absolute; background:rgba(223,222,219,0.2475)}
   .mod .ret::before{left:-3.5px; top:13.6px; width:35px; height:1px}
   .mod .ret::after{left:13.6px; top:-3.5px; width:1px; height:35px}
   .mod .dot{top:12.5px; left:15.5px; width:5px; height:5px; border-radius:50%; background:var(--green);
-            box-shadow:0 0 6px rgba(182,180,177,.9); animation:diaPulse 2.6s ease-in-out infinite}
+            box-shadow:0 0 6px rgba(182,180,177,0.495); animation:diaPulse 2.6s ease-in-out infinite}
   .mod .slab{top:46px; width:36px; height:5px; background:#e6e4e1;
              clip-path:polygon(0 0,100% 0,100% 100%,5px 100%)}
   .mod .led{top:55px; height:2.6px; background:#bbb9b6}
@@ -170,7 +170,7 @@
   /* ── overlays ── */
   .scan{position:fixed; inset:0; pointer-events:none; opacity:.18;
     background:repeating-linear-gradient(to bottom,
-      rgba(220,219,216,.05) 0 calc(1px * var(--s)),
+      rgba(220,219,216,0.0275) 0 calc(1px * var(--s)),
       transparent calc(1px * var(--s)) calc(3px * var(--s)))}
 
   .grain{position:fixed; inset:-60px; pointer-events:none;
