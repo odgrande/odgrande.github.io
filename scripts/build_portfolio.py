@@ -299,7 +299,7 @@ def masonry_gallery(images,alt,shots=False):
 def bottom_mark():
     return '<div class="bottom-mark"><img class="symbol" src="/assets/theme/symbol-white.svg" alt=""><img class="barcode" src="/assets/theme/barcode.svg" alt=""></div>'
 
-def accordion_box(items,resume=False):
+def accordion_box(items,resume=False,i18n_prefix=None):
     rows=[]
     for i,item in enumerate(items):
         if resume:
@@ -312,8 +312,10 @@ def accordion_box(items,resume=False):
                 rows.append(f'<div class="accordion-item accordion-static">{static}</div>')
         else:
             title,text=item
-            trigger=f'<button class="accordion-trigger" type="button"><span class="t-xl"><span class="num">{i+1}.</span> {esc(title)}</span>{CHEVRON}</button>'
-            rows.append(f'<div class="accordion-item">{trigger}<div class="accordion-content"><p class="t-sm">{esc(text)}</p></div></div>')
+            q_attr=f' data-i18n="{i18n_prefix}_q_{i}"' if i18n_prefix else ""
+            a_attr=f' data-i18n="{i18n_prefix}_a_{i}"' if i18n_prefix else ""
+            trigger=f'<button class="accordion-trigger" type="button"><span class="t-xl"><span class="num">{i+1}.</span> <span{q_attr}>{esc(title)}</span></span>{CHEVRON}</button>'
+            rows.append(f'<div class="accordion-item">{trigger}<div class="accordion-content"><p class="t-sm"{a_attr}>{esc(text)}</p></div></div>')
     return f'<div class="accordion-box">{"".join(rows)}</div>{bottom_mark()}'
 
 CHEVRON='<svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8"><path fill="#eeeade" d="M1.5 1L0 2.5l4 4l4-4L6.5 1L4 3.5L1.5 1z"/></svg>'
@@ -492,7 +494,7 @@ def page_home(projects):
     about_portrait=find_personal(PORTRAIT_ABOUT) or hero_portrait
     featured=[p for p in projects if p.get("featured")]
     services=accordion_box(CONFIG["services"])
-    faq=accordion_box(CONFIG["faq"])
+    faq=accordion_box(CONFIG["faq"],i18n_prefix="faq")
     reel=home_reel_video(projects)
     body=f'''<section class="container container-xl hero" data-reveal>
 <p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>

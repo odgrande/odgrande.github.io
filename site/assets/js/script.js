@@ -74,7 +74,17 @@
         about_heading: "Who I Be", about_intro: "I be Full-Stack Web Developer and Web Designer wey like the point wey design no be just picture again, e don turn to work wey dey functional.",
         faq_heading: "Questions Wey People Dey Ask",
         footer_cta_heading: "Make we build something together.",
-        footer_cta_sub: "If you get WordPress build, e-commerce store or any digital product for mind, make we yarn about am."
+        footer_cta_sub: "If you get WordPress build, e-commerce store or any digital product for mind, make we yarn about am.",
+        faq_q_0: "Wetin be your normal project timeline?",
+        faq_a_0: "E depend on how big the project be. Landing page or brand site fit land for 1-2 weeks, while full WordPress build, e-commerce store or custom plugin go normally take 3-6 weeks including revisions.",
+        faq_q_1: "You dey work with WordPress page builders or custom code?",
+        faq_a_1: "Both. Most projects dey start for Elementor or similar builder make e fast, then I go move enter custom PHP, JavaScript and CSS anywhere wey the build need something wey page builder no fit do alone.",
+        faq_q_2: "You fit take over website wey don already dey?",
+        faq_a_2: "Yes. Plenty of the work for this portfolio na maintenance, fixes and new features wey I add for sites wey I no build originally.",
+        faq_q_3: "You dey work with clients remotely?",
+        faq_a_3: "Yes, every project for this portfolio na remote I deliver am, for clients wey dey Nigeria, UK, Canada and USA.",
+        faq_q_4: "Wetin you need from me make we start?",
+        faq_a_4: "Access to the hosting/domain (or plan to get am), any brand assets wey you don already get, and short description of wetin the site need to do. I fit helep fill the gaps from there."
       },
       yo: {
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
@@ -87,7 +97,17 @@
         about_heading: "Nípa Mi", about_intro: "Èmi ni Full-Stack Web Developer àti Web Designer tí inú rẹ̀ dùn sí ibi tí àpẹẹrẹ (design) ti máa dá ṣiṣẹ́ gẹ́gẹ́ bí ọjà gidi.",
         faq_heading: "Àwọn Ìbéèrè Tí Wọ́n Sábà Máa Ń Béèrè",
         footer_cta_heading: "Jẹ́ ká ṣiṣẹ́ papọ̀.",
-        footer_cta_sub: "Tó bá jẹ́ pé o ní WordPress build, ilé ìtajà e-commerce tàbí ọjà dígítà èyíkéyìí lọ́kàn, jẹ́ ká sọ̀rọ̀ nípa rẹ̀."
+        footer_cta_sub: "Tó bá jẹ́ pé o ní WordPress build, ilé ìtajà e-commerce tàbí ọjà dígítà èyíkéyìí lọ́kàn, jẹ́ ká sọ̀rọ̀ nípa rẹ̀.",
+        faq_q_0: "Kí ni àkókò tí iṣẹ́ rẹ máa ń gbà déédéé?",
+        faq_a_0: "Ó dá lórí bí iṣẹ́ náà ṣe tóbi tó. Ojú-ewé kan tàbí ojúlé ìkéde lè parí láàrin ọ̀sẹ̀ 1-2, nígbà tí WordPress tó pé, ilé ìtajà e-commerce tàbí plugin àdáni máa ń gba ọ̀sẹ̀ 3-6 pẹ̀lú àtúnṣe.",
+        faq_q_1: "Ṣé o máa ń lo WordPress page builders tàbí koodu àdáni?",
+        faq_a_1: "Méjèèjì. Ọ̀pọ̀ iṣẹ́ máa ń bẹ̀rẹ̀ nínú Elementor tàbí irú rẹ̀ fún kíákíá, lẹ́yìn náà a óò wọ inú PHP àdáni, JavaScript àti CSS níbikíbi tí iṣẹ́ náà bá nílò ohun tí page builder kò lè ṣe fúnra rẹ̀.",
+        faq_q_2: "Ṣé o lè gba ojúlé tó ti wà tẹ́lẹ̀ rí?",
+        faq_a_2: "Bẹ́ẹ̀ni. Ọ̀pọ̀lọ́pọ̀ iṣẹ́ nínú portfolio yìí jẹ́ ìtọ́jú, àtúnṣe àti àwọn ẹ̀yà tuntun tí mo fi kún àwọn ojúlé tí kì í ṣe èmi ni mo kọ́ wọn ní àkọ́kọ́.",
+        faq_q_3: "Ṣé o máa ń ṣiṣẹ́ pẹ̀lú àwọn oníbàárà láti ọ̀nà jíjìn?",
+        faq_a_3: "Bẹ́ẹ̀ni, gbogbo iṣẹ́ nínú portfolio yìí ni mo ṣe láti ọ̀nà jíjìn, fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        faq_q_4: "Kí ni o nílò lọ́wọ́ mi kí a tó bẹ̀rẹ̀?",
+        faq_a_4: "Ààyè sí hosting/domain (tàbí ìpinnu láti rí i gbà), àwọn èròjà àmì-ọjà tí o ti ní, àti ọ̀rọ̀ kúkúrú nípa ohun tí ojúlé náà nílò láti ṣe. Mo lè ràn ọ́ lọ́wọ́ láti kún àwọn àlàfo yòókù láti ibẹ̀."
       },
       ha: {
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
@@ -100,7 +120,17 @@
         about_heading: "Game da Ni", about_intro: "Ni ne Full-Stack Web Developer da Web Designer wanda ke jin daɗin lokacin da zane ya daina zama hoto kawai ya koma kayan aiki mai amfani.",
         faq_heading: "Tambayoyin Da Ake Yawan Yi",
         footer_cta_heading: "Bari mu gina wani abu tare.",
-        footer_cta_sub: "Idan kana da shirin WordPress, kantin e-commerce ko wani kayan dijital a zuciya, bari mu tattauna game da shi."
+        footer_cta_sub: "Idan kana da shirin WordPress, kantin e-commerce ko wani kayan dijital a zuciya, bari mu tattauna game da shi.",
+        faq_q_0: "Mene ne tsarin lokacin da ake amfani da shi a aikinka?",
+        faq_a_0: "Ya danganta da girman aikin. Shafin saukewa ko shafin alama na iya kammala a cikin makonni 1-2, yayin da cikakken WordPress, kantin e-commerce ko plugin na musamman yakan ɗauki makonni 3-6 tare da gyare-gyare.",
+        faq_q_1: "Kana aiki da WordPress page builders ko lambar musamman?",
+        faq_a_1: "Dukansu biyu. Yawancin ayyuka suna farawa a Elementor ko makamancinsa don sauri, sannan in shiga PHP, JavaScript da CSS na musamman duk inda aikin ke bukatar abin da page builder ba zai iya yi shi kaɗai ba.",
+        faq_q_2: "Za ka iya karɓar gidan yanar gizo da ake da shi tun da?",
+        faq_a_2: "E. Yawancin aikin da ke cikin wannan portfolio shi ne kulawa, gyare-gyare da sabbin fasaloli da na ƙara wa shafukan da ban gina su tun farko ba.",
+        faq_q_3: "Kana aiki da abokan ciniki daga nesa?",
+        faq_a_3: "E, kowane aiki a cikin wannan portfolio an kai shi daga nesa, ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        faq_q_4: "Me kake bukata daga gare ni mu fara?",
+        faq_a_4: "Shiga cikin hosting/domain (ko shiri na samunsa), duk wasu kayan alama da ka riga ka samu, da ɗan taƙaitaccen bayani game da abin da shafin yake bukata ya yi. Zan iya taimaka cike giɓi daga nan."
       }
     };
     const LABELS = { en: "EN", pcm: "Pidgin", yo: "Yoruba", ha: "Hausa" };
