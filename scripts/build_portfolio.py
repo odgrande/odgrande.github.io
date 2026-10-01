@@ -230,9 +230,9 @@ def accordion_box(items,resume=False):
 CHEVRON='<svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 8 8"><path fill="#eeeade" d="M1.5 1L0 2.5l4 4l4-4L6.5 1L4 3.5L1.5 1z"/></svg>'
 
 JOURNEY_STEPS=[
-    ("First","Website Design.","GenM apprenticeship, 2018."),
-    ("Then","Freelance Development.","Delivering for clients on Upwork, 2021."),
-    ("Today","I bridge design and code.","Founder, Odgrande Digital — full-stack digital products."),
+    ("First","Website Design.","GenM apprenticeship, 2018 — my start in web."),
+    ("Then","Freelance Development.","Shipping for international clients on Upwork since 2021."),
+    ("Today","I bridge design and code.","Founder, Odgrande Digital — 15+ live products across Nigeria, the UK, Canada and the USA."),
 ]
 
 def journey_stepper():
