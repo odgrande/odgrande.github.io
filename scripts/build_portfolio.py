@@ -173,17 +173,24 @@ def nav():
     desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
     mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="M9 16h2V8H9v8Zm4 0h2V8h-2v8Zm-1 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
-    menu_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="m9.5 16.5l7-4.5l-7-4.5v9ZM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg>'
-    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul>{theme_toggle()}{lang_switcher()}</div>'''
+    menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34" class="hamburger-icon" aria-hidden="true">
+<path class="bracket" d="M2 9V4.5A2.5 2.5 0 0 1 4.5 2H9" fill="none" stroke-width="2" stroke-linecap="round"/>
+<path class="bracket" d="M25 2h4.5A2.5 2.5 0 0 1 32 4.5V9" fill="none" stroke-width="2" stroke-linecap="round"/>
+<path class="bracket" d="M32 25v4.5a2.5 2.5 0 0 1-2.5 2.5H25" fill="none" stroke-width="2" stroke-linecap="round"/>
+<path class="bracket" d="M9 32H4.5A2.5 2.5 0 0 1 2 29.5V25" fill="none" stroke-width="2" stroke-linecap="round"/>
+<rect x="9" y="14.5" width="16" height="2.4" rx="1.2"/>
+<rect x="9" y="19.5" width="11" height="2.4" rx="1.2"/>
+</svg>'''
+    logo='<a href="/" class="nav-logo" aria-label="Odunayo Bolarinwa — home"><img src="/assets/theme/logo.png" alt=""></a>'
+    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
 def gate():
     site=CONFIG["site"]
-    return f'''<div id="gate"><div class="gate-inner">
-{lang_switcher("gate-lang")}
+    return f'''<div id="gate">{lang_switcher("gate-lang")}<div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
 <p class="t-md" data-i18n="gate_eyebrow">Before you take off</p>
 <h2 class="h2" data-i18n="gate_headline">Tighten your seatbelt — you're about to feel what I can build.</h2>
