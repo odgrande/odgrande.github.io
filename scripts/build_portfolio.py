@@ -409,6 +409,34 @@ def archive_images():
     exclude|={a.rsplit("/",1)[-1] for a in awards()}
     return [path_url("assets","personal","images",name) for name in CURATED_ARCHIVE if name in files and name not in exclude]
 
+PERSONAL_FOLDERS=[
+    ("ALTSCHOOL - Course","AltSchool Africa"),
+    ("OSUN Creative Conference- MEMBER","Osun SDG Creative Conference"),
+]
+
+def folder_images(folder_name):
+    files=personal_files()
+    seen=set();out=[]
+    for base in (ASSETS,SOURCE):
+        d=base/"Personal images"/folder_name
+        if not d.exists():continue
+        for p in sorted(d.iterdir(),key=lambda x:x.name.lower()):
+            if p.is_file() and p.suffix.lower() in IMG_EXT and p.name not in seen and p.name in files and p.name not in ALWAYS_EXCLUDE:
+                seen.add(p.name)
+                out.append(path_url("assets","personal","images",p.name))
+    return out
+
+def photo_slider(title,images):
+    if not images:return ""
+    slides="".join(f'<div class="slider-slide"><img src="{esc(x)}" alt="{esc(title)}" loading="lazy"></div>' for x in images)
+    return f'''<div class="photo-slider">
+<div class="slider-head"><h3 class="h4">{esc(title)}</h3><div class="slider-controls"><button class="slider-btn slider-prev" type="button" aria-label="Previous photo">&#8592;</button><button class="slider-btn slider-next" type="button" aria-label="Next photo">&#8594;</button></div></div>
+<div class="slider-track">{slides}</div>
+</div>'''
+
+def personal_sliders():
+    return "".join(photo_slider(title,folder_images(folder)) for folder,title in PERSONAL_FOLDERS)
+
 def testimonial_video():
     d=resolve_dir("Personal Videos")
     if not d.exists():return ""
@@ -558,6 +586,7 @@ def page_about():
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])
     certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name,_,_ in CONFIG.get("certifications",[]))
     gallery=masonry_gallery(archive_images(),f'{site["name"]} personal archive')
+    sliders=personal_sliders()
     second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
     quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))
@@ -622,6 +651,7 @@ def page_about():
 <section class="container container-xl" data-reveal>
 <h2 class="h2 text-center">Personal Archive</h2>
 {gallery}
+{sliders}
 <div class="gate-actions" style="justify-content:center">
 <a class="btn" href="/credentials/">View Credentials</a>
 <a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View CV</a>
@@ -641,7 +671,7 @@ def page_credentials():
 {award_html}
 </section>
 <section class="container container-md" data-reveal>
-<h2 class="h2 text-center">Certificates</h2>
+<h2 class="h2 text-center">Certifications</h2>
 <div class="contact-grid">{cert_cards}</div>
 <div class="gate-actions" style="justify-content:center;margin-top:2rem">
 <a class="btn" href="/odunayo-bolarinwa-cv.pdf" target="_blank" rel="noopener">View Full CV</a>

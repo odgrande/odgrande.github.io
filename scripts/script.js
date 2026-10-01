@@ -198,8 +198,18 @@
   const hideLightbox = () => { lightbox.classList.remove('open'); document.body.classList.remove('menu-open'); lbImg.src = ''; };
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox-close')) hideLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideLightbox(); });
-  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img').forEach((img) => {
+  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .slider-slide img').forEach((img) => {
     img.addEventListener('click', () => showLightbox(img.currentSrc || img.src, img.alt));
+  });
+
+  // ---------- photo sliders: one per personal-photo subfolder ----------
+  document.querySelectorAll('.photo-slider').forEach((slider) => {
+    const track = slider.querySelector('.slider-track');
+    const prev = slider.querySelector('.slider-prev');
+    const next = slider.querySelector('.slider-next');
+    const step = () => (track.querySelector('.slider-slide')?.offsetWidth || 300) + 16;
+    prev?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
   });
 
   // ---------- preloader: UplinkLoader (ThreeUI), embedded verbatim via iframe ----------
