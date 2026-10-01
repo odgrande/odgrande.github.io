@@ -13,6 +13,47 @@
     trigger?.addEventListener('click', () => item.classList.toggle('open'));
   });
 
+  // ---------- visitor clock: tiny local time + country flag in the footer ----------
+  // One client-side lookup per session via ipwho.is (free, no key, no cookie)
+  // to get the visitor's country + timezone; cached in sessionStorage so it
+  // only ever runs once per visit. Disclosed in the Privacy Policy. Fails
+  // silently (element just stays empty) if the request is blocked or offline.
+  (() => {
+    const el = document.getElementById('visitor-clock');
+    const wrap = document.getElementById('visitor-clock-wrap');
+    if (!el || !wrap) return;
+    const KEY = 'odVisitorGeo';
+
+    const flagFor = (cc) => {
+      if (!cc || cc.length !== 2) return '';
+      return [...cc.toUpperCase()].map((c) => String.fromCodePoint(127397 + c.charCodeAt(0))).join('');
+    };
+    const render = (cc, tz) => {
+      const flag = flagFor(cc);
+      const tick = () => {
+        let time = '';
+        try { time = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: tz || undefined }).format(new Date()); } catch (e) {}
+        const text = [flag, time].filter(Boolean).join(' ');
+        el.textContent = text;
+        wrap.style.display = text ? '' : 'none';
+      };
+      tick();
+      setInterval(tick, 30000);
+    };
+
+    let cached;
+    try { cached = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+    if (cached) { render(cached.cc, cached.tz); return; }
+
+    fetch('https://ipwho.is/').then((r) => r.json()).then((d) => {
+      if (!d || d.success === false) return;
+      const cc = d.country_code || '';
+      const tz = (d.timezone && d.timezone.id) || '';
+      try { sessionStorage.setItem(KEY, JSON.stringify({ cc, tz })); } catch (e) {}
+      render(cc, tz);
+    }).catch(() => {});
+  })();
+
   // ---------- theme toggle (dark default, light on request) ----------
   (() => {
     const KEY = 'odTheme';

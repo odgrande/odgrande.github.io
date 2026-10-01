@@ -173,12 +173,12 @@ def gate():
     site=CONFIG["site"]
     return f'''<div id="gate"><div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
-<p class="t-md">Before you go in</p>
-<h2 class="h2">Do you want to experience my work?</h2>
-<p class="t-sm" style="color:var(--muted)">A quick yes or no — either way, thanks for stopping by.</p>
+<p class="t-md">Before you take off</p>
+<h2 class="h2">Tighten your seatbelt — you're about to feel what I can build.</h2>
+<p class="t-sm" style="color:var(--muted)">Yes or no, the Captain (me) is waiting for boarding confirmation.</p>
 <div class="gate-actions">
-<button class="btn" id="gateYes" type="button">Yes, let's go</button>
-<button class="btn" id="gateNo" type="button">No, not right now</button>
+<button class="btn" id="gateYes" type="button">Yes, buckle me in</button>
+<button class="btn" id="gateNo" type="button">No, I'll walk</button>
 </div>
 </div>
 <div class="gate-question" id="gatePersuade">
@@ -264,7 +264,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}">{esc(t)}</a></li>' for t,u in NAV_LINKS)
     return f'''<footer data-reveal><div class="footer-cols"><div><h3 class="h6">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p>Developed by Odgrande Digital</p><p>{esc(site["name"])} © 2026 All Rights Reserved · <a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a></p></div></footer>'''
+<div class="footer-bottom"><p>Developed by Odgrande Digital</p><p>{esc(site["name"])} © 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/">Privacy</a> · <a class="legal-link" href="/cookies/">Cookies</a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -362,7 +362,6 @@ ALWAYS_EXCLUDE={
 # the studio portrait variant, and a spread of the AltSchool moments — rather
 # than every file in the folder.
 CURATED_ARCHIVE=[
-    "IMG_20250418_220951_395_optimized.jpg",
     "IQO_8465-1_optimized.jpg",
     "20250129_092329_optimized.jpg",
     "20250128_095634_optimized.jpg",
@@ -410,6 +409,7 @@ def archive_images():
     return [path_url("assets","personal","images",name) for name in CURATED_ARCHIVE if name in files and name not in exclude]
 
 PERSONAL_FOLDERS=[
+    ("Internship - CareerXpress","CareerXpress Internship"),
     ("ALTSCHOOL - Course","AltSchool Africa"),
     ("OSUN Creative Conference- MEMBER","Osun SDG Creative Conference"),
 ]
@@ -720,7 +720,8 @@ def page_privacy():
     site=CONFIG["site"]
     sections=[
         ("What this site is","This is Odunayo Bolarinwa's personal portfolio — a static site with no user accounts, no server-side database and no backend application. There is no tracking pixel, analytics script or advertising network installed on any page."),
-        ("What's stored on your device","A few small, non-identifying values in your browser's own local and session storage: your light/dark theme choice, and whether you've already seen the one-time landing question and the cookie notice this session. None of this is sent anywhere or shared with any third party — see the <a class=\"link-inline\" href=\"/cookies/\">Cookie Policy</a> for the exact list."),
+        ("What's stored on your device","A few small, non-identifying values in your browser's own local and session storage: your light/dark theme choice, and whether you've already seen the one-time landing question, the cookie notice and the exit popup this session. None of this is sent anywhere or shared with any third party — see the <a class=\"link-inline\" href=\"/cookies/\">Cookie Policy</a> for the exact list."),
+        ("The one exception: the footer clock","The small flag and local time shown in the footer come from a single client-side request this site makes, once per visit, to a free IP-geolocation service (ipwho.is) so it can show your country and local time without asking you anything. That request sends your IP address to ipwho.is the same way any website request does; this site does not see, store or log the result anywhere beyond your own browser's session storage, and ipwho.is is not used for tracking, analytics or advertising of any kind. If that single request fails or is blocked (ad blockers, offline, etc.), the clock just stays blank — nothing else on the page depends on it."),
         ("Information you choose to send","If you use the Contact page, the landing question's feedback form, or email/WhatsApp links directly, your message goes straight to Odunayo's inbox (or WhatsApp) the normal way your email client or WhatsApp sends it — this site has no form backend of its own and never stores what you write."),
         ("Hosting","This site is hosted on GitHub Pages. GitHub may keep standard server access logs (such as IP address and request time) as part of operating its hosting infrastructure; that is governed by GitHub's own privacy policy, not this one, since this site has no access to those logs."),
         ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
