@@ -11,8 +11,8 @@
     --paper:oklch(98% 0.001 106.423);
     --grunge:"Road Rage",cursive;
     --mono:"JetBrains Mono",monospace;
-    --img-rest:grayscale(45%) brightness(.68) contrast(1.05) saturate(.6);
-    --img-hover:grayscale(0%) brightness(1) contrast(1) saturate(1);
+    --img-rest:sepia(.4) grayscale(30%) brightness(.62) contrast(1.08) saturate(.5);
+    --img-hover:sepia(0) grayscale(0%) brightness(1) contrast(1) saturate(1);
     --canvas-max:1680px;
     --canvas-pad:clamp(24px,7vw,110px);
 }
@@ -217,8 +217,7 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 /* MAGIC / TESTIMONIALS */
 .magic-hero{max-width:380px;margin:0 auto}
 .magic-hero .image-frame .frame-box{border:none;padding:0;height:auto;background:transparent}
-.magic-hero .image-frame .frame-box img{filter:none;height:auto;object-fit:contain}
-.magic-color .frame-box img{filter:none}
+.magic-hero .image-frame .frame-box img{height:auto;object-fit:contain}
 .split-reverse{flex-direction:column}
 @media(min-width:768px){.split-reverse{flex-direction:row-reverse}}
 .testimonial-grid{display:grid;grid-template-columns:1fr;gap:2rem}
@@ -279,7 +278,7 @@ html.no-preloader #preloader{display:none}
 
 /* CREDENTIALS */
 .credential-single{max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:1.5rem;align-items:center}
-.credential-single .image-frame{height:clamp(300px,55vw,460px);width:100%}
+.credential-single .image-frame{width:100%}
 
 /* FOOTER */
 footer{padding:4rem 0 2rem;position:relative;z-index:20}

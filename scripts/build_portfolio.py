@@ -70,6 +70,11 @@ def discover_project_dirs():
 def source_for(slug):
     return discover_project_dirs().get(slug)
 
+# This clip lives in the Olaedo Branding project folder but is a personal
+# reel, not case-study material — it's pulled out of that project page and
+# used on the Home page instead (see home_reel_video()).
+HOME_REEL={"slug":"olaedo-branding-project","filename":"Odunayo Bolarinwa.mp4"}
+
 def scan_projects():
     found=discover_project_dirs()
     projects=[]
@@ -80,6 +85,8 @@ def scan_projects():
             files=[p for p in d.rglob("*") if p.is_file() and p.name not in {"project.json","meta.json"}]
             m["images"]=[path_url("assets","projects",slug,*p.relative_to(d).parts) for p in files if p.suffix.lower() in IMG_EXT]
             m["videos"]=[path_url("assets","projects",slug,*p.relative_to(d).parts) for p in files if p.suffix.lower() in VID_EXT]
+            if slug==HOME_REEL["slug"]:
+                m["videos"]=[v for v in m["videos"] if v.rsplit("/",1)[-1]!=quote(HOME_REEL["filename"])]
             hero=m.get("heroImage")
             if hero:
                 match=next((im for im in m["images"] if im.rsplit("/",1)[-1]==quote(hero)),None)
@@ -457,7 +464,7 @@ def page_about():
 
 {f'''<section class="container container-xl" data-reveal>
 <div class="split split-reverse">
-<div class="split-photo">{image_frame(magic_standing,"Let's create website magic","magic-color")}</div>
+<div class="split-photo">{image_frame(magic_standing,"Let's create website magic")}</div>
 <div class="split-copy">
 <p class="t-xl">Let's create website magic.</p>
 <p class="t-sm">Whatever the brief — a brand-new WordPress build, an e-commerce store, or a digital product that needs to feel alive — I'd love to help build it.</p>
