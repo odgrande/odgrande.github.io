@@ -614,7 +614,7 @@
   const hideLightbox = () => { lightbox.classList.remove('open'); document.body.classList.remove('menu-open'); lbImg.src = ''; };
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox-close')) hideLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideLightbox(); });
-  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .slider-slide img').forEach((img) => {
+  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .bento-item img, .slider-slide img').forEach((img) => {
     img.addEventListener('click', () => showLightbox(img.dataset.full || img.currentSrc || img.src, img.alt));
   });
 
@@ -916,6 +916,15 @@
             b.t.style.transform = `translate3d(${x}px,0,0) skewX(${b.sign * -skew}deg)`;
           });
         });
+      });
+    }
+
+    // Personal archive bento: tiles pop in one after another.
+    const bentoItems = gsap.utils.toArray('.bento-item');
+    if (bentoItems.length) {
+      gsap.from(bentoItems, {
+        opacity: 0, scale: 0.85, y: 24, duration: 0.6, ease: 'back.out(1.5)', stagger: 0.06,
+        scrollTrigger: { trigger: '.bento', start: 'top 85%', once: true }
       });
     }
 

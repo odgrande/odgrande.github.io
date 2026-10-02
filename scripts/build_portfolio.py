@@ -364,6 +364,13 @@ def masonry_gallery(images,alt,shots=False):
     cls="masonry masonry-shots" if shots else "masonry"
     return f'<div class="{cls}">{items}</div>'
 
+def bento_gallery(images,alt):
+    # Compact square-tile grid; the first photo is a 2x2 feature tile. With 9
+    # photos it fills exactly: 4 cols x 3 rows on desktop, 3 x 4 on phones.
+    if not images:return ""
+    items="".join(f'<figure class="bento-item{" bento-feature" if i==0 else ""}"><img src="{esc(x)}" alt="{esc(alt)}" loading="lazy"></figure>' for i,x in enumerate(images))
+    return f'<div class="bento">{items}</div>'
+
 def bottom_mark():
     return f'<div class="bottom-mark"><img class="symbol" src="/assets/theme/symbol-white.svg" alt="">{wa_barcode("barcode-sm")}</div>'
 
@@ -690,7 +697,7 @@ def page_about():
     education=accordion_box(CONFIG["education"],resume=True)
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])
     certs="".join(f"<span>{esc(org)} — {esc(name)}</span>" for org,name,_,_ in CONFIG.get("certifications",[]))
-    gallery=masonry_gallery(archive_images(),f'{site["name"]} personal archive')
+    gallery=bento_gallery(archive_images(),f'{site["name"]} personal archive')
     sliders=personal_sliders()
     second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
