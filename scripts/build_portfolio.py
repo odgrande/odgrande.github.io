@@ -148,7 +148,6 @@ def head(title,desc,canonical):
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 </head>'''
 
 NAV_LINKS=[("HOME","/"),("WORKS","/works/"),("ABOUT","/about/"),("CREDENTIALS","/credentials/"),("CONTACT","/contact/")]
@@ -185,7 +184,7 @@ def nav():
 <div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
 
 def preloader():
-    return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
+    return '''<div id="preloader"><div class="preloader-fallback" aria-hidden="true"><span>Loading</span><i></i></div><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
 def gate():
     site=CONFIG["site"]

@@ -389,13 +389,14 @@
     justLeaveBtn?.addEventListener('click', tryClose);
     feedback?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const to = feedback.dataset.email || '';
+      const wa = feedback.dataset.whatsapp || '';
       const reason = feedback.reason.value.trim();
       const email = feedback.email.value.trim();
-      const subject = encodeURIComponent("Feedback from odgrande.github.io");
-      const bodyLines = [reason, email ? `\nReply to: ${email}` : ''].join('\n');
-      window.location.href = `mailto:${to}?subject=${subject}&body=${encodeURIComponent(bodyLines)}`;
-      tryClose();
+      const lines = ["Feedback from odgrande.github.io:", reason, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      markSeen();
+      // Navigating the tab to WhatsApp IS the "leave" — no separate close
+      // attempt needed, and it's far faster than waiting on a mail client.
+      window.location.href = `${wa}?text=${encodeURIComponent(lines)}`;
     });
 
     if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
@@ -459,12 +460,11 @@
     });
     form?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const to = form.dataset.email || '';
+      const wa = form.dataset.whatsapp || '';
       const idea = form.idea.value.trim();
       const email = form.email.value.trim();
-      const subject = encodeURIComponent("An idea from odgrande.github.io");
-      const bodyLines = [idea, email ? `\nReply to: ${email}` : ''].join('\n');
-      window.location.href = `mailto:${to}?subject=${subject}&body=${encodeURIComponent(bodyLines)}`;
+      const lines = ["Idea from odgrande.github.io:", idea, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      window.open(`${wa}?text=${encodeURIComponent(lines)}`, '_blank', 'noopener');
       closePopup();
     });
 
@@ -485,7 +485,7 @@
   // ---------- lightbox ----------
   const lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
-  lightbox.innerHTML = '<button class="lightbox-close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path fill="#ffffff" d="M9 16h2V8H9v8Zm4 0h2V8h-2v8Zm-1 6q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"/></svg></button><img alt="">';
+  lightbox.innerHTML = '<button class="lightbox-close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/></svg></button><img alt="">';
   document.body.appendChild(lightbox);
   const lbImg = lightbox.querySelector('img');
   const showLightbox = (src, alt) => { lbImg.src = src; lbImg.alt = alt || ''; lightbox.classList.add('open'); document.body.classList.add('menu-open'); };
@@ -517,16 +517,19 @@
   // right after the visitor answers, instead of running unseen underneath.
   (() => {
     const el = document.getElementById('preloader');
-    if (!el) { window.dispatchEvent(new Event('preloader:done')); return; }
-    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); window.dispatchEvent(new Event('preloader:done')); return; }
+    const unlockScroll = () => document.documentElement.classList.remove('no-scroll');
+    if (!el) { unlockScroll(); window.dispatchEvent(new Event('preloader:done')); return; }
+    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); unlockScroll(); window.dispatchEvent(new Event('preloader:done')); return; }
 
     const start = () => {
       const frame = document.getElementById('preloader-frame');
+      if (frame) frame.addEventListener('load', () => setTimeout(() => el.classList.add('frame-ready'), 120), { once: true });
       if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
 
       const finish = () => {
         el.classList.add('done');
         setTimeout(() => el.remove(), 500);
+        unlockScroll();
         window.dispatchEvent(new Event('preloader:done'));
       };
       const failsafe = setTimeout(finish, 6000);
@@ -535,7 +538,7 @@
       Promise.race([
         Promise.all([
           document.fonts ? document.fonts.ready : Promise.resolve(),
-          new Promise((r) => window.addEventListener('load', r, { once: true }))
+          document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }))
         ]),
         new Promise((r) => setTimeout(r, 2600))
       ]).then(() => { realLoadDone = true; });
@@ -660,8 +663,12 @@
   }
 
   // ---------- Three.js grain shader (progressive enhancement, never blocks the page) ----------
-  try {
-    if (window.THREE && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Desktop only: on phones a full-screen shader redrawing every frame fights
+  // scrolling for the GPU, and the static CSS grain (body:before) already
+  // gives the same texture there.
+  const isTouchOrSmall = window.matchMedia('(hover: none), (max-width: 767px)').matches;
+  const initGrain = () => { try {
+    if (window.THREE) {
       const canvas = document.createElement('canvas');
       canvas.id = 'grain-canvas';
       document.body.prepend(canvas);
@@ -691,12 +698,24 @@
       };
       resize();
       window.addEventListener('resize', resize);
-      let raf;
-      const tick = (t) => { material.uniforms.u_time.value = t * 0.001; renderer.render(scene, camera); raf = requestAnimationFrame(tick); };
+      let raf, last = 0;
+      const tick = (t) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < 42) return; // ~24fps reads as film grain and frees the GPU for scrolling
+        last = t;
+        material.uniforms.u_time.value = t * 0.001;
+        renderer.render(scene, camera);
+      };
       raf = requestAnimationFrame(tick);
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick);
       });
     }
-  } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ }
+  } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ } };
+  if (!isTouchOrSmall && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload = initGrain;
+    document.head.appendChild(s);
+  }
 })();

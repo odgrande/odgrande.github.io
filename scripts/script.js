@@ -523,6 +523,7 @@
 
     const start = () => {
       const frame = document.getElementById('preloader-frame');
+      if (frame) frame.addEventListener('load', () => setTimeout(() => el.classList.add('frame-ready'), 120), { once: true });
       if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
 
       const finish = () => {
@@ -537,7 +538,7 @@
       Promise.race([
         Promise.all([
           document.fonts ? document.fonts.ready : Promise.resolve(),
-          new Promise((r) => window.addEventListener('load', r, { once: true }))
+          document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }))
         ]),
         new Promise((r) => setTimeout(r, 2600))
       ]).then(() => { realLoadDone = true; });
@@ -662,8 +663,12 @@
   }
 
   // ---------- Three.js grain shader (progressive enhancement, never blocks the page) ----------
-  try {
-    if (window.THREE && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Desktop only: on phones a full-screen shader redrawing every frame fights
+  // scrolling for the GPU, and the static CSS grain (body:before) already
+  // gives the same texture there.
+  const isTouchOrSmall = window.matchMedia('(hover: none), (max-width: 767px)').matches;
+  const initGrain = () => { try {
+    if (window.THREE) {
       const canvas = document.createElement('canvas');
       canvas.id = 'grain-canvas';
       document.body.prepend(canvas);
@@ -693,12 +698,24 @@
       };
       resize();
       window.addEventListener('resize', resize);
-      let raf;
-      const tick = (t) => { material.uniforms.u_time.value = t * 0.001; renderer.render(scene, camera); raf = requestAnimationFrame(tick); };
+      let raf, last = 0;
+      const tick = (t) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < 42) return; // ~24fps reads as film grain and frees the GPU for scrolling
+        last = t;
+        material.uniforms.u_time.value = t * 0.001;
+        renderer.render(scene, camera);
+      };
       raf = requestAnimationFrame(tick);
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick);
       });
     }
-  } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ }
+  } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ } };
+  if (!isTouchOrSmall && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload = initGrain;
+    document.head.appendChild(s);
+  }
 })();
