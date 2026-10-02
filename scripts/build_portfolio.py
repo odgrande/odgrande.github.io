@@ -297,10 +297,10 @@ def socials_list():
     socials=[]
     if site.get("linkedin"):socials.append(("LINKEDIN",site["linkedin"]))
     if site.get("instagram"):socials.append(("INSTAGRAM",site["instagram"]))
+    if site.get("twitter"):socials.append(("X (TWITTER)",site["twitter"]))
     if site.get("facebook"):socials.append(("FACEBOOK",site["facebook"]))
     if site.get("whatsapp"):socials.append(("WHATSAPP",site["whatsapp"]))
     if site.get("github"):socials.append(("GITHUB",site["github"]))
-    if site.get("twitter"):socials.append(("TWITTER",site["twitter"]))
     return socials
 
 def footer():
