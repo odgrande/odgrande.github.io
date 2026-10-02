@@ -215,18 +215,15 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .nav ul{display:none;gap:2rem}
 .nav a{font-family:var(--grunge);font-size:1.4rem;text-transform:uppercase;text-underline-offset:4px;text-decoration:underline;letter-spacing:.02em;transition:color .2s}
 .nav a:hover{color:var(--muted)}
-.menu-btn{display:block;padding:0;min-height:44px;min-width:44px;flex-shrink:0;-webkit-tap-highlight-color:transparent}
-.menu-btn svg{width:56px;height:56px;overflow:visible}
-.menu-btn .menu-ring-line{stroke:var(--paper);opacity:.9}
-.menu-btn .menu-ring{transform-origin:50px 50px;animation:menu-spin 14s linear infinite}
-.menu-btn text{fill:var(--paper);font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.06em}
-.menu-btn .menu-bar{fill:var(--paper);transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
-.menu-btn:hover .menu-bar-1,.menu-btn:focus-visible .menu-bar-1{transform:translateX(-4px)}
-.menu-btn:hover .menu-bar-2,.menu-btn:focus-visible .menu-bar-2{transform:translateX(15px)}
-.menu-btn:hover .menu-ring{animation-duration:4s}
-.menu-btn:active svg{transform:scale(.92)}
-@keyframes menu-spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.menu-btn .menu-ring{animation:none}}
+.menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;color:var(--paper);border:2px solid var(--paper);border-radius:50%;flex-shrink:0;position:relative;transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent}
+/* Invisible 44px hit area around the 36px circle, for comfortable tapping. */
+.menu-btn:before{content:"";position:absolute;inset:-5px}
+.menu-btn svg{width:16px;height:16px}
+.menu-btn .menu-bar{fill:currentColor;transform-box:fill-box;transform-origin:left center;transition:transform .3s cubic-bezier(.3,1.4,.5,1)}
+.menu-btn:hover,.menu-btn:focus-visible{background:var(--paper);color:var(--ink)}
+.menu-btn:hover .menu-bar-1,.menu-btn:focus-visible .menu-bar-1{transform:scaleX(.64)}
+.menu-btn:hover .menu-bar-2,.menu-btn:focus-visible .menu-bar-2{transform:scaleX(1.56)}
+.menu-btn:active{transform:scale(.92)}
 @media(min-width:768px){.nav ul{display:flex}.menu-btn{display:none}}
 .mobile-nav{display:none;position:fixed;inset:0;background:var(--ink) url("/assets/theme/bg.jpg") center top/cover no-repeat;z-index:60;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto}
 .mobile-nav:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.15;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}

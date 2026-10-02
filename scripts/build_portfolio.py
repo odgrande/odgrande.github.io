@@ -177,15 +177,12 @@ def nav():
     desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
     mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" class="close-icon" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>'
-    # A rubber-stamp style badge: "MENU ✦ MENU ✦" runs round a ring that
-    # slowly turns (like the site's grunge stamps/marquee), with two
-    # hand-drawn-length bars in the centre that slide on hover/tap.
-    menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 100 100" class="hamburger-icon" aria-hidden="true">
-<defs><path id="menuRing" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>
-<circle class="menu-ring-line" cx="50" cy="50" r="47" fill="none" stroke-width="2"/>
-<g class="menu-ring"><text><textPath href="#menuRing" textLength="228" lengthAdjust="spacing">MENU ✦ MENU ✦ MENU ✦</textPath></text></g>
-<rect class="menu-bar menu-bar-1" x="35" y="42" width="30" height="5" rx="2.5"/>
-<rect class="menu-bar menu-bar-2" x="35" y="53" width="19" height="5" rx="2.5"/>
+    # Same outlined-circle language as the theme toggle and language pill:
+    # two short bars of unequal length (like the site's underlines) that
+    # even out on hover/tap.
+    menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" class="hamburger-icon" aria-hidden="true">
+<rect class="menu-bar menu-bar-1" x="1" y="4" width="14" height="2" rx="1"/>
+<rect class="menu-bar menu-bar-2" x="1" y="10" width="9" height="2" rx="1"/>
 </svg>'''
     name=esc(CONFIG["site"]["name"])
     logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a>'

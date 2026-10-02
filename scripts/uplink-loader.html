@@ -42,6 +42,10 @@
     transform:translate(-50%,-50%) scale(var(--s)); transform-origin:center;
   }
   .stage > *{position:absolute}
+  /* Readout, bar and labels sit ABOVE the scanline/grain overlays (which
+     now only texture the background), so the counter reads crisp. */
+  .stage{z-index:2}
+  .scan,.grain{z-index:1}
 
   /* ── readout plate ── */
   .plate{
@@ -51,7 +55,7 @@
   }
   .plate::after{
     content:""; position:absolute; inset:1.2px;
-    background:linear-gradient(180deg,#393633,#322f2c);
+    background:linear-gradient(180deg,#1e1c1a,#161412);
     clip-path:polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px);
   }
   .plate.hit{animation:plateHit .5s ease-out}
@@ -66,8 +70,8 @@
   .readout{
     left:530px; top:284.9px; width:140px; height:0;
     text-align:center; line-height:1; white-space:pre;
-    color:var(--green);
-    text-shadow:0 0 4px rgba(182,180,177,0.33), 0 0 14px rgba(162,160,157,0.3025), 0 0 36px rgba(139,137,134,0.22);
+    color:#f1efea;
+    text-shadow:0 0 4px rgba(230,228,224,0.35), 0 0 14px rgba(190,188,184,0.25);
     animation:neon 4.3s steps(1,end) infinite;
   }
   .readout b{font-size:47px; font-weight:280; letter-spacing:2.4px}

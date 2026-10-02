@@ -777,6 +777,12 @@
     const scheduleRefresh = () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 150); };
     document.querySelectorAll('img').forEach((img) => { if (!img.complete) img.addEventListener('load', scheduleRefresh, { once: true }); });
     window.addEventListener('load', scheduleRefresh);
+    // Every trigger is first measured while the gate/preloader hold the page
+    // locked (html.no-scroll: height 100%, overflow hidden), so positions
+    // must be recomputed the moment the real, scrollable page is revealed.
+    const refreshNow = () => setTimeout(() => ScrollTrigger.refresh(), 60);
+    if (window.odPreloaderDone) refreshNow();
+    else window.addEventListener('preloader:done', refreshNow, { once: true });
 
     document.querySelectorAll('[data-reveal]').forEach((section) => {
       const kids = section.querySelectorAll(':scope > *');
@@ -839,40 +845,38 @@
       btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: 'power3.out' }));
     });
 
-    // Marquee: both bands run at a steady pixel speed (so it looks the same
-    // on every screen width), then surge and follow your scroll direction —
-    // scroll down and the paper band races left / ink band right, scroll up
-    // and they swap — easing back to cruising speed when you stop. Only
-    // ticks while the marquee is on screen.
+    // Marquee "drag": the bands are tied to the scroll position itself —
+    // scroll down and the paper band slides left / ink band right, scroll
+    // back up and they slide back — always trailing a little behind the
+    // scroll (eased) and leaning into the movement with a slight skew, so it
+    // feels physically dragged. A slow idle drift keeps it alive at rest.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.querySelectorAll('.marquee').forEach((mq) => {
-        const bands = [...mq.querySelectorAll('.mq-track')].map((t, i) => ({ t, x: 0, base: i ? 1 : -1, half: 0 }));
+        const bands = [...mq.querySelectorAll('.mq-track')].map((t, i) => ({ t, sign: i ? 1 : -1, half: 0 }));
         if (!bands.length) return;
         mq.classList.add('is-driven');
-        const measure = () => bands.forEach((b) => { b.half = b.t.scrollWidth / 2; if (b.base > 0 && b.x === 0) b.x = -b.half; });
+        const measure = () => bands.forEach((b) => { b.half = b.t.scrollWidth / 2; });
         measure();
         document.fonts?.ready.then(measure);
         window.addEventListener('resize', measure);
-        const CRUISE = window.matchMedia('(max-width: 767px)').matches ? 70 : 110; // px per second
-        let boost = 0, dir = 1, onScreen = false;
-        ScrollTrigger.create({
-          trigger: mq, start: 'top bottom', end: 'bottom top',
-          onToggle: (self) => { onScreen = self.isActive; },
-          onUpdate: (self) => {
-            boost = Math.min(Math.abs(self.getVelocity()) / 220, 7);
-            dir = self.direction;
-          }
-        });
+        const RATIO = 0.85;   // px of marquee travel per px scrolled
+        const DRIFT = 22;     // px per second at rest
+        let drift = 0, current = null;
+        const wrap = (x, half) => -(((x % half) + half) % half);
         gsap.ticker.add((time, dt) => {
-          if (!onScreen) return;
-          boost *= 0.94;
-          const step = CRUISE * (1 + boost) * Math.min(dt, 64) / 1000;
+          drift += DRIFT * Math.min(dt, 64) / 1000;
+          const target = window.scrollY * RATIO + drift;
+          const r = mq.getBoundingClientRect();
+          const onScreen = r.bottom > -50 && r.top < window.innerHeight + 50;
+          if (current === null || !onScreen) { current = target; return; }
+          // Frame-rate independent easing toward the target = the "drag".
+          current += (target - current) * (1 - Math.pow(0.9, Math.min(dt, 64) / 16.7));
+          const lag = target - current;
+          const skew = Math.max(-9, Math.min(9, lag * 0.05));
           bands.forEach((b) => {
             if (!b.half) return;
-            b.x += b.base * dir * step;
-            if (b.x <= -b.half) b.x += b.half;
-            if (b.x > 0) b.x -= b.half;
-            b.t.style.transform = `translate3d(${b.x}px,0,0)`;
+            const x = wrap(b.sign < 0 ? current : -current, b.half);
+            b.t.style.transform = `translate3d(${x}px,0,0) skewX(${b.sign * -skew}deg)`;
           });
         });
       });
@@ -882,7 +886,12 @@
     // it's skipped), logo first, then links and controls.
     const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .lang-switcher, .menu-btn');
     gsap.set(navItems, { y: -24, opacity: 0 });
-    const showNav = () => gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });
+    const showNav = () => {
+      gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });
+      // Safety net: the header must never stay hidden if the tween stalls
+      // (rAF is paused in background tabs). gsap.set applies instantly.
+      setTimeout(() => gsap.set(navItems, { clearProps: 'transform,opacity' }), 1600);
+    };
     if (window.odPreloaderDone) showNav();
     else window.addEventListener('preloader:done', showNav, { once: true });
 
