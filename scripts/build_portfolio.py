@@ -173,9 +173,14 @@ def lang_switcher(cls=""):
 
 NAV_KEYS=["home","works","about","credentials","contact"]
 
-def nav():
-    desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
-    mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
+def nav(current="/"):
+    # The link for the section you're in (project pages count as Works) is
+    # marked aria-current="page" and drawn faded, so you always know where
+    # you are.
+    def cur(u):
+        return ' aria-current="page"' if (current==u if u=="/" else current.startswith(u)) else ""
+    desktop="".join(f'<li><a href="{u}"{cur(u)}>{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
+    mobile="".join(f'<li><a href="{u}"{cur(u)}><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" class="close-icon" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>'
     # Same outlined-circle language as the theme toggle and language pill:
     # two short bars of unequal length (like the site's underlines) that
@@ -194,14 +199,19 @@ def preloader():
 
 def gate():
     site=CONFIG["site"]
-    return f'''<div id="gate">{lang_switcher("gate-lang")}<div class="gate-inner">
+    # Live Lagos time with an inline Nigerian flag (an SVG, not an emoji:
+    # Windows doesn't render flag emoji, it shows the letters "NG").
+    clock=('<div class="gate-clock" aria-label="Local time in Lagos, Nigeria">'
+           '<svg class="ng-flag" viewBox="0 0 3 2" aria-hidden="true"><rect width="3" height="2" fill="#fff"/><rect width="1" height="2" fill="#008751"/><rect x="2" width="1" height="2" fill="#008751"/></svg>'
+           '<span class="gate-city">Lagos, Nigeria</span><span class="gate-time" id="gateTime">--:--</span></div>')
+    return f'''<div id="gate">{clock}{lang_switcher("gate-lang")}<div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
-<p class="t-md" data-i18n="gate_eyebrow">Before you take off</p>
-<h2 class="h2" data-i18n="gate_headline">Tighten your seatbelt — you're about to feel what I can build.</h2>
-<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Yes or no, the Captain (me) is waiting for boarding confirmation.</p>
+<p class="t-md" data-i18n="gate_eyebrow">Knock, knock</p>
+<h2 class="gate-title" data-i18n="gate_headline">Come on in. The websites don't bite.</h2>
+<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Well, only the bugs bite, and I squashed every one of them. Ready to look around?</p>
 <div class="gate-actions">
-<button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, buckle me in</button>
-<button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll walk</button>
+<button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, let me in</button>
+<button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll pass</button>
 </div>
 </div>
 <div class="gate-question" id="gatePersuade">
@@ -226,7 +236,7 @@ def gate():
 
 def cookie_banner():
     return '''<div id="cookie-banner">
-<p class="t-sm">This site uses a little local storage to remember your theme preference and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
+<p class="t-sm">This site uses a little browser storage to remember your theme and language for this visit and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
 <div class="cookie-actions">
 <button class="btn cookie-accept" type="button">Got it</button>
 <button class="cookie-close" type="button" aria-label="Dismiss">&times;</button>
@@ -257,10 +267,10 @@ def exit_popup():
 </form>
 </div></div>'''
 
-PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
+PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">
@@ -291,12 +301,19 @@ def footer():
 
 # ---------- shared components ----------
 
+def wa_barcode(cls=""):
+    # The original decorative barcode mark, unchanged in look, made tappable:
+    # it opens a WhatsApp chat.
+    wa=CONFIG["site"].get("whatsapp","")
+    return (f'<a class="barcode-link {cls}" href="{esc(wa)}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">'
+            f'<img class="barcode" src="/assets/theme/barcode.svg" alt=""></a>')
+
 def image_frame(src,alt,cls=""):
     if not src:
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
     # Portraits sit at the top of Home/About: fetch them first, not lazily.
     load='loading="eager" fetchpriority="high"' if "portrait" in cls else 'loading="lazy"'
-    return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
+    return f'''<div class="image-frame {cls}">{wa_barcode()}<div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
 
 def marquee(phrases):
     # Two full-bleed bands crossing in a shallow X — a paper one and an ink
@@ -319,7 +336,7 @@ def masonry_gallery(images,alt,shots=False):
     return f'<div class="{cls}">{items}</div>'
 
 def bottom_mark():
-    return '<div class="bottom-mark"><img class="symbol" src="/assets/theme/symbol-white.svg" alt=""><img class="barcode" src="/assets/theme/barcode.svg" alt=""></div>'
+    return f'<div class="bottom-mark"><img class="symbol" src="/assets/theme/symbol-white.svg" alt="">{wa_barcode("barcode-sm")}</div>'
 
 def accordion_box(items,resume=False,i18n_prefix=None):
     rows=[]
@@ -528,6 +545,11 @@ def page_home(projects):
 <div class="hero-copy">
 <a class="btn" href="/contact/"><span data-i18n="hero_badge">Available for work</span></a>
 <h1 class="h1" data-split-text>{esc(site["name"])}</h1>
+<div class="name-entry" aria-label="How to say my name">
+<p class="name-head"><span class="name-syll">O·du·na·yo Bo·la·rin·wa</span> <span class="name-phon">/ore-dune-are-your · bore-lah-rin-wah/</span> <i class="name-pos" data-i18n="pron_pos">noun</i></p>
+<p class="name-def"><b>1.</b> <span data-i18n="pron_def">a full-stack web developer and web designer who bridges design and code.</span></p>
+<p class="name-origin" data-i18n="pron_origin">Yoruba · Ọdúnayọ̀, “a year of joy”</p>
+</div>
 </div>
 <div class="hero-photo">{image_frame(hero_portrait,site["name"],"portrait")}</div>
 </div>
@@ -775,7 +797,7 @@ def page_cookies():
     sections=[
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
-<li><code>odTheme</code> — your light/dark mode choice, kept until you change it again (local storage).</li>
+<li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
 <li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
 <li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>

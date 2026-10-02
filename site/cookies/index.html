@@ -7,17 +7,17 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.css">
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
-</head><body><script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script><div id="gate"><div class="lang-switcher gate-lang">
+</head><body><script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script><div id="gate"><div class="gate-clock" aria-label="Local time in Lagos, Nigeria"><svg class="ng-flag" viewBox="0 0 3 2" aria-hidden="true"><rect width="3" height="2" fill="#fff"/><rect width="1" height="2" fill="#008751"/><rect x="2" width="1" height="2" fill="#008751"/></svg><span class="gate-city">Lagos, Nigeria</span><span class="gate-time" id="gateTime">--:--</span></div><div class="lang-switcher gate-lang">
 <button class="lang-toggle" type="button" aria-label="Change language" aria-expanded="false">&#127760; <span class="lang-current">EN</span></button>
 <div class="lang-menu"><button class="lang-option" type="button" data-lang="en">EN</button><button class="lang-option" type="button" data-lang="pcm">Pidgin</button><button class="lang-option" type="button" data-lang="yo">Yoruba</button><button class="lang-option" type="button" data-lang="ha">Hausa</button><button class="lang-option" type="button" data-lang="fr">Français</button></div>
 </div><div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
-<p class="t-md" data-i18n="gate_eyebrow">Before you take off</p>
-<h2 class="h2" data-i18n="gate_headline">Tighten your seatbelt — you're about to feel what I can build.</h2>
-<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Yes or no, the Captain (me) is waiting for boarding confirmation.</p>
+<p class="t-md" data-i18n="gate_eyebrow">Knock, knock</p>
+<h2 class="gate-title" data-i18n="gate_headline">Come on in. The websites don't bite.</h2>
+<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Well, only the bugs bite, and I squashed every one of them. Ready to look around?</p>
 <div class="gate-actions">
-<button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, buckle me in</button>
-<button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll walk</button>
+<button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, let me in</button>
+<button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll pass</button>
 </div>
 </div>
 <div class="gate-question" id="gatePersuade">
@@ -28,7 +28,7 @@
 <button class="btn" id="gateStillLeaving" type="button">I'm still leaving</button>
 </div>
 </div>
-<form class="gate-feedback" id="gateFeedback" data-whatsapp="https://wa.me/+2348027279797">
+<form class="gate-feedback" id="gateFeedback" data-whatsapp="https://wa.me/2348027279797">
 <p class="t-xl">Alright, your loss. Mind telling me why?</p>
 <textarea name="reason" placeholder="What would have made you want to stay? (optional)"></textarea>
 <input type="email" name="email" placeholder="Your email (optional)">
@@ -52,16 +52,16 @@
 <h1 class="h1 text-center" data-i18n="cookies_heading">Cookie Policy</h1>
 <p class="t-sm text-center" style="color:var(--muted)">Last updated October 2026.</p>
 <div style="display:flex;flex-direction:column;gap:2.5rem;margin-top:1rem"><div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">The short version</h2><p class="t-sm">This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device.</p></div><div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">What&#39;s stored, exactly</h2><p class="t-sm"><ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
-<li><code>odTheme</code> — your light/dark mode choice, kept until you change it again (local storage).</li>
+<li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
 <li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
 <li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>
 <li><code>odExitSeen</code> — whether the exit-intent popup has already shown this session (session storage).</li>
 <li><code>odVisitorGeo</code> — the country/timezone result from the footer's one-time IP lookup, cached for the rest of the session so it isn't requested again (session storage). See the <a class="link-inline" href="/privacy/">Privacy Policy</a> for how that lookup works.</li>
 </ul></p></div><div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">Third parties</h2><p class="t-sm">The site's fonts and libraries (GSAP, Three.js, Vue) are served from this site itself. The loading animation fetches one font from Google Fonts, which may see a standard request (your IP address, browser user-agent) as part of serving it — this site doesn't add any tracking on top of that.</p></div><div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">Your control</h2><p class="t-sm">Clearing your browser's site data for odgrande.github.io removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end.</p></div><div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h3">Contact</h2><p class="t-sm">Questions about this policy can be sent to <a class="link-inline" href="mailto:odgrandeng@gmail.com">odgrandeng@gmail.com</a>.</p></div></div>
-</section></main><footer data-reveal><a href="/" class="footer-logo" aria-label="Odunayo Bolarinwa — home"><img decoding="async" loading="lazy" src="/assets/theme/logo.png" alt="">Odunayo Bolarinwa</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul><li><a href="https://www.linkedin.com/in/odunayo-bolarinwa-a45035160/" target="_blank" rel="noopener">LINKEDIN</a></li><li><a href="https://www.instagram.com/ceodgrande" target="_blank" rel="noopener">INSTAGRAM</a></li><li><a href="https://www.facebook.com/odgrande" target="_blank" rel="noopener">FACEBOOK</a></li><li><a href="https://wa.me/+2348027279797" target="_blank" rel="noopener">WHATSAPP</a></li><li><a href="https://github.com/odgrande" target="_blank" rel="noopener">GITHUB</a></li><li><a href="mailto:odgrandeng@gmail.com">EMAIL</a></li></ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul><li><a href="/"><span data-i18n="nav_home">HOME</span></a></li><li><a href="/works/"><span data-i18n="nav_works">WORKS</span></a></li><li><a href="/about/"><span data-i18n="nav_about">ABOUT</span></a></li><li><a href="/credentials/"><span data-i18n="nav_credentials">CREDENTIALS</span></a></li><li><a href="/contact/"><span data-i18n="nav_contact">CONTACT</span></a></li></ul></div></div>
+</section></main><footer data-reveal><a href="/" class="footer-logo" aria-label="Odunayo Bolarinwa — home"><img decoding="async" loading="lazy" src="/assets/theme/logo.png" alt="">Odunayo Bolarinwa</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul><li><a href="https://www.linkedin.com/in/odunayo-bolarinwa-a45035160/" target="_blank" rel="noopener">LINKEDIN</a></li><li><a href="https://www.instagram.com/ceodgrande" target="_blank" rel="noopener">INSTAGRAM</a></li><li><a href="https://www.facebook.com/odgrande" target="_blank" rel="noopener">FACEBOOK</a></li><li><a href="https://wa.me/2348027279797" target="_blank" rel="noopener">WHATSAPP</a></li><li><a href="https://github.com/odgrande" target="_blank" rel="noopener">GITHUB</a></li><li><a href="mailto:odgrandeng@gmail.com">EMAIL</a></li></ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul><li><a href="/"><span data-i18n="nav_home">HOME</span></a></li><li><a href="/works/"><span data-i18n="nav_works">WORKS</span></a></li><li><a href="/about/"><span data-i18n="nav_about">ABOUT</span></a></li><li><a href="/credentials/"><span data-i18n="nav_credentials">CREDENTIALS</span></a></li><li><a href="/contact/"><span data-i18n="nav_contact">CONTACT</span></a></li></ul></div></div>
 <div class="footer-bottom"><p>Crafted with joy by Odunayo Bolarinwa</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer></div><div id="cookie-banner">
-<p class="t-sm">This site uses a little local storage to remember your theme preference and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
+<p class="t-sm">This site uses a little browser storage to remember your theme and language for this visit and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
 <div class="cookie-actions">
 <button class="btn cookie-accept" type="button">Got it</button>
 <button class="cookie-close" type="button" aria-label="Dismiss">&times;</button>
@@ -77,7 +77,7 @@
 <button class="btn" id="exitDismiss" type="button">Maybe later</button>
 </div>
 </div>
-<form class="gate-feedback" id="exitForm" data-whatsapp="https://wa.me/+2348027279797">
+<form class="gate-feedback" id="exitForm" data-whatsapp="https://wa.me/2348027279797">
 <p class="t-xl">Go on then, impress me.</p>
 <textarea name="idea" placeholder="My brilliant idea is..." required></textarea>
 <input type="email" name="email" placeholder="Where should I send updates? (optional)">

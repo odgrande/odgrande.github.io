@@ -88,12 +88,13 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        pron_pos: "noun", pron_def: "full-stack web developer and web designer wey dey join design and code together.", pron_origin: "Yoruba · Ọdúnayọ̀, “year of joy”",
         filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
         journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
         nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
-        gate_eyebrow: "Before you fly", gate_headline: "Tie your seatbelt well well — you dey about to feel wetin I fit build.",
-        gate_subtext: "Yes or no, Captain (na me) dey wait make you confam say you dey enter.",
-        gate_yes: "Yes, tie me well", gate_no: "No, I go waka",
+        gate_eyebrow: "Knock, knock", gate_headline: "Come inside. Dis websites no dey bite.",
+        gate_subtext: "Na only bug dey bite, and I don kill all of dem finish. You ready make you look around?",
+        gate_yes: "Yes, make I enter", gate_no: "No, I go pass",
         hero_tagline: "How far! I be Full-Stack Web Developer & Web Designer wey get 5+ years experience dey build digital products for clients for Nigeria, UK, Canada and USA.",
         hero_badge: "I dey available for work",
         featured_heading: "Works Wey Sweet Pass", services_heading: "Wetin I Dey Do",
@@ -137,12 +138,13 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        pron_pos: "orúkọ", pron_def: "olùgbéejáde àti apẹ̀rẹ wẹ́ẹ̀bù tí ó so àpẹrẹ àti kóòdù pọ̀.", pron_origin: "Yorùbá · Ọdúnayọ̀, “ọdún ayọ̀”",
         filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
         journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
-        gate_eyebrow: "Kí o tó fò", gate_headline: "Di àmùrè rẹ mú — o fẹ́ bẹ̀rẹ̀ sí nímọ̀lára ohun tí mo lè kọ́.",
-        gate_subtext: "Bẹ́ẹ̀ni tàbí rárá, Kapútánì (èmi ni) ń dúró de ìjẹ́rìí wíwọ̀ ọkọ̀.",
-        gate_yes: "Bẹ́ẹ̀ni, di mi mú", gate_no: "Rárá, màá rìn",
+        gate_eyebrow: "Kọ́kọ́, kọ́kọ́", gate_headline: "Ẹ wọlé wá. Àwọn wẹ́ẹ̀bù yìí kì í buni jẹ.",
+        gate_subtext: "Kòkòrò àṣìṣe (bugs) nìkan ló ń buni jẹ, mo sì ti pa gbogbo wọn run. Ṣé o ti ṣetán láti wo yíká?",
+        gate_yes: "Bẹ́ẹ̀ni, jẹ́ kí n wọlé", gate_no: "Rárá, mo kọjá",
         hero_tagline: "Báwo! Èmi ni Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
         hero_badge: "Mo wà ní àyè fún iṣẹ́",
         featured_heading: "Àwọn Iṣẹ́ Tó Dára Jùlọ", services_heading: "Àwọn Iṣẹ́ Tí Mo Ń Ṣe",
@@ -186,12 +188,13 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        pron_pos: "suna", pron_def: "mai haɓaka yanar gizo kuma mai zane wanda ke haɗa zane da lamba.", pron_origin: "Yarbanci · Ọdúnayọ̀, “shekarar farin ciki”",
         filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
         journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
-        gate_eyebrow: "Kafin ka tashi", gate_headline: "Ka ɗaura bel ɗinka — kana gab da jin abin da zan iya ginawa.",
-        gate_subtext: "E ko a'a, Kyaftin (ni ne) yana jiran tabbacin shiga jirgin.",
-        gate_yes: "E, ɗaura ni", gate_no: "A'a, zan yi tafiya",
+        gate_eyebrow: "Ƙwanƙwasa, ƙwanƙwasa", gate_headline: "Shigo ciki. Waɗannan shafukan ba sa cizo.",
+        gate_subtext: "Ƙwari (bugs) kaɗai ke cizo, kuma na kashe su duka. Ka shirya ka duba ko'ina?",
+        gate_yes: "Eh, bari in shiga", gate_no: "A'a, zan wuce",
         hero_tagline: "Sannu! Ni ne Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen gina kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
         hero_badge: "Ina samuwa don aiki",
         featured_heading: "Ayyukan Da Aka Fi So", services_heading: "Ayyukan Da Nake Yi",
@@ -235,12 +238,13 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        pron_pos: "nom", pron_def: "développeur web full-stack et web designer qui relie design et code.", pron_origin: "Yoruba · Ọdúnayọ̀, « une année de joie »",
         filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
         journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
-        gate_eyebrow: "Avant de décoller", gate_headline: "Attachez votre ceinture — vous allez ressentir ce que je peux construire.",
-        gate_subtext: "Oui ou non, le Capitaine (c'est moi) attend la confirmation d'embarquement.",
-        gate_yes: "Oui, attachez-moi", gate_no: "Non, je vais marcher",
+        gate_eyebrow: "Toc, toc", gate_headline: "Entrez donc. Ces sites ne mordent pas.",
+        gate_subtext: "Seuls les bugs mordent, et je les ai tous écrasés. Prêt à faire le tour ?",
+        gate_yes: "Oui, je rentre", gate_no: "Non, je passe",
         hero_tagline: "Salut ! Je suis Développeur Web Full-Stack & Designer Web avec plus de 5 ans d'expérience dans la création de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         hero_badge: "Disponible pour travailler",
         featured_heading: "Projets Phares", services_heading: "Services",
@@ -357,7 +361,7 @@
       btn.addEventListener('click', () => {
         const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         apply(next);
-        try { localStorage.setItem(KEY, next); } catch (e) {}
+        try { sessionStorage.setItem(KEY, next); } catch (e) {}
       });
     });
   })();
@@ -390,6 +394,16 @@
     const justLeaveBtn = document.getElementById('gateJustLeave');
 
     const markSeen = () => { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
+
+    // Live Lagos clock in the banner's corner (Africa/Lagos = WAT, UTC+1).
+    const clockEl = document.getElementById('gateTime');
+    if (clockEl) {
+      let fmt;
+      try { fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Africa/Lagos' }); } catch (e) {}
+      const tickClock = () => { if (fmt) clockEl.textContent = fmt.format(new Date()) + ' WAT'; };
+      tickClock();
+      const clockTimer = setInterval(() => { if (!document.body.contains(clockEl)) clearInterval(clockTimer); else tickClock(); }, 1000);
+    }
     const enterSite = () => {
       markSeen();
       window.dispatchEvent(new Event('gate:closed'));
@@ -824,13 +838,8 @@
       });
     });
 
-    // Subtle parallax on hero/split photography
-    gsap.utils.toArray('.hero-photo, .split-photo').forEach((photo) => {
-      gsap.to(photo.querySelector('.frame-box img'), {
-        yPercent: 8, ease: 'none',
-        scrollTrigger: { trigger: photo, start: 'top bottom', end: 'bottom top', scrub: true }
-      });
-    });
+    // (No parallax on the portraits: sliding the photo inside its frame left
+    // an empty band, so the frame looked bigger than the picture.)
 
     gsap.utils.toArray('.work-card').forEach((card) => {
       const disk = card.querySelector('.disk');

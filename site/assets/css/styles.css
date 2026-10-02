@@ -97,9 +97,7 @@
 /* These marks are baked white-on-transparent SVGs drawn straight onto the
    page background (not inside a fixed-color card), so they need to flip to
    black ink when the background itself flips to light. */
-[data-theme="light"] .image-frame img.barcode,
 [data-theme="light"] .bottom-mark img.symbol,
-[data-theme="light"] .bottom-mark img.barcode,
 [data-theme="light"] .contact-item .row img{filter:invert(1)}
 *{box-sizing:border-box;min-width:0}
 html{scroll-behavior:smooth}
@@ -215,6 +213,9 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .nav ul{display:none;gap:2rem}
 .nav a{font-family:var(--grunge);font-size:1.4rem;text-transform:uppercase;text-underline-offset:4px;text-decoration:underline;letter-spacing:.02em;transition:color .2s}
 .nav a:hover{color:var(--muted)}
+/* Current section: faded, so it reads as "you are here". */
+.nav a[aria-current="page"],.mobile-nav a[aria-current="page"]{opacity:.42;text-decoration-thickness:1px}
+.nav a[aria-current="page"]:hover{color:inherit}
 .menu-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;color:var(--paper);border:2px solid var(--paper);border-radius:50%;flex-shrink:0;position:relative;transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent}
 /* Invisible 44px hit area around the 36px circle, for comfortable tapping. */
 .menu-btn:before{content:"";position:absolute;inset:-5px}
@@ -251,9 +252,14 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 @media(min-width:768px){.nav .lang-switcher.desktop-only{display:block}}
 .lang-toggle{display:flex;align-items:center;gap:.3rem;height:32px;padding:0 .55rem;color:var(--paper);background:transparent;border:2px solid var(--paper);border-radius:999px;font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s}
 .lang-toggle:hover{background:var(--paper);color:var(--ink)}
-.lang-menu{display:none;position:absolute;top:calc(100% + .4rem);right:0;min-width:7.5rem;flex-direction:column;background:var(--ink);border:2px solid var(--paper);z-index:50}
+/* Dropdown: a rounded panel in the same outline language as the pill,
+   opening flush with the pill's outer edge — right-aligned where the
+   switcher sits on the right (header, landing banner), left-aligned in the
+   mobile menu where it sits top-left — so it never hangs off-centre. */
+.lang-menu{display:none;position:absolute;top:calc(100% + .45rem);right:0;min-width:max(100%,8.25rem);flex-direction:column;padding:.3rem;background:var(--ink);border:2px solid var(--paper);border-radius:16px;box-shadow:0 14px 34px rgba(0,0,0,.45);z-index:50}
+.mobile-nav-controls .lang-menu{right:auto;left:0}
 .lang-switcher.open .lang-menu{display:flex}
-.lang-option{width:100%;text-align:left;padding:.5rem .8rem;background:transparent;color:var(--paper);font-family:var(--mono);font-size:.8rem;cursor:pointer;transition:background .2s,color .2s}
+.lang-option{width:100%;text-align:left;padding:.5rem .75rem;border-radius:10px;background:transparent;color:var(--paper);font-family:var(--mono);font-size:.8rem;cursor:pointer;transition:background .2s,color .2s}
 .lang-option:hover{background:var(--paper);color:var(--ink)}
 .lang-option[aria-current="true"]{font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .gate-lang{position:absolute;top:1.5rem;right:var(--canvas-pad);z-index:1}
@@ -278,37 +284,37 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
    dominating the page; object-fit:contain there is a safety net, never the
    normal path. */
 .image-frame{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;width:100%}
-.image-frame img.barcode{width:100px;opacity:.85}
-.image-frame .frame-box{border:2px solid var(--paper);width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.image-frame .frame-box img{width:100%;height:auto;max-height:78vh;object-fit:contain;cursor:zoom-in;filter:var(--img-rest);transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .6s ease}
+.image-frame .frame-box{border:2px solid var(--paper);width:fit-content;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.image-frame .frame-box img{width:auto;max-width:100%;height:auto;max-height:78vh;cursor:zoom-in;filter:var(--img-rest);transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .6s ease}
 .image-frame .frame-box:hover img,.image-frame .frame-box:focus-within img{transform:scale(1.02);filter:var(--img-hover)}
+.image-frame .frame-box:has(video){width:100%}
 .image-frame .frame-box video{width:100%;height:auto;object-fit:contain}
 
 /* BOTTOM MARK (symbol + barcode row under accordion boxes) */
 .bottom-mark{display:flex;justify-content:space-between;align-items:center;margin-top:.5rem}
 .bottom-mark img.symbol{width:36px;height:20px}
-.bottom-mark img.barcode{width:110px;opacity:.85}
 
 /* HERO */
 .hero{min-height:88vh;display:flex;flex-direction:column;gap:2rem;justify-content:center}
 .hero .tagline{max-width:34rem}
 .hero-main{display:flex;flex-direction:column;gap:2rem}
 .hero-main .hero-copy{display:flex;flex-direction:column;align-items:flex-start;gap:1rem}
-.hero-photo{width:100%;max-width:420px}
-@media(min-width:768px){.hero-main{flex-direction:row;gap:2rem;align-items:center}.hero-main .hero-copy{flex:0 1 auto;max-width:48%}.hero-photo{flex:1;max-width:420px}}
+.hero-photo{width:100%;max-width:640px}
+@media(min-width:768px){.hero-main{flex-direction:row;gap:2rem;align-items:center}.hero-main .hero-copy{flex:0 1 auto;max-width:48%}.hero-photo{flex:0 1 auto;max-width:min(640px,50%);display:flex;justify-content:flex-end}}
 
 /* SPLIT (about / intro sections) */
 .split{display:flex;flex-direction:column;gap:2.5rem}
 .split-copy{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem}
-.split-photo{width:100%;max-width:420px;margin:0 auto}
-@media(min-width:768px){.split{flex-direction:row;gap:4rem;align-items:center}.split-copy{flex:1}.split-photo{flex:0 1 420px;max-width:420px;margin:0}}
+.split-photo{width:100%;max-width:640px;margin:0 auto}
+@media(min-width:768px){.split{flex-direction:row;gap:4rem;align-items:center}.split-copy{flex:1}.split-photo{flex:0 1 auto;max-width:min(640px,50%);margin:0}}
 
 /* Single-portrait frames (home hero, about-section photos): crop tight to
    the subject via a fixed aspect-ratio + object-fit:cover instead of
    showing the full source photo's empty studio background, which made the
    frame read as far bigger than the person inside it. */
-.image-frame.portrait .frame-box{aspect-ratio:3/4;background:var(--ink)}
-.image-frame.portrait .frame-box img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:top}
+/* Portraits: the frame hugs the photo exactly, at the same size the
+   lightbox shows it (up to 88% of the screen height). */
+.image-frame.portrait .frame-box img{max-height:88vh}
 
 /* WORK CARD */
 /* Works filter (Vue-rendered chips; hidden entirely without JS) */
@@ -608,3 +614,32 @@ html,body{max-width:100%;overflow-x:clip}
     #preloader{display:none!important}
     .mq-track,.mq-star{animation:none!important}
 }
+
+/* ============ BARCODE MARK (taps through to WhatsApp) ============ */
+.barcode-link{display:block;line-height:0;flex-shrink:0;transition:opacity .2s ease}
+.barcode-link:hover{opacity:.7}
+.image-frame .barcode-link img.barcode{width:100px;opacity:.85}
+.bottom-mark .barcode-link img.barcode{width:110px;opacity:.85}
+[data-theme="light"] img.barcode{filter:invert(1)}
+
+/* ============ LANDING: LAGOS CLOCK + HEADLINE ============ */
+.gate-clock{position:absolute;top:calc(1.5rem + 16px);transform:translateY(-50%);left:var(--canvas-pad);z-index:1;display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--paper)}
+.ng-flag{width:21px;height:14px;border:1px solid rgba(238,234,224,.5);border-radius:2px;flex-shrink:0}
+.gate-time{font-weight:700;font-variant-numeric:tabular-nums;padding-left:.5rem;border-left:1px solid rgba(238,234,224,.35)}
+@media (max-width:420px){.gate-clock{font-size:.58rem;letter-spacing:.05em;gap:.4rem}.gate-time{padding-left:.4rem}}
+.gate-inner{max-width:min(60rem,100%)}
+.gate-title{font-family:var(--grunge);text-transform:uppercase;font-weight:400;line-height:.88;letter-spacing:-.01em;margin:0;color:var(--paper);font-size:clamp(3.6rem,13vw,9.5rem);text-wrap:balance}
+@media (max-height:760px){.gate-title{font-size:clamp(3.2rem,15.5vh,7.5rem)}}
+
+/* ============ NAME ENTRY (dictionary-style pronunciation) ============
+   Set in the display face used on the project-card labels, small and
+   uppercase, so it reads as part of the same visual family as the name. */
+.name-entry{margin-top:1.1rem;max-width:36rem;padding-left:1rem;border-left:2px solid var(--paper);font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;color:var(--paper)}
+.name-entry p{margin:0}
+.name-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;font-size:1.35rem;line-height:1.1}
+.name-syll{color:var(--paper)}
+.name-phon{color:var(--muted);text-transform:none}
+.name-pos{font-style:italic;font-size:1.1rem;color:var(--muted)}
+.name-def{margin-top:.4rem!important;font-size:1.15rem;line-height:1.25}
+.name-def b{margin-right:.3rem;font-weight:400}
+.name-origin{margin-top:.35rem!important;font-size:.95rem;color:var(--muted)}
