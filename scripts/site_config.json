@@ -64,8 +64,40 @@
     ["Acadium", "Apprenticeship, The Miranda Team (Keyes Company)", "https://www.credential.net/400cec72-5610-4976-8f36-1c8a97b8dfb2#acc.bOzFYTpg", "/assets/credentials/certificates/PDFs/Acadium-Miranda-Team-Keyes-Company.pdf"]
   ],
   "testimonials": [
-    {"quote":"We love it from the very first look! The design looks amazing, clean, and exactly what we envisioned. This is what really matters — bringing our vision to life. Great work! Looking forward to the next phase.","name":"Founder","company":"MailOptin"},
-    {"quote":"I just wanted to say a big thank you for delivering the Youzed Interiors website. We've reviewed everything, and we're really impressed with the final result. The site looks amazing, clean, modern and perfectly captures our brand and the kind of spaces we create. The whole process was smooth and professional from start to finish.","name":"Uzo","company":"Founder, Youzed Interiors"}
+      {
+          "quote": "We love it from the very first look! The design looks amazing, clean, and exactly what we envisioned. This is what really matters — bringing our vision to life. Great work! Looking forward to the next phase.",
+          "name": "Founder",
+          "company": "MailOptin"
+      },
+      {
+          "quote": "I just wanted to say a big thank you for delivering the Youzed Interiors website. We've reviewed everything, and we're really impressed with the final result. The site looks amazing, clean, modern and perfectly captures our brand and the kind of spaces we create. The whole process was smooth and professional from start to finish.",
+          "name": "Uzo",
+          "company": "Founder, Youzed Interiors"
+      },
+      {
+          "quote": "Odunayo understood the energy we wanted for Blast Music Fest and translated it into the website perfectly. Everything felt intentional, from the visuals to the event information. He was patient with our changes and delivered something we were genuinely proud to put out there.",
+          "name": "Blast Music Fest",
+          "company": "Event / Entertainment",
+          "brand": "Blast Music Fest"
+      },
+      {
+          "quote": "Working with Odunayo was a smooth experience. He took our ideas, cleaned them up and turned them into a website that actually felt like our brand. What impressed me most was how quickly he understood what we were trying to achieve without needing everything explained ten times.",
+          "name": "1Seven4",
+          "company": "Brand / Business",
+          "brand": "1Seven4"
+      },
+      {
+          "quote": "We needed more than just a good-looking website. We needed something practical that could support our recruitment operations. Odunayo paid attention to the details, understood the functionality we needed and built a platform that gave the business a much more professional presence.",
+          "name": "Addoz Integrated Resources",
+          "company": "Recruitment / HR",
+          "brand": "Addoz Integrated Resources"
+      },
+      {
+          "quote": "Odunayo brought a lot of attention to detail to the project. From the layout to the mobile experience, he kept looking at the little things that most people would overlook. The result was a website that felt much more polished and aligned with how we wanted the brand to be presented.",
+          "name": "Daffodils Africa",
+          "company": "Business / Corporate",
+          "brand": "Daffodils Africa"
+      }
   ],
   "projects": {
     "cultur-fm-main-project": {"title":"CULTUR FM","client":"CULTUR FM","location":"London, UK","category":"WordPress Development","services":["WordPress","Custom Plugins","Ticketing"],"year":"2024-2026","featured":true,"heroImage":"CULTUR-FM-09-29-2026_02_09_PM.png","liveSite":"https://cultur.fm/","description":"Official CULTUR FM digital platform: homepage, events, mixes, ticketing and a bespoke WordPress ticketing plugin with QR-code generation, PDF tickets, Stripe integration and progressive pricing — plus a custom webhook plugin that automates form-drop submissions straight into Excel, and a custom waitlist & sign-up plugin."},

@@ -702,7 +702,7 @@ def page_about():
         f'<figure class="word-card" style="--i:{i}">'
         f'<span class="word-mark" aria-hidden="true">&ldquo;</span>'
         f'<blockquote class="word-quote">{esc(t["quote"])}</blockquote>'
-        f'<figcaption class="word-cite"><span class="word-avatar" aria-hidden="true">{esc((t["company"].split(",")[-1].strip() or t["name"])[:1])}</span>'
+        f'<figcaption class="word-cite"><span class="word-avatar" aria-hidden="true">{esc((t.get("brand") or t["company"].split(",")[-1].strip() or t["name"])[:1])}</span>'
         f'<span class="word-who"><b>{esc(t["name"])}</b><small>{esc(t["company"])}</small></span>'
         f'<span class="word-n" aria-hidden="true">{i+1:02d} / {len(tlist):02d}</span></figcaption></figure>'
         for i,t in enumerate(tlist))
