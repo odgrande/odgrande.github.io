@@ -921,8 +921,8 @@
 
     // "In their words": each quote lights up word by word as it scrolls into
     // reading position (scrubbed, so scrolling back dims it again); the name
-    // slides in once the quote is read; and every card except the last gets
-    // tucked back (scaled down + dimmed) while the next card slides over it.
+    // slides in once the quote is read; and every card except the last is
+    // eased back (slightly scaled, never faded) while the next card covers it.
     const wordCards = gsap.utils.toArray('.word-card');
     if (wordCards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.querySelector('.words-section')?.classList.add('words-live');
@@ -941,7 +941,7 @@
         });
         gsap.to(q.querySelectorAll('.ww'), {
           opacity: 1, ease: 'none', stagger: 0.05,
-          scrollTrigger: { trigger: card, start: 'top 78%', end: 'top 18%', scrub: 0.6 }
+          scrollTrigger: { trigger: card, start: 'top 85%', end: 'top 40%', scrub: 0.5 }
         });
         gsap.from(card.querySelector('.word-mark'), {
           scale: 0.4, rotate: -12, opacity: 0, duration: 0.8, ease: 'back.out(2)',
@@ -954,7 +954,7 @@
         const next = wordCards[i + 1];
         if (next) {
           gsap.to(card, {
-            scale: 0.92, opacity: 0.4, ease: 'none',
+            scale: 0.94, ease: 'none',
             scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true }
           });
         }
