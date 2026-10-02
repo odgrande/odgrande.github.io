@@ -88,6 +88,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
         g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted: "Na with joy {n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects for WordPress, Shopify, Webflow, custom React & PHP builds, e-commerce and brand work.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
         ph_stamp: "Pictures dey come soon",
         nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
@@ -142,6 +143,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
         g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted: "A fi ayọ̀ ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ {n} lórí WordPress, Shopify, Webflow, React àti PHP àdáni, ìṣòwò orí ayélujára àti iṣẹ́ àmì-ìdánimọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
         ph_stamp: "Àwòrán ń bọ̀ láìpẹ́",
         nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
@@ -196,6 +198,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
         g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted: "An ƙirƙira da farin ciki daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n} a WordPress, Shopify, Webflow, React da PHP na musamman, kasuwancin intanet da aikin alama.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
         ph_stamp: "Hotuna na zuwa nan ba da jimawa ba",
         nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
@@ -250,6 +253,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
         g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted: "Conçu avec joie par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : WordPress, Shopify, Webflow, React et PHP sur mesure, e-commerce et identité de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
         ph_stamp: "Visuels bientôt",
         nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
@@ -912,6 +916,48 @@
             b.t.style.transform = `translate3d(${x}px,0,0) skewX(${b.sign * -skew}deg)`;
           });
         });
+      });
+    }
+
+    // "In their words": each quote lights up word by word as it scrolls into
+    // reading position (scrubbed, so scrolling back dims it again); the name
+    // slides in once the quote is read; and every card except the last gets
+    // tucked back (scaled down + dimmed) while the next card slides over it.
+    const wordCards = gsap.utils.toArray('.word-card');
+    if (wordCards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelector('.words-section')?.classList.add('words-live');
+      wordCards.forEach((card, i) => {
+        const q = card.querySelector('.word-quote');
+        const words = q.textContent.trim().split(/\s+/);
+        q.setAttribute('aria-label', q.textContent.trim());
+        q.textContent = '';
+        words.forEach((w, n) => {
+          const span = document.createElement('span');
+          span.className = 'ww';
+          span.setAttribute('aria-hidden', 'true');
+          span.textContent = w;
+          q.appendChild(span);
+          if (n < words.length - 1) q.appendChild(document.createTextNode(' '));
+        });
+        gsap.to(q.querySelectorAll('.ww'), {
+          opacity: 1, ease: 'none', stagger: 0.05,
+          scrollTrigger: { trigger: card, start: 'top 78%', end: 'top 18%', scrub: 0.6 }
+        });
+        gsap.from(card.querySelector('.word-mark'), {
+          scale: 0.4, rotate: -12, opacity: 0, duration: 0.8, ease: 'back.out(2)',
+          scrollTrigger: { trigger: card, start: 'top 80%', toggleActions: 'play none none reverse' }
+        });
+        gsap.from(card.querySelector('.word-cite'), {
+          y: 24, opacity: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 30%', toggleActions: 'play none none reverse' }
+        });
+        const next = wordCards[i + 1];
+        if (next) {
+          gsap.to(card, {
+            scale: 0.92, opacity: 0.4, ease: 'none',
+            scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true }
+          });
+        }
       });
     }
 

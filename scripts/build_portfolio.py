@@ -694,7 +694,18 @@ def page_about():
     sliders=personal_sliders()
     second_award=awards()[1] if len(awards())>1 else ""
     video=testimonial_video()
-    quotes="".join(f'<blockquote class="testimonial"><p class="t-lg">&ldquo;{esc(t["quote"])}&rdquo;</p><cite class="t-md">{esc(t["name"])} · {esc(t["company"])}</cite></blockquote>' for t in CONFIG.get("testimonials",[]))
+    # "In their words": real client messages (from hand-off emails), each a
+    # sticky card in a stack; script.js lights the words up as you scroll and
+    # tucks each card back as the next one arrives.
+    tlist=CONFIG.get("testimonials",[])
+    quotes="".join(
+        f'<figure class="word-card" style="--i:{i}">'
+        f'<span class="word-mark" aria-hidden="true">&ldquo;</span>'
+        f'<blockquote class="word-quote">{esc(t["quote"])}</blockquote>'
+        f'<figcaption class="word-cite"><span class="word-avatar" aria-hidden="true">{esc((t["company"].split(",")[-1].strip() or t["name"])[:1])}</span>'
+        f'<span class="word-who"><b>{esc(t["name"])}</b><small>{esc(t["company"])}</small></span>'
+        f'<span class="word-n" aria-hidden="true">{i+1:02d} / {len(tlist):02d}</span></figcaption></figure>'
+        for i,t in enumerate(tlist))
     video_html=f'<div class="video-frame"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(video)}"></video></div>' if video else ""
     body=f'''<section class="container container-xl" data-reveal>
 <h1 class="h1 text-center"><span data-i18n="about_meet">Meet</span> {esc(site["name"].split()[0])}</h1>
@@ -747,9 +758,10 @@ def page_about():
 <div class="credential-single">{image_frame(second_award,"Designer Of The Year award")}<h3 class="h5 text-center" data-i18n="designer_award_heading">Designer Of The Year</h3></div>
 </section>''' if second_award else ""}
 
-{f'''<section class="container container-xl" data-reveal>
-<h2 class="h2 text-center" data-i18n="testimonials_heading">In Their Words</h2>
-<div class="testimonial-grid">{quotes}</div>
+{f'''<section class="container container-xl words-section">
+<h2 class="h2 text-center" data-reveal data-i18n="testimonials_heading">In Their Words</h2>
+<p class="t-sm text-center words-sub" data-i18n="testimonials_sub">Straight from the inbox: what clients wrote back after their site was handed over.</p>
+<div class="words-stack">{quotes}</div>
 {video_html}
 </section>''' if quotes or video else ""}
 
