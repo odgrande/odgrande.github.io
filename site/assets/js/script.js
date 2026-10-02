@@ -66,6 +66,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
         nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
         gate_eyebrow: "Before you fly", gate_headline: "Tie your seatbelt well well — you dey about to feel wetin I fit build.",
         gate_subtext: "Yes or no, Captain (na me) dey wait make you confam say you dey enter.",
@@ -113,6 +114,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
         gate_eyebrow: "Kí o tó fò", gate_headline: "Di àmùrè rẹ mú — o fẹ́ bẹ̀rẹ̀ sí nímọ̀lára ohun tí mo lè kọ́.",
         gate_subtext: "Bẹ́ẹ̀ni tàbí rárá, Kapútánì (èmi ni) ń dúró de ìjẹ́rìí wíwọ̀ ọkọ̀.",
@@ -160,6 +162,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
         gate_eyebrow: "Kafin ka tashi", gate_headline: "Ka ɗaura bel ɗinka — kana gab da jin abin da zan iya ginawa.",
         gate_subtext: "E ko a'a, Kyaftin (ni ne) yana jiran tabbacin shiga jirgin.",
@@ -207,6 +210,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
         gate_eyebrow: "Avant de décoller", gate_headline: "Attachez votre ceinture — vous allez ressentir ce que je peux construire.",
         gate_subtext: "Oui ou non, le Capitaine (c'est moi) attend la confirmation d'embarquement.",
@@ -523,7 +527,6 @@
 
     const start = () => {
       const frame = document.getElementById('preloader-frame');
-      if (frame) frame.addEventListener('load', () => setTimeout(() => el.classList.add('frame-ready'), 120), { once: true });
       if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
 
       const finish = () => {
@@ -561,31 +564,109 @@
     else start();
   })();
 
-  // ---------- journey stepper: stacked sticky cards ----------
-  // The "first / then / today" scroll narrative: each phrase is its own
-  // full-height sticky card; later cards stack over earlier ones (z-index)
-  // as they scroll up and "stick" at the top, so only one is ever visible
-  // at a time — and scrolling back up un-stacks them in the same order for
-  // free, since it's native CSS sticky behaviour, not scroll-position math.
-  // (A GSAP ScrollTrigger pin/scrub drove the earlier version and kept
-  // mis-measuring against this page's late-loading images; this sidesteps
-  // that class of bug entirely. GSAP still does the actual motion: each
-  // card's own text fades/scales in the first time it's reached.)
-  document.querySelectorAll('.journey-pin').forEach((pin) => {
-    const steps = [...pin.querySelectorAll('.journey-step')];
-    if (steps.length < 2) return;
-    pin.classList.add('is-pinned');
-    steps.forEach((s, i) => { s.style.zIndex = i + 1; });
-
-    if (window.gsap && window.ScrollTrigger) {
-      steps.forEach((step) => {
-        gsap.from(step.children, {
-          opacity: 0, scale: .82, y: 30, duration: .7, ease: 'back.out(1.6)', stagger: .08,
-          scrollTrigger: { trigger: step, start: 'top top', once: true }
+  // ---------- "My journey": scroll-scrubbed letter narrative ----------
+  // Modelled on guillaumezhu.com: the title's scattered letters gather as it
+  // scrolls in, then a sticky full-screen stage shows one phrase at a time,
+  // its letters rising in one after another, holding, then lifting away.
+  // Everything is a pure function of the current scroll position (read from
+  // getBoundingClientRect each frame), so scrolling back up plays it in
+  // reverse exactly, and late-loading images above can't knock it out of
+  // sync the way a pre-measured pin would. Runs after the translation module,
+  // so it splits whichever language is showing.
+  (() => {
+    const sec = document.querySelector('.journey');
+    if (!sec || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+    const easeIn = (t) => t * t * t;
+    const split = (el) => {
+      const text = el.textContent.trim();
+      el.setAttribute('aria-label', text);
+      el.textContent = '';
+      text.split(/\s+/).forEach((word, wi, words) => {
+        const w = document.createElement('span');
+        w.className = 'jw';
+        w.setAttribute('aria-hidden', 'true');
+        [...word].forEach((ch) => {
+          const c = document.createElement('span');
+          c.className = 'jc';
+          c.textContent = ch;
+          w.appendChild(c);
         });
+        el.appendChild(w);
+        if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
       });
-    }
-  });
+      return [...el.querySelectorAll('.jc')];
+    };
+
+    const heading = sec.querySelector('.journey-heading');
+    const titleChars = split(heading).map((c, i) => ({
+      el: c,
+      // Deterministic scatter (no Math.random) so it looks the same each visit.
+      y: 0.35 + ((i * 37) % 10) / 10 * 0.9,
+      r: (((i * 53) % 9) - 4) * 4
+    }));
+
+    const runway = sec.querySelector('.journey-runway');
+    const lines = [...sec.querySelectorAll('.journey-line')].map((line) => {
+      const big = line.classList.contains('journey-label') ? line : line.querySelector('.journey-big');
+      return { line, chars: split(big), sub: line.querySelector('.journey-sub'), state: '' };
+    });
+    sec.style.setProperty('--jl-count', lines.length);
+    sec.classList.add('is-live');
+
+    const K = 0.55; // letter stagger: how far behind the first letter the last one runs
+    const setChars = (chars, fn) => {
+      const n = Math.max(chars.length - 1, 1);
+      chars.forEach((c, j) => { const [y, o] = fn(j / n); c.style.transform = `translate3d(0,${y}em,0)`; c.style.opacity = o; });
+    };
+
+    const update = () => {
+      const vh = window.innerHeight;
+
+      // Title: letters drop in from scattered heights as it reaches mid-screen.
+      const tt = clamp((vh - heading.getBoundingClientRect().top) / (vh * 0.55));
+      titleChars.forEach((c, j) => {
+        const p = easeOut(clamp(tt * (1 + K) - K * (j / Math.max(titleChars.length - 1, 1))));
+        c.el.style.transform = `translate3d(0,${(1 - p) * c.y * 3}em,0) rotate(${(1 - p) * c.r}deg)`;
+      });
+
+      // Stage: progress through the runway, one equal slice per line.
+      const r = runway.getBoundingClientRect();
+      const P = clamp(-r.top / Math.max(r.height - vh, 1));
+      const seg = 1 / lines.length;
+      lines.forEach((L, i) => {
+        const last = i === lines.length - 1;
+        const t = (P - i * seg) / seg;
+        const state = t <= 0 ? 'before' : (!last && t >= 1) ? 'after' : 'active';
+        if (state !== 'active' && state === L.state) return; // nothing to redraw off-screen
+        L.state = state;
+        if (state === 'before') { setChars(L.chars, () => [3, 0]); if (L.sub) L.sub.style.opacity = 0; return; }
+        if (state === 'after') { setChars(L.chars, () => [-1.5, 0]); if (L.sub) L.sub.style.opacity = 0; return; }
+        const tin = t / 0.45, tout = last ? 0 : (t - 0.72) / 0.28;
+        setChars(L.chars, (f) => {
+          const pin = easeOut(clamp(tin * (1 + K) - K * f));
+          const pout = easeIn(clamp(tout * (1 + K) - K * f));
+          return [(1 - pin) * 3 - pout * 1.5, Math.min(pin, 1 - pout)];
+        });
+        if (L.sub) {
+          const so = clamp((t - 0.4) / 0.15) * (last ? 1 : 1 - clamp((t - 0.72) / 0.12));
+          L.sub.style.opacity = so;
+          L.sub.style.transform = `translateY(${(1 - so) * 12}px)`;
+        }
+      });
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { ticking = false; update(); });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
 
   // ---------- GSAP scroll reveals + motion ----------
   if (window.gsap && window.ScrollTrigger) {

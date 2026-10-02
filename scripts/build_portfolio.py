@@ -180,11 +180,13 @@ def nav():
 <rect x="9" y="14.5" width="16" height="2.4" rx="1.2"/>
 <rect x="9" y="19.5" width="11" height="2.4" rx="1.2"/>
 </svg>'''
-    return f'''<nav class="nav"><ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><ul>{mobile}</ul></div>'''
+    name=esc(CONFIG["site"]["name"])
+    logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a>'
+    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
 
 def preloader():
-    return '''<div id="preloader"><div class="preloader-fallback" aria-hidden="true"><span>Loading</span><i></i></div><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
+    return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
 def gate():
     site=CONFIG["site"]
@@ -331,14 +333,18 @@ JOURNEY_STEPS=[
 ]
 
 def journey_stepper():
-    steps="".join(
-        f'<div class="journey-step"><span class="t-md">{esc(label)}</span><p class="h3">{esc(line)}</p><p class="t-sm">{esc(sub)}</p></div>'
-        for label,line,sub in JOURNEY_STEPS
-    )
-    return f'''<section class="container container-md" data-reveal>
-<h2 class="h2 text-center">My Journey</h2>
-</section>
-<div class="journey-pin">{steps}</div>'''
+    # Scroll-scrubbed narrative in the style of guillaumezhu.com's "My journey":
+    # a big title whose scattered letters gather as it scrolls in, then a
+    # sticky full-screen stage where each phrase rises in letter by letter,
+    # holds, then lifts away for the next. Without JS it reads as plain text.
+    lines=[]
+    for i,(label,line,sub) in enumerate(JOURNEY_STEPS,1):
+        lines.append(f'<p class="journey-line journey-label" data-i18n="journey_l{i}">{esc(label)}</p>')
+        lines.append(f'<div class="journey-line journey-phrase"><p class="journey-big" data-i18n="journey_p{i}">{esc(line)}</p><p class="journey-sub" data-i18n="journey_s{i}">{esc(sub)}</p></div>')
+    return f'''<section class="journey" id="journey">
+<div class="journey-title"><h2 class="journey-heading" data-i18n="journey_title">My journey</h2></div>
+<div class="journey-runway"><div class="journey-stage">{"".join(lines)}</div></div>
+</section>'''
 
 def work_card(p,home=False):
     img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
