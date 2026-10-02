@@ -143,6 +143,14 @@ def copy_assets():
 
 # ---------- shell / chrome ----------
 
+# Cache-busting: each page links styles.css / script.js with a short hash of
+# the file's contents, so browsers fetch the new version after every deploy
+# instead of reusing a stale cached copy.
+def _short_hash(path):
+    import hashlib
+    return hashlib.sha1(path.read_bytes()).hexdigest()[:10]
+ASSET_V={"css":_short_hash(ROOT/"scripts"/"styles.css"),"js":_short_hash(ROOT/"scripts"/"script.js")}
+
 def head(title,desc,canonical):
     return f'''<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)} · Odunayo Bolarinwa</title><meta name="description" content="{esc(desc)}">
@@ -150,7 +158,7 @@ def head(title,desc,canonical):
 <meta property="og:title" content="{esc(title)} · Odunayo Bolarinwa"><meta property="og:description" content="{esc(desc)}"><meta property="og:image" content="https://odgrande.github.io/og-image.png">
 <link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css?v={ASSET_V['css']}">
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
 </head>'''
@@ -270,7 +278,7 @@ def exit_popup():
 PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">

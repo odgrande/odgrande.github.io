@@ -284,8 +284,10 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
    dominating the page; object-fit:contain there is a safety net, never the
    normal path. */
 .image-frame{display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;width:100%}
-.image-frame .frame-box{border:2px solid var(--paper);width:fit-content;max-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.image-frame .frame-box img{width:auto;max-width:100%;height:auto;max-height:78vh;cursor:zoom-in;filter:var(--img-rest);transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .6s ease}
+/* Project/credential frames: full width; tall full-page screenshots are
+   cropped neatly from the top (cover), so the image always fills its box. */
+.image-frame .frame-box{border:2px solid var(--paper);width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.image-frame .frame-box img{width:100%;height:auto;max-height:78vh;object-fit:cover;object-position:top;cursor:zoom-in;filter:var(--img-rest);transition:transform .5s cubic-bezier(.2,.8,.2,1),filter .6s ease}
 .image-frame .frame-box:hover img,.image-frame .frame-box:focus-within img{transform:scale(1.02);filter:var(--img-hover)}
 .image-frame .frame-box:has(video){width:100%}
 .image-frame .frame-box video{width:100%;height:auto;object-fit:contain}
@@ -314,7 +316,8 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
    frame read as far bigger than the person inside it. */
 /* Portraits: the frame hugs the photo exactly, at the same size the
    lightbox shows it (up to 88% of the screen height). */
-.image-frame.portrait .frame-box img{max-height:88vh}
+.image-frame.portrait .frame-box{width:fit-content;max-width:100%}
+.image-frame.portrait .frame-box img{width:auto;max-width:100%;max-height:88vh;object-fit:contain}
 
 /* WORK CARD */
 /* Works filter (Vue-rendered chips; hidden entirely without JS) */
@@ -630,6 +633,14 @@ html,body{max-width:100%;overflow-x:clip}
 .gate-inner{max-width:min(60rem,100%)}
 .gate-title{font-family:var(--grunge);text-transform:uppercase;font-weight:400;line-height:.88;letter-spacing:-.01em;margin:0;color:var(--paper);font-size:clamp(3.6rem,13vw,9.5rem);text-wrap:balance}
 @media (max-height:760px){.gate-title{font-size:clamp(3.2rem,15.5vh,7.5rem)}}
+/* Phones: smaller headline and room at the top so the Lagos clock row and
+   language pill have breathing space above the question. */
+@media (max-width:600px){
+    #gate{align-items:flex-start;padding-top:5.5rem}
+    .gate-inner{gap:1.1rem;margin-block:auto}
+    .gate-title{font-size:clamp(2.5rem,12vw,3.4rem);line-height:.93}
+    .gate-inner .t-sm{font-size:.85rem;line-height:1.6}
+}
 
 /* ============ NAME ENTRY (dictionary-style pronunciation) ============
    Set in the display face used on the project-card labels, small and
