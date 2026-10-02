@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # Pillow is only exercised for images not already in assets/.optimized
+      # (the committed WebP cache), so builds stay fast.
+      - name: Install image tooling
+        run: python3 -m pip install --quiet pillow
+
       - name: Build portfolio
         run: python3 scripts/build_portfolio.py
 

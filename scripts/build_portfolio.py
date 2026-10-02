@@ -13,7 +13,7 @@ CONFIG=json.loads((ROOT/"scripts/site_config.json").read_text(encoding="utf-8"))
 # authoritative "Odunayo Portfolio Assets" folder. These are handled by
 # personal_images()/awards()/certificates(), never treated as projects, and
 # the deprecated slugified "projects" collection is never scanned.
-NON_PROJECT_DIRS={"projects","credentials","personal","odunayo portfolio assets","certifications","personal images","personal videos","theme"}
+NON_PROJECT_DIRS={"projects","credentials","personal","odunayo portfolio assets","certifications","personal images","personal videos","theme",".optimized"}
 
 IMG_EXT={".jpg",".jpeg",".png",".webp",".gif",".avif",".svg"}
 VID_EXT={".mp4",".webm",".mov",".m4v",".ogg"}
@@ -136,6 +136,9 @@ def copy_assets():
     (SITE/"assets"/"css").mkdir(parents=True);(SITE/"assets"/"js").mkdir(parents=True)
     shutil.copy2(ROOT/"scripts"/"styles.css",SITE/"assets"/"css"/"styles.css")
     shutil.copy2(ROOT/"scripts"/"script.js",SITE/"assets"/"js"/"script.js")
+    # Libraries are self-hosted (same origin = no extra DNS/TLS round trip and
+    # no dependency on a third-party CDN being fast before the gate works).
+    shutil.copytree(ROOT/"scripts"/"vendor",SITE/"assets"/"js"/"vendor")
     shutil.copy2(ROOT/"scripts"/"uplink-loader.html",SITE/"assets"/"theme"/"uplink-loader.html")
 
 # ---------- shell / chrome ----------
@@ -145,9 +148,11 @@ def head(title,desc,canonical):
 <title>{esc(title)} · Odunayo Bolarinwa</title><meta name="description" content="{esc(desc)}">
 <link rel="canonical" href="https://odgrande.github.io{canonical}">
 <meta property="og:title" content="{esc(title)} · Odunayo Bolarinwa"><meta property="og:description" content="{esc(desc)}"><meta property="og:image" content="https://odgrande.github.io/og-image.png">
+<link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="/assets/js/vendor/gsap.min.js" defer></script>
+<script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
 </head>'''
 
 NAV_LINKS=[("HOME","/"),("WORKS","/works/"),("ABOUT","/about/"),("CREDENTIALS","/credentials/"),("CONTACT","/contact/")]
@@ -255,7 +260,7 @@ def exit_popup():
 </form>
 </div></div>'''
 
-PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip")}}catch(e){}</script>'
+PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{if(localStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
     return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
@@ -292,11 +297,23 @@ def footer():
 def image_frame(src,alt,cls=""):
     if not src:
         return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
-    return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" loading="lazy"></div></div>'''
+    # Portraits sit at the top of Home/About: fetch them first, not lazily.
+    load='loading="eager" fetchpriority="high"' if "portrait" in cls else 'loading="lazy"'
+    return f'''<div class="image-frame {cls}"><img class="barcode" src="/assets/theme/barcode.svg" alt=""><div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
 
 def marquee(phrases):
-    group="".join(f'<span class="marquee-item">{esc(p)}</span>' for p in phrases)
-    return f'<div class="marquee" aria-hidden="true"><div class="marquee-track">{group}{group}</div></div>'
+    # Two full-bleed bands crossing in a shallow X — a paper one and an ink
+    # one, running in opposite directions. Words alternate display / mono type
+    # with a spinning star between them. script.js drives the motion (and
+    # couples it to scroll speed/direction); the CSS animation is the
+    # no-JS fallback. Six copies of the group keep the loop seamless on
+    # ultra-wide screens (the track animates exactly half its width).
+    def band(cls,offset):
+        words=phrases[offset:]+phrases[:offset]
+        group="".join(f'<span class="mq-item{" mq-alt" if i%2 else ""}">{esc(p)}</span><span class="mq-star" aria-hidden="true">✦</span>' for i,p in enumerate(words))
+        return f'<div class="mq-band {cls}"><div class="mq-track">{group*6}</div></div>'
+    label=esc(" · ".join(phrases))
+    return f'<div class="marquee" role="img" aria-label="{label}">{band("mq-a",0)}{band("mq-b",1 if len(phrases)>1 else 0)}</div>'
 
 def masonry_gallery(images,alt,shots=False):
     if not images:return ""
@@ -762,13 +779,13 @@ def page_cookies():
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
 <li><code>odTheme</code> — your light/dark mode choice, kept until you change it again (local storage).</li>
-<li><code>odLang</code> — your chosen site language, kept until you change it again (local storage).</li>
+<li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
 <li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
 <li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>
 <li><code>odExitSeen</code> — whether the exit-intent popup has already shown this session (session storage).</li>
 <li><code>odVisitorGeo</code> — the country/timezone result from the footer's one-time IP lookup, cached for the rest of the session so it isn't requested again (session storage). See the <a class="link-inline" href="/privacy/">Privacy Policy</a> for how that lookup works.</li>
 </ul>'''),
-        ("Third parties","Fonts are loaded from Google Fonts, and the animation libraries (GSAP, Three.js) are loaded from the cdnjs CDN. Both may see a standard request (your IP address, browser user-agent) as part of serving those files, the same as any site that loads a web font or script from a CDN — this site doesn't add any tracking on top of that."),
+        ("Third parties","The site's fonts and libraries (GSAP, Three.js, Vue) are served from this site itself. The loading animation fetches one font from Google Fonts, which may see a standard request (your IP address, browser user-agent) as part of serving it — this site doesn't add any tracking on top of that."),
         ("Your control","Clearing your browser's site data for odgrande.github.io removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end."),
         ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
     ]
@@ -793,8 +810,93 @@ def page_sitemap(projects):
 </section>'''
     return shell("Sitemap",f"Full page listing for {site['name']}'s portfolio site.",body,"/sitemap/",show_cta=False)
 
+# ---------- image optimisation ----------
+# Source assets are full-resolution PNG screenshots / phone photos (up to
+# 25 MB each, ~320 MB in total), far too heavy to serve. Every raster image
+# under site/assets (except the small theme files referenced from CSS) is
+# re-encoded to WebP at two widths — FULL for the lightbox / large screens,
+# SMALL for cards and phones — and the HTML is rewritten to use them with
+# srcset + intrinsic width/height (no layout shift) + lazy loading.
+# Encodes are cached in assets/.optimized/ keyed by a hash of the source
+# bytes and committed, so CI and repeat builds just copy them.
+OPT_DIR=ASSETS/".optimized"
+RASTER_EXT={".png",".jpg",".jpeg"}
+FULL_W,SMALL_W,MAX_H=1600,800,16000
+
+def _encode(job):
+    src,h=job
+    from PIL import Image, ImageOps
+    Image.MAX_IMAGE_PIXELS=None
+    out={}
+    with Image.open(src) as im:
+        im=ImageOps.exif_transpose(im)
+        alpha=im.mode in ("RGBA","LA") or (im.mode=="P" and "transparency" in im.info)
+        im=im.convert("RGBA" if alpha else "RGB")
+        for tag,maxw in (("full",FULL_W),("small",SMALL_W)):
+            w,hh=im.size
+            scale=min(1,maxw/w,MAX_H/hh)
+            frame=im.resize((max(1,round(w*scale)),max(1,round(hh*scale))),Image.LANCZOS) if scale<1 else im
+            frame.save(OPT_DIR/f"{h}-{tag}.webp","WEBP",quality=76,method=4)
+            out[tag]=list(frame.size)
+    return h,out
+
+def optimize_images():
+    import hashlib
+    from concurrent.futures import ProcessPoolExecutor
+    OPT_DIR.mkdir(exist_ok=True)
+    manifest_f=OPT_DIR/"manifest.json"
+    manifest=json.loads(manifest_f.read_text()) if manifest_f.exists() else {}
+    files=[p for p in (SITE/"assets").rglob("*") if p.is_file() and p.suffix.lower() in RASTER_EXT and p.parent.name!="theme"]
+    hashes={p:hashlib.sha1(p.read_bytes()).hexdigest()[:24] for p in files}
+    todo=sorted({(str(p),h) for p,h in hashes.items() if h not in manifest or not (OPT_DIR/f"{h}-full.webp").exists()},key=lambda x:x[1])
+    seen=set();todo=[t for t in todo if not (t[1] in seen or seen.add(t[1]))]
+    if todo:
+        print(f"Optimising {len(todo)} images...")
+        with ProcessPoolExecutor() as ex:
+            for h,dims in ex.map(_encode,todo):manifest[h]=dims
+        manifest_f.write_text(json.dumps(manifest,indent=0,sort_keys=True))
+    mapping={}
+    for p,h in hashes.items():
+        full=p.with_name(p.stem+".webp")
+        if full.exists():full=p.with_name(p.name+".webp")
+        small=full.with_name(full.stem+"-sm.webp")
+        shutil.copy2(OPT_DIR/f"{h}-full.webp",full);shutil.copy2(OPT_DIR/f"{h}-small.webp",small)
+        p.unlink()
+        rel=lambda x:"/"+x.relative_to(SITE).as_posix()
+        mapping[rel(p)]=(rel(full),rel(small),manifest[h]["full"],manifest[h]["small"])
+    return mapping
+
+def rewrite_images(mapping):
+    from urllib.parse import unquote as _unquote
+    from html import unescape
+    unquote=lambda s:_unquote(unescape(s))
+    q=lambda path:quote(path)
+    img_re=re.compile(r"<img\b[^>]*>")
+    def fix_img(m):
+        tag=m.group(0)
+        sm=re.search(r'\ssrc="([^"]+)"',tag)
+        if not sm:return tag
+        hit=mapping.get(unquote(sm.group(1)))
+        if hit:
+            full,small,(fw,fh),(sw,_)=hit
+            tag=tag.replace(sm.group(0),f' src="{q(small)}" srcset="{q(small)} {sw}w, {q(full)} {fw}w" sizes="(max-width: 700px) 100vw, 700px" data-full="{q(full)}"',1)
+            if " width=" not in tag:tag=tag.replace("<img",f'<img width="{fw}" height="{fh}"',1)
+        if " loading=" not in tag:tag=tag.replace("<img",'<img loading="lazy"',1)
+        if " decoding=" not in tag:tag=tag.replace("<img",'<img decoding="async"',1)
+        return tag
+    attr_re=re.compile(r'((?:href|data-src|poster)=")(/assets/[^"]+)(")')
+    def fix_attr(m):
+        hit=mapping.get(unquote(m.group(2)))
+        return m.group(1)+q(hit[0])+m.group(3) if hit else m.group(0)
+    for f in SITE.rglob("*.html"):
+        if "theme" in f.parts:continue
+        s=f.read_text(encoding="utf-8")
+        s2=attr_re.sub(fix_attr,img_re.sub(fix_img,s))
+        if s2!=s:f.write_text(s2,encoding="utf-8")
+
 def main():
     projects=scan_projects();copy_assets()
+    image_map=optimize_images()
     (SITE/"index.html").write_text(page_home(projects),encoding="utf-8")
     (SITE/"works").mkdir();(SITE/"works"/"index.html").write_text(page_works(projects),encoding="utf-8")
     for p in projects:
@@ -806,6 +908,7 @@ def main():
     (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
     (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
     (SITE/"sitemap").mkdir();(SITE/"sitemap"/"index.html").write_text(page_sitemap(projects),encoding="utf-8")
+    rewrite_images(image_map)
     print(f"Built {len(projects)} projects")
 
 if __name__=="__main__":main()

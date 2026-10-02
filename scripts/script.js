@@ -79,7 +79,8 @@
   // Covers the gate plus every page's headings, intro copy, buttons and the
   // home FAQ (full project names, categories, skill/tech tags and legal
   // body text are intentionally left in English — see the comment on
-  // TRANSLATIONS below). Switching language SETS localStorage then reloads
+  // TRANSLATIONS below). English is always the default: a choice lasts only
+  // for the current visit (sessionStorage). Switching SETS it then reloads
   // the page, rather than live-patching the DOM: translations are applied
   // once, on load, from the server-rendered English text, which is the only
   // way that's reliably correct on every page regardless of what else ran
@@ -307,7 +308,8 @@
     };
 
     let saved;
-    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    try { localStorage.removeItem(KEY); } catch (e) {} // retire the old persistent choice
+    try { saved = sessionStorage.getItem(KEY); } catch (e) {}
     if (saved && !TRANSLATIONS[saved]) saved = 'en';
     if (saved && saved !== 'en') apply(saved);
     // Shared lookup for text rendered later by script (e.g. the Vue works filter).
@@ -328,7 +330,7 @@
     document.querySelectorAll('.lang-option').forEach((btn) => {
       btn.addEventListener('click', () => {
         const lang = btn.dataset.lang;
-        try { localStorage.setItem(KEY, lang); } catch (e) {}
+        try { sessionStorage.setItem(KEY, lang); } catch (e) {}
         location.reload();
       });
     });
@@ -392,8 +394,11 @@
       markSeen();
       window.dispatchEvent(new Event('gate:closed'));
       gate.classList.add('done');
-      if (window.gsap) gsap.to(gate, { opacity: 0, duration: .5, ease: 'power1.out', onComplete: () => gate.remove() });
-      else { gate.style.transition = 'opacity .5s ease'; gate.style.opacity = '0'; setTimeout(() => gate.remove(), 500); }
+      // CSS transition + timer (not a GSAP tween), so the gate is always
+      // removed even if the tab is in the background (rAF paused).
+      gate.style.transition = 'opacity .5s ease';
+      gate.style.opacity = '0';
+      setTimeout(() => gate.remove(), 500);
     };
     const swapPanel = (hide, show) => {
       hide.style.display = 'none';
@@ -404,7 +409,6 @@
     // tab the visitor navigated to directly can't always be force-closed —
     // this is a best-effort attempt with a graceful, honest fallback.
     const tryClose = () => {
-      markSeen();
       try { window.open('', '_self'); } catch (e) {}
       window.close();
       setTimeout(() => {
@@ -426,10 +430,17 @@
       const reason = feedback.reason.value.trim();
       const email = feedback.email.value.trim();
       const lines = ["Feedback from odgrande.github.io:", reason, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
-      markSeen();
-      // Navigating the tab to WhatsApp IS the "leave" — no separate close
-      // attempt needed, and it's far faster than waiting on a mail client.
+      // Navigating the tab to WhatsApp IS the "leave". Deliberately NOT marked
+      // as seen: only "yes, take me in" lets anyone past the gate, so pressing
+      // Back from WhatsApp lands on the question again.
       window.location.href = `${wa}?text=${encodeURIComponent(lines)}`;
+    });
+
+    // Back/forward cache: a page restored from history comes back exactly as
+    // it was left (e.g. on the feedback form) — reload so it starts over at
+    // the question, with nothing behind it.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted && document.body.contains(gate)) location.reload();
     });
 
     if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
@@ -501,18 +512,57 @@
       closePopup();
     });
 
+    // Only real "about to leave" signals, once per session:
+    //  - desktop: the pointer exits through the TOP edge of the window
+    //    (heading for the tabs / address bar / close button) while moving
+    //    upward — not sideways exits, not hovering an iframe, not the gate;
+    //  - touch: a fast flick back up toward the address bar after reading a
+    //    good way down the page (the standard mobile exit-intent signal).
+    // Never in the first few seconds, and never over the menu or lightbox.
+    const MIN_DWELL = 8000;
     const arm = () => {
       let seen;
       try { seen = sessionStorage.getItem(KEY); } catch (e) {}
       if (seen) { popup.remove(); return; }
-      const onLeave = (e) => {
-        if (e.clientY > 0) return;
-        document.removeEventListener('mouseleave', onLeave);
+      const armedAt = performance.now();
+      let fired = false;
+      let onScroll = null;
+      const busy = () => {
+        const g = document.getElementById('gate');
+        return document.body.classList.contains('menu-open') || (g && !g.classList.contains('done'));
+      };
+      const fire = () => {
+        if (fired || busy() || performance.now() - armedAt < MIN_DWELL) return;
+        fired = true;
+        document.removeEventListener('mouseout', onOut);
+        if (onScroll) window.removeEventListener('scroll', onScroll);
         showPopup();
       };
-      document.addEventListener('mouseleave', onLeave);
+
+      let lastY = null;
+      document.addEventListener('mousemove', (e) => { lastY = e.clientY; }, { passive: true });
+      const onOut = (e) => {
+        if (e.relatedTarget || e.toElement) return;      // still inside the page
+        if (e.clientY > 0) return;                       // left via side/bottom
+        if (lastY !== null && lastY > 120) return;       // not travelling up toward the browser UI
+        fire();
+      };
+      document.addEventListener('mouseout', onOut);
+
+      if (window.matchMedia('(hover: none)').matches) {
+        let prevY = window.scrollY, prevT = performance.now(), maxDepth = 0;
+        onScroll = () => {
+          const y = window.scrollY, t = performance.now();
+          const doc = document.documentElement.scrollHeight - window.innerHeight;
+          maxDepth = Math.max(maxDepth, doc > 0 ? y / doc : 0);
+          const v = (y - prevY) / Math.max(t - prevT, 1);  // px per ms; negative = upward
+          prevY = y; prevT = t;
+          if (maxDepth > 0.35 && v < -2.2 && y < doc * 0.5) fire();
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
     };
-    window.addEventListener('preloader:done', () => setTimeout(arm, 1200), { once: true });
+    window.addEventListener('preloader:done', arm, { once: true });
   })();
 
   // ---------- lightbox ----------
@@ -526,7 +576,7 @@
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox-close')) hideLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideLightbox(); });
   document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .slider-slide img').forEach((img) => {
-    img.addEventListener('click', () => showLightbox(img.currentSrc || img.src, img.alt));
+    img.addEventListener('click', () => showLightbox(img.dataset.full || img.currentSrc || img.src, img.alt));
   });
 
   // ---------- photo sliders: one per personal-photo subfolder ----------
@@ -550,9 +600,16 @@
   // right after the visitor answers, instead of running unseen underneath.
   (() => {
     const el = document.getElementById('preloader');
-    const unlockScroll = () => document.documentElement.classList.remove('no-scroll');
-    if (!el) { unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); return; }
-    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); return; }
+    // The only place the site is ever revealed (see html.veil in the CSS).
+    const unlockScroll = () => document.documentElement.classList.remove('no-scroll', 'veil');
+    const revealNow = () => { unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); };
+    if (!el || document.documentElement.classList.contains('no-preloader')) {
+      el?.remove();
+      // Even with no preloader, never reveal while the gate is still asking.
+      if (document.getElementById('gate')) window.addEventListener('gate:closed', revealNow, { once: true });
+      else revealNow();
+      return;
+    }
 
     const start = () => {
       const frame = document.getElementById('preloader-frame');
@@ -586,6 +643,9 @@
           // A CSS transition + timer rather than a GSAP tween: GSAP runs on
           // requestAnimationFrame, which browsers pause in background tabs,
           // and the reveal must never depend on that.
+          // Unveil while the preloader is still fully opaque, so its fade
+          // reveals the finished page rather than an empty background.
+          document.documentElement.classList.remove('veil');
           el.style.transition = 'opacity .45s ease';
           el.style.opacity = '0';
           setTimeout(finish, 450);
@@ -779,6 +839,45 @@
       btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: 'power3.out' }));
     });
 
+    // Marquee: both bands run at a steady pixel speed (so it looks the same
+    // on every screen width), then surge and follow your scroll direction —
+    // scroll down and the paper band races left / ink band right, scroll up
+    // and they swap — easing back to cruising speed when you stop. Only
+    // ticks while the marquee is on screen.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.marquee').forEach((mq) => {
+        const bands = [...mq.querySelectorAll('.mq-track')].map((t, i) => ({ t, x: 0, base: i ? 1 : -1, half: 0 }));
+        if (!bands.length) return;
+        mq.classList.add('is-driven');
+        const measure = () => bands.forEach((b) => { b.half = b.t.scrollWidth / 2; if (b.base > 0 && b.x === 0) b.x = -b.half; });
+        measure();
+        document.fonts?.ready.then(measure);
+        window.addEventListener('resize', measure);
+        const CRUISE = window.matchMedia('(max-width: 767px)').matches ? 70 : 110; // px per second
+        let boost = 0, dir = 1, onScreen = false;
+        ScrollTrigger.create({
+          trigger: mq, start: 'top bottom', end: 'bottom top',
+          onToggle: (self) => { onScreen = self.isActive; },
+          onUpdate: (self) => {
+            boost = Math.min(Math.abs(self.getVelocity()) / 220, 7);
+            dir = self.direction;
+          }
+        });
+        gsap.ticker.add((time, dt) => {
+          if (!onScreen) return;
+          boost *= 0.94;
+          const step = CRUISE * (1 + boost) * Math.min(dt, 64) / 1000;
+          bands.forEach((b) => {
+            if (!b.half) return;
+            b.x += b.base * dir * step;
+            if (b.x <= -b.half) b.x += b.half;
+            if (b.x > 0) b.x -= b.half;
+            b.t.style.transform = `translate3d(${b.x}px,0,0)`;
+          });
+        });
+      });
+    }
+
     // Header drops in once the preloader has cleared (or straight away when
     // it's skipped), logo first, then links and controls.
     const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .lang-switcher, .menu-btn');
@@ -862,8 +961,8 @@
     s.onerror = reject;
     document.head.appendChild(s);
   }));
-  const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-  const VUE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js';
+  const THREE_SRC = '/assets/js/vendor/three.min.js';
+  const VUE_SRC = '/assets/js/vendor/vue.global.prod.min.js';
 
   if (isTouchOrSmall) {
     const g = document.createElement('div');
