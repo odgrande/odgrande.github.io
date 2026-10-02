@@ -82,7 +82,11 @@ def scan_projects():
         d=found.get(slug)
         m=meta(slug,d);m["images"]=[];m["videos"]=[]
         if d:
-            files=[p for p in d.rglob("*") if p.is_file() and p.name not in {"project.json","meta.json"}]
+            # excludeImages (site_config): files sitting in a project folder that
+            # don't belong to that project (stray personal photos, receipts,
+            # another project's artwork) and must never be shown on it.
+            skip={"project.json","meta.json",*m.get("excludeImages",[])}
+            files=[p for p in d.rglob("*") if p.is_file() and p.name not in skip]
             m["images"]=[path_url("assets","projects",slug,*p.relative_to(d).parts) for p in files if p.suffix.lower() in IMG_EXT]
             m["videos"]=[path_url("assets","projects",slug,*p.relative_to(d).parts) for p in files if p.suffix.lower() in VID_EXT]
             if slug==HOME_REEL["slug"]:
@@ -223,30 +227,30 @@ def gate():
 </div>
 </div>
 <div class="gate-question" id="gatePersuade">
-<p class="t-md">Wait, really?</p>
-<h2 class="t-lg">15+ live products across Nigeria, the UK, Canada and the USA — and not one of them has caught fire. Give me 10 seconds of scrolling, I promise it's worth it.</h2>
+<p class="t-md" data-i18n="g_p_eyebrow">Wait, really?</p>
+<h2 class="t-lg" data-i18n="g_p_head">15+ live products across Nigeria, the UK, Canada and the USA — and not one of them has caught fire. Give me 10 seconds of scrolling, I promise it's worth it.</h2>
 <div class="gate-actions">
-<button class="btn" id="gatePersuadeYes" type="button">Okay, you've convinced me</button>
-<button class="btn" id="gateStillLeaving" type="button">I'm still leaving</button>
+<button class="btn" id="gatePersuadeYes" type="button" data-i18n="g_p_yes">Okay, you've convinced me</button>
+<button class="btn" id="gateStillLeaving" type="button" data-i18n="g_p_leave">I'm still leaving</button>
 </div>
 </div>
 <form class="gate-feedback" id="gateFeedback" data-whatsapp="{esc(site["whatsapp"])}">
-<p class="t-xl">Alright, your loss. Mind telling me why?</p>
-<textarea name="reason" placeholder="What would have made you want to stay? (optional)"></textarea>
-<input type="email" name="email" placeholder="Your email (optional)">
+<p class="t-xl" data-i18n="g_f_head">Alright, your loss. Mind telling me why?</p>
+<textarea name="reason" data-i18n-ph="g_f_reason_ph" placeholder="What would have made you want to stay? (optional)"></textarea>
+<input type="email" name="email" data-i18n-ph="g_f_email_ph" placeholder="Your email (optional)">
 <div class="gate-actions">
-<button class="btn" type="submit">Send feedback &amp; leave</button>
-<button class="btn" id="gateJustLeave" type="button">Just leave</button>
-<button class="btn" id="gateSkip" type="button">Actually, take me in</button>
+<button class="btn" type="submit" data-i18n="g_f_send">Send feedback &amp; leave</button>
+<button class="btn" id="gateJustLeave" type="button" data-i18n="g_f_just">Just leave</button>
+<button class="btn" id="gateSkip" type="button" data-i18n="g_f_skip">Actually, take me in</button>
 </div>
 </form>
 </div></div>'''
 
 def cookie_banner():
     return '''<div id="cookie-banner">
-<p class="t-sm">This site uses a little browser storage to remember your theme and language for this visit and a couple of one-time prompts — nothing is tracked or sold. See the <a class="link-inline" href="/cookies/">Cookie Policy</a>.</p>
+<p class="t-sm"><span data-i18n="ck_text">This site uses a little browser storage to remember your theme and language for this visit and a couple of one-time prompts — nothing is tracked or sold. See the</span> <a class="link-inline" href="/cookies/"><span data-i18n="ck_link">Cookie Policy</span></a>.</p>
 <div class="cookie-actions">
-<button class="btn cookie-accept" type="button">Got it</button>
+<button class="btn cookie-accept" type="button" data-i18n="ck_ok">Got it</button>
 <button class="cookie-close" type="button" aria-label="Dismiss">&times;</button>
 </div>
 </div>'''
@@ -256,26 +260,26 @@ def exit_popup():
     return f'''<div id="exit-popup"><div class="exit-inner">
 <button class="exit-close" id="exitClose" type="button" aria-label="Close">&times;</button>
 <div class="exit-question" id="exitQuestion">
-<p class="t-md">Hold up — don't go yet</p>
-<h2 class="t-xl">Leaving without dropping your genius idea here is basically a crime against innovation.</h2>
-<p class="t-sm" style="color:var(--muted)">(Not a real crime. Please don't call the police.) Tell me what you're dreaming up — a website, an app, a wild 2am idea — and I'll turn it into something real.</p>
+<p class="t-md" data-i18n="x_eyebrow">Hold up — don't go yet</p>
+<h2 class="t-xl" data-i18n="x_head">Leaving without dropping your genius idea here is basically a crime against innovation.</h2>
+<p class="t-sm" style="color:var(--muted)" data-i18n="x_sub">(Not a real crime. Please don't call the police.) Tell me what you're dreaming up — a website, an app, a wild 2am idea — and I'll turn it into something real.</p>
 <div class="gate-actions">
-<button class="btn" id="exitOpenForm" type="button">Okay, take my idea</button>
-<button class="btn" id="exitDismiss" type="button">Maybe later</button>
+<button class="btn" id="exitOpenForm" type="button" data-i18n="x_yes">Okay, take my idea</button>
+<button class="btn" id="exitDismiss" type="button" data-i18n="x_later">Maybe later</button>
 </div>
 </div>
 <form class="gate-feedback" id="exitForm" data-whatsapp="{esc(site["whatsapp"])}">
-<p class="t-xl">Go on then, impress me.</p>
-<textarea name="idea" placeholder="My brilliant idea is..." required></textarea>
-<input type="email" name="email" placeholder="Where should I send updates? (optional)">
+<p class="t-xl" data-i18n="x_f_head">Go on then, impress me.</p>
+<textarea name="idea" data-i18n-ph="x_idea_ph" placeholder="My brilliant idea is..." required></textarea>
+<input type="email" name="email" data-i18n-ph="x_email_ph" placeholder="Where should I send updates? (optional)">
 <div class="gate-actions">
-<button class="btn" type="submit">Send my idea</button>
-<button class="btn" id="exitSkip" type="button">Never mind</button>
+<button class="btn" type="submit" data-i18n="x_send">Send my idea</button>
+<button class="btn" id="exitSkip" type="button" data-i18n="x_never">Never mind</button>
 </div>
 </form>
 </div></div>'''
 
-PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
+PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odPreloaderSeen")){document.documentElement.classList.add("no-preloader")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
     return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
@@ -305,7 +309,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{esc(t)}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     return f'''<footer data-reveal><a href="/" class="footer-logo" aria-label="{esc(site["name"])} — home"><img src="/assets/theme/logo.png" alt="">{esc(site["name"])}</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p>Crafted with joy by {esc(site["name"])}</p><p>© 2026 All Rights Reserved</p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
+<div class="footer-bottom"><p data-i18n="ft_crafted" data-i18n-n="{esc(site["name"])}">Crafted with joy by {esc(site["name"])}</p><p>© 2026 <span data-i18n="ft_rights">All Rights Reserved</span></p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -316,12 +320,29 @@ def wa_barcode(cls=""):
     return (f'<a class="barcode-link {cls}" href="{esc(wa)}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">'
             f'<img class="barcode" src="/assets/theme/barcode.svg" alt=""></a>')
 
-def image_frame(src,alt,cls=""):
+def placeholder(title,sub=""):
+    # Shown wherever a project has no visuals yet: a "case file" card in the
+    # site's own language (hatched dark paper, proof corner marks, the name
+    # in the display face, a tilted rubber stamp) instead of an empty box.
+    return (f'<div class="ph" role="img" aria-label="{esc(title)}: visuals coming soon">'
+            f'<i class="ph-corner tl"></i><i class="ph-corner tr"></i><i class="ph-corner bl"></i><i class="ph-corner br"></i>'
+            f'{f"<span class=ph-cat>{esc(sub)}</span>" if sub else ""}'
+            f'<span class="ph-title">{esc(title)}</span>'
+            f'<span class="ph-stamp" data-i18n="ph_stamp">Visuals coming soon</span></div>')
+
+def image_frame(src,alt,cls="",sub=""):
     if not src:
-        return f'<div class="image-frame {cls}"><div class="frame-box" style="display:grid;place-items:center;background:var(--base-300)"><span class="t-md">NO IMAGE YET</span></div></div>'
+        return f'<div class="image-frame {cls}"><div class="frame-box frame-ph">{placeholder(alt,sub)}</div></div>'
     # Portraits sit at the top of Home/About: fetch them first, not lazily.
     load='loading="eager" fetchpriority="high"' if "portrait" in cls else 'loading="lazy"'
     return f'''<div class="image-frame {cls}">{wa_barcode()}<div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
+
+MQ_KEYS={"Full-Stack Developer":"mq_fullstack","Web Designer":"mq_webdesigner","Let's Build Something Great":"mq_build","Open For Work":"mq_open","4 Countries":"mq_countries","Zero Templates":"mq_zero"}
+def mq_attr(phrase):
+    # Translatable marquee words; "21 Projects" keeps its live count via data-i18n-n.
+    m=re.fullmatch(r"(\d+) Projects",phrase)
+    if m: return f' data-i18n="mq_projects" data-i18n-n="{m.group(1)}"'
+    return f' data-i18n="{MQ_KEYS[phrase]}"' if phrase in MQ_KEYS else ""
 
 def marquee(phrases):
     # Two full-bleed bands crossing in a shallow X — a paper one and an ink
@@ -332,7 +353,7 @@ def marquee(phrases):
     # ultra-wide screens (the track animates exactly half its width).
     def band(cls,offset):
         words=phrases[offset:]+phrases[:offset]
-        group="".join(f'<span class="mq-item{" mq-alt" if i%2 else ""}">{esc(p)}</span><span class="mq-star" aria-hidden="true">✦</span>' for i,p in enumerate(words))
+        group="".join(f'<span class="mq-item{" mq-alt" if i%2 else ""}"{mq_attr(p)}>{esc(p)}</span><span class="mq-star" aria-hidden="true">✦</span>' for i,p in enumerate(words))
         return f'<div class="mq-band {cls}"><div class="mq-track">{group*6}</div></div>'
     label=esc(" · ".join(phrases))
     return f'<div class="marquee" role="img" aria-label="{label}">{band("mq-a",0)}{band("mq-b",1 if len(phrases)>1 else 0)}</div>'
@@ -389,7 +410,7 @@ def journey_stepper():
 
 def work_card(p,home=False):
     img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
-    thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy">' if img else f'<div class="empty-thumb"><span>{esc(p["title"][:2].upper())}</span></div>'
+    thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy">' if img else placeholder(p["title"],p["category"])
     return f'''<a class="work-card" href="/works/{esc(p["slug"])}/" data-cat="{esc(p["category"])}"><div class="frame"><div class="label"><span>{esc(p["category"])}</span><img src="/assets/theme/symbol.svg" alt=""></div><div class="texture"></div>{thumb}<div class="disk"></div></div><div class="meta"><h3 class="h4">{esc(p["title"])}</h3><p class="t-md">{esc(p["client"])}</p></div></a>'''
 
 # ---------- personal / credential asset lookups ----------
@@ -605,7 +626,7 @@ def page_home(projects):
 def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
 <h1 class="h1 text-center" data-i18n="works_heading">Works</h1>
-<p class="t-sm text-center">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
+<p class="t-sm text-center" data-i18n="works_intro" data-i18n-n="{len(projects)}">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
 </section>
 
 {marquee([f"{len(projects)} Projects","4 Countries","Zero Templates"])}
@@ -622,13 +643,26 @@ def related_projects(p,projects):
     picks=(same_category+[x for x in others if x not in same_category])[:3]
     if not picks:return ""
     cards="".join(work_card(x) for x in picks)
-    return f'<section class="container container-lg" style="align-items:center" data-reveal><h2 class="h2 text-center">More Work</h2><div class="work-grid">{cards}</div></section>'
+    return f'<section class="container container-lg" style="align-items:center" data-reveal><h2 class="h2 text-center" data-i18n="more_work">More Work</h2><div class="work-grid">{cards}</div></section>'
+
+def project_pager(p,projects):
+    # Previous / All works / Next, wrapping around the list.
+    i=next(n for n,x in enumerate(projects) if x["slug"]==p["slug"])
+    prev,nxt=projects[i-1],projects[(i+1)%len(projects)]
+    return (f'<nav class="pager" aria-label="More projects">'
+            f'<a class="pager-link pager-prev" href="/works/{esc(prev["slug"])}/"><span class="pager-dir" data-i18n="pager_prev">Previous</span><span class="pager-title">{esc(prev["title"])}</span></a>'
+            f'<a class="btn pager-all" href="/works/"><span data-i18n="all_works_btn">All Works</span></a>'
+            f'<a class="pager-link pager-next" href="/works/{esc(nxt["slug"])}/"><span class="pager-dir" data-i18n="pager_next">Next</span><span class="pager-title">{esc(nxt["title"])}</span></a></nav>')
 
 def page_project(p,projects):
     hero=p["images"][0] if p.get("images") else ""
     rest=p["images"][1:] if p.get("images") else []
-    facts=[("Client","fact_client",p["client"]),("Category","fact_category",p["category"]),("Services","fact_services"," · ".join(p["services"])),("Year","fact_year",p.get("year",""))]
-    facts_html="".join(f'<div class="fact"><h4 class="h5" data-i18n="{k_i18n}">{esc(k)}</h4><p class="t-sm">{esc(v)}</p></div>' for k,k_i18n,v in facts)
+    # Spec panel: numbered mono labels over values set in the display face,
+    # services as tags, inside the site's 2px frame. Four cells on desktop,
+    # a 2x2 grid on phones with services spanning the full width.
+    services="".join(f'<span>{esc(x)}</span>' for x in p["services"])
+    facts=[("Client","fact_client",esc(p["client"])),("Year","fact_year",esc(p.get("year",""))),("Category","fact_category",esc(p["category"])),("Services","fact_services",f'<span class="spec-tags">{services}</span>')]
+    facts_html="".join(f'<div class="spec-item spec-{k_i18n[5:]}"><dt><span class="spec-n">{n:02d}</span><span data-i18n="{k_i18n}">{k}</span></dt><dd>{v}</dd></div>' for n,(k,k_i18n,v) in enumerate(facts,1))
     live_btn=f'<a class="btn" href="{esc(p["liveSite"])}" target="_blank" rel="noopener"><span data-i18n="live_site_btn">Live Site</span></a>' if p.get("liveSite") else ""
     video_html=""
     if p.get("videos"):
@@ -636,13 +670,13 @@ def page_project(p,projects):
     gallery=masonry_gallery(rest,p["title"],shots=True)
     body=f'''<section class="container container-xl" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">{esc(p["title"])}</h1>
-<div class="hero-media" style="width:100%">{image_frame(hero,p["title"])}</div>
-<div class="facts-row">{facts_html}</div>
+<div class="hero-media" style="width:100%">{image_frame(hero,p["title"],sub=p["category"])}</div>
+<dl class="spec">{facts_html}</dl>
 {live_btn}
 <div style="max-width:48rem"><p class="t-xl">{esc(p["description"])}</p></div>
 {video_html}
 {gallery}
-<a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a>
+{project_pager(p,projects)}
 </section>
 {related_projects(p,projects)}'''
     return shell(p["title"],p["description"],body,f'/works/{p["slug"]}/')
@@ -808,6 +842,7 @@ def page_cookies():
 <li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
 <li><code>odGateSeen</code> — whether you've already answered the one-time landing question this browser session (session storage, cleared when you close the tab).</li>
+<li><code>odPreloaderSeen</code> — whether the loading animation has already played this visit, so other pages open instantly (session storage, cleared when you close the tab).</li>
 <li><code>odCookieNoticeSeen</code> — whether you've dismissed this cookie notice this session (session storage).</li>
 <li><code>odExitSeen</code> — whether the exit-intent popup has already shown this session (session storage).</li>
 <li><code>odVisitorGeo</code> — the country/timezone result from the footer's one-time IP lookup, cached for the rest of the session so it isn't requested again (session storage). See the <a class="link-inline" href="/privacy/">Privacy Policy</a> for how that lookup works.</li>
@@ -921,6 +956,23 @@ def rewrite_images(mapping):
         s2=attr_re.sub(fix_attr,img_re.sub(fix_img,s))
         if s2!=s:f.write_text(s2,encoding="utf-8")
 
+def page_404():
+    body='''<section class="container container-md notfound" style="align-items:center" data-reveal>
+<p class="t-md text-center" data-i18n="nf_eyebrow">Error 404</p>
+<h1 class="h1 text-center" data-i18n="nf_heading">Lost in the code.</h1>
+<p class="t-sm text-center" style="max-width:32rem" data-i18n="nf_text">This page doesn't exist (or it moved while I was refactoring). Let's get you somewhere useful.</p>
+<div class="gate-actions"><a class="btn" href="/"><span data-i18n="nf_home">Back home</span></a><a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a></div>
+</section>'''
+    return shell("Page not found","This page doesn't exist.",body,"/404.html",show_cta=False)
+
+def write_seo_files(projects):
+    # robots.txt + sitemap.xml so search engines find every page.
+    base="https://odgrande.github.io"
+    paths=["/","/works/","/about/","/credentials/","/contact/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
+    urls="".join(f"<url><loc>{base}{u}</loc></url>" for u in paths)
+    (SITE/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',encoding="utf-8")
+    (SITE/"robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n",encoding="utf-8")
+
 def main():
     projects=scan_projects();copy_assets()
     image_map=optimize_images()
@@ -935,6 +987,8 @@ def main():
     (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
     (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
     (SITE/"sitemap").mkdir();(SITE/"sitemap"/"index.html").write_text(page_sitemap(projects),encoding="utf-8")
+    (SITE/"404.html").write_text(page_404(),encoding="utf-8")
+    write_seo_files(projects)
     rewrite_images(image_map)
     print(f"Built {len(projects)} projects")
 
