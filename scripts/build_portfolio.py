@@ -172,18 +172,20 @@ def nav():
     desktop="".join(f'<li><a href="{u}">{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
     mobile="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" class="close-icon" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>'
-    menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 34 34" class="hamburger-icon" aria-hidden="true">
-<path class="bracket" d="M2 9V4.5A2.5 2.5 0 0 1 4.5 2H9" fill="none" stroke-width="2" stroke-linecap="round"/>
-<path class="bracket" d="M25 2h4.5A2.5 2.5 0 0 1 32 4.5V9" fill="none" stroke-width="2" stroke-linecap="round"/>
-<path class="bracket" d="M32 25v4.5a2.5 2.5 0 0 1-2.5 2.5H25" fill="none" stroke-width="2" stroke-linecap="round"/>
-<path class="bracket" d="M9 32H4.5A2.5 2.5 0 0 1 2 29.5V25" fill="none" stroke-width="2" stroke-linecap="round"/>
-<rect x="9" y="14.5" width="16" height="2.4" rx="1.2"/>
-<rect x="9" y="19.5" width="11" height="2.4" rx="1.2"/>
+    # A rubber-stamp style badge: "MENU ✦ MENU ✦" runs round a ring that
+    # slowly turns (like the site's grunge stamps/marquee), with two
+    # hand-drawn-length bars in the centre that slide on hover/tap.
+    menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 100 100" class="hamburger-icon" aria-hidden="true">
+<defs><path id="menuRing" d="M50 50m-37 0a37 37 0 1 1 74 0a37 37 0 1 1-74 0"/></defs>
+<circle class="menu-ring-line" cx="50" cy="50" r="47" fill="none" stroke-width="2"/>
+<g class="menu-ring"><text><textPath href="#menuRing" textLength="228" lengthAdjust="spacing">MENU ✦ MENU ✦ MENU ✦</textPath></text></g>
+<rect class="menu-bar menu-bar-1" x="35" y="42" width="30" height="5" rx="2.5"/>
+<rect class="menu-bar menu-bar-2" x="35" y="53" width="19" height="5" rx="2.5"/>
 </svg>'''
     name=esc(CONFIG["site"]["name"])
     logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a>'
-    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
+    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" type="button" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{theme_toggle()}{lang_switcher()}</div><button class="close-btn" type="button" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
@@ -259,7 +261,7 @@ def shell(title,desc,body,canonical="/",show_cta=True):
     return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav()}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js" defer></script></body></html>'''
 
 def cta_band():
-    return '''<section class="cta-band" data-reveal><div class="container container-md" style="align-items:center">
+    return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">
 <p class="t-md text-center" data-i18n="footer_whats_next">What's next?</p>
 <h2 class="h2 text-center cta-rotate" data-i18n="footer_cta_heading">Let's work together.</h2>
 <p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
@@ -349,7 +351,7 @@ def journey_stepper():
 def work_card(p,home=False):
     img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
     thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy">' if img else f'<div class="empty-thumb"><span>{esc(p["title"][:2].upper())}</span></div>'
-    return f'''<a class="work-card" href="/works/{esc(p["slug"])}/"><div class="frame"><div class="label"><span>{esc(p["category"])}</span><img src="/assets/theme/symbol.svg" alt=""></div><div class="texture"></div>{thumb}<div class="disk"></div></div><div class="meta"><h3 class="h4">{esc(p["title"])}</h3><p class="t-md">{esc(p["client"])}</p></div></a>'''
+    return f'''<a class="work-card" href="/works/{esc(p["slug"])}/" data-cat="{esc(p["category"])}"><div class="frame"><div class="label"><span>{esc(p["category"])}</span><img src="/assets/theme/symbol.svg" alt=""></div><div class="texture"></div>{thumb}<div class="disk"></div></div><div class="meta"><h3 class="h4">{esc(p["title"])}</h3><p class="t-md">{esc(p["client"])}</p></div></a>'''
 
 # ---------- personal / credential asset lookups ----------
 
@@ -565,7 +567,8 @@ def page_works(projects):
 {marquee([f"{len(projects)} Projects","4 Countries","Zero Templates"])}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
-<div class="work-grid">{"".join(work_card(p) for p in projects)}</div>
+<div id="works-filter" class="works-filter" aria-label="Filter projects"></div>
+<div class="work-grid" id="works-grid">{"".join(work_card(p) for p in projects)}</div>
 </section>'''
     return shell("Works","Websites, e-commerce builds, digital products, plugins and brand projects.",body,"/works/")
 

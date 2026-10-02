@@ -2,11 +2,32 @@
   const toggle = document.getElementById('nav-toggle');
   const menu = document.getElementById('mobile-menu');
   const close = document.getElementById('mobile-close');
-  const open = () => { if (!menu) return; menu.classList.add('open'); document.body.classList.add('menu-open'); };
-  const shut = () => { if (!menu) return; menu.classList.remove('open'); document.body.classList.remove('menu-open'); };
+  const open = () => {
+    if (!menu) return;
+    menu.classList.add('open');
+    document.body.classList.add('menu-open');
+    toggle?.setAttribute('aria-expanded', 'true');
+    if (window.gsap) {
+      gsap.fromTo(menu, { clipPath: 'circle(0% at calc(100% - 44px) 44px)' }, { clipPath: 'circle(150% at calc(100% - 44px) 44px)', duration: .7, ease: 'power3.inOut', clearProps: 'clipPath' });
+      gsap.from(menu.querySelectorAll('ul a, .mobile-nav-logo'), { y: 40, opacity: 0, rotate: -3, duration: .6, ease: 'power3.out', stagger: .06, delay: .25 });
+    }
+    close?.focus({ preventScroll: true });
+  };
+  const shut = () => {
+    if (!menu || !menu.classList.contains('open')) return;
+    menu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  };
+  toggle?.setAttribute('aria-expanded', 'false');
+  toggle?.setAttribute('aria-controls', 'mobile-menu');
   toggle?.addEventListener('click', open);
-  close?.addEventListener('click', shut);
+  close?.addEventListener('click', () => { shut(); toggle?.focus({ preventScroll: true }); });
   menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', shut));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
+  // Rotating to desktop width with the menu open would otherwise leave the
+  // page scroll-locked behind a now-hidden overlay.
+  window.matchMedia('(min-width: 768px)').addEventListener?.('change', (e) => { if (e.matches) shut(); });
 
   document.querySelectorAll('.accordion-item').forEach((item) => {
     const trigger = item.querySelector('.accordion-trigger');
@@ -66,6 +87,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
         journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
         nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
         gate_eyebrow: "Before you fly", gate_headline: "Tie your seatbelt well well — you dey about to feel wetin I fit build.",
@@ -114,6 +136,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
         journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
         gate_eyebrow: "Kí o tó fò", gate_headline: "Di àmùrè rẹ mú — o fẹ́ bẹ̀rẹ̀ sí nímọ̀lára ohun tí mo lè kọ́.",
@@ -162,6 +185,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
         journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
         gate_eyebrow: "Kafin ka tashi", gate_headline: "Ka ɗaura bel ɗinka — kana gab da jin abin da zan iya ginawa.",
@@ -210,6 +234,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
         journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
         gate_eyebrow: "Avant de décoller", gate_headline: "Attachez votre ceinture — vous allez ressentir ce que je peux construire.",
@@ -283,7 +308,10 @@
 
     let saved;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved && !TRANSLATIONS[saved]) saved = 'en';
     if (saved && saved !== 'en') apply(saved);
+    // Shared lookup for text rendered later by script (e.g. the Vue works filter).
+    window.odT = (key, fallback) => (TRANSLATIONS[saved] && TRANSLATIONS[saved][key]) || fallback;
 
     document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = LABELS[saved] || 'EN'; });
     document.querySelectorAll('.lang-option').forEach((btn) => {
@@ -322,6 +350,7 @@
         btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
       });
     };
+    apply(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
     document.querySelectorAll('.theme-toggle').forEach((btn) => {
       btn.addEventListener('click', () => {
         const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -522,18 +551,21 @@
   (() => {
     const el = document.getElementById('preloader');
     const unlockScroll = () => document.documentElement.classList.remove('no-scroll');
-    if (!el) { unlockScroll(); window.dispatchEvent(new Event('preloader:done')); return; }
-    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); unlockScroll(); window.dispatchEvent(new Event('preloader:done')); return; }
+    if (!el) { unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); return; }
+    if (document.documentElement.classList.contains('no-preloader')) { el.remove(); unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); return; }
 
     const start = () => {
       const frame = document.getElementById('preloader-frame');
       if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
 
+      let finished = false;
       const finish = () => {
+        if (finished) return;
+        finished = true;
         el.classList.add('done');
         setTimeout(() => el.remove(), 500);
         unlockScroll();
-        window.dispatchEvent(new Event('preloader:done'));
+        window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done'));
       };
       const failsafe = setTimeout(finish, 6000);
 
@@ -551,8 +583,12 @@
       const tryReveal = () => {
         if (realLoadDone && performance.now() - started >= MIN_SHOW) {
           clearTimeout(failsafe);
-          if (window.gsap) gsap.to(el, { opacity: 0, duration: .45, ease: 'power1.out', onComplete: finish });
-          else { el.style.transition = 'opacity .45s ease'; el.style.opacity = '0'; setTimeout(finish, 450); }
+          // A CSS transition + timer rather than a GSAP tween: GSAP runs on
+          // requestAnimationFrame, which browsers pause in background tabs,
+          // and the reveal must never depend on that.
+          el.style.transition = 'opacity .45s ease';
+          el.style.opacity = '0';
+          setTimeout(finish, 450);
         } else {
           setTimeout(tryReveal, 100);
         }
@@ -693,7 +729,20 @@
     // Headline word-reveal (no SplitText dependency: wrap words in spans on the fly)
     document.querySelectorAll('[data-split-text]').forEach((heading) => {
       const words = heading.textContent.trim().split(/\s+/);
-      heading.innerHTML = words.map(w => `<span class="word" style="display:inline-block;overflow:hidden;vertical-align:top"><span style="display:inline-block">${w}</span></span>`).join(' ');
+      heading.setAttribute('aria-label', words.join(' '));
+      heading.textContent = '';
+      words.forEach((w, i) => {
+        const outer = document.createElement('span');
+        outer.className = 'word';
+        outer.setAttribute('aria-hidden', 'true');
+        outer.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top';
+        const inner = document.createElement('span');
+        inner.style.display = 'inline-block';
+        inner.textContent = w;
+        outer.appendChild(inner);
+        heading.appendChild(outer);
+        if (i < words.length - 1) heading.appendChild(document.createTextNode(' '));
+      });
       gsap.from(heading.querySelectorAll('.word > span'), {
         yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.06, delay: 0.2
       });
@@ -729,6 +778,14 @@
       });
       btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: 'power3.out' }));
     });
+
+    // Header drops in once the preloader has cleared (or straight away when
+    // it's skipped), logo first, then links and controls.
+    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .lang-switcher, .menu-btn');
+    gsap.set(navItems, { y: -24, opacity: 0 });
+    const showNav = () => gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });
+    if (window.odPreloaderDone) showNav();
+    else window.addEventListener('preloader:done', showNav, { once: true });
 
     // Page fade-in on load
     gsap.from('.wrap', { opacity: 0, duration: 0.6, ease: 'power1.out' });
@@ -793,15 +850,175 @@
       });
     }
   } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ } };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // One lazy loader per library, so three.js / Vue are fetched at most once
+  // and only on pages (and devices) that actually use them.
+  const loaded = {};
+  const loadScript = (src) => loaded[src] || (loaded[src] = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  }));
+  const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  const VUE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js';
+
   if (isTouchOrSmall) {
     const g = document.createElement('div');
     g.className = 'grain-css';
     g.setAttribute('aria-hidden', 'true');
     document.body.prepend(g);
-  } else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    s.onload = initGrain;
-    document.head.appendChild(s);
+  } else if (!reducedMotion) {
+    loadScript(THREE_SRC).then(initGrain).catch(() => {});
   }
+
+  // ---------- Three.js: floating hexagon (the OD logo's shape) in the CTA band ----------
+  // A slowly turning wireframe hex prism with an orbiting dust ring, drawn in
+  // the current --paper colour (so it follows light/dark mode) and tilting
+  // toward the pointer. three.js is only fetched once the band is near the
+  // viewport, and the loop only runs while it's actually on screen.
+  (() => {
+    const host = document.querySelector('.cta-3d');
+    if (!host || reducedMotion || !('IntersectionObserver' in window)) return;
+    let started = false;
+    const near = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting) || started) return;
+      started = true;
+      near.disconnect();
+      loadScript(THREE_SRC).then(() => initHex(host)).catch(() => {});
+    }, { rootMargin: '400px 0px' });
+    near.observe(host);
+
+    const initHex = (el) => { try {
+      const canvas = document.createElement('canvas');
+      el.appendChild(canvas);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isTouchOrSmall });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouchOrSmall ? 1 : 1.5));
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+      camera.position.z = 7.2;
+
+      const lineMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.6 });
+      const dotMat = new THREE.PointsMaterial({ size: isTouchOrSmall ? 0.07 : 0.055, transparent: true, opacity: 0.85 });
+      // --paper is an oklch() value, which THREE.Color can't parse; painting
+      // it onto a 1px canvas converts it to plain RGB in any browser.
+      const px = document.createElement('canvas').getContext('2d');
+      const recolor = () => {
+        px.fillStyle = '#eeeae0';
+        px.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() || '#eeeae0';
+        px.clearRect(0, 0, 1, 1);
+        px.fillRect(0, 0, 1, 1);
+        const [r, g, b] = px.getImageData(0, 0, 1, 1).data;
+        lineMat.color.setRGB(r / 255, g / 255, b / 255);
+        dotMat.color.setRGB(r / 255, g / 255, b / 255);
+      };
+      recolor();
+      new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+      const group = new THREE.Group();
+      // Hexagonal prism, pointy-top like the logo, as clean edges only.
+      const hex = new THREE.CylinderGeometry(1.6, 1.6, 1.1, 6, 1);
+      group.add(new THREE.LineSegments(new THREE.EdgesGeometry(hex), lineMat));
+      const inner = new THREE.CylinderGeometry(0.95, 0.95, 1.1, 6, 1);
+      group.add(new THREE.LineSegments(new THREE.EdgesGeometry(inner), lineMat));
+      group.rotation.x = Math.PI / 2;
+      scene.add(group);
+
+      const N = isTouchOrSmall ? 220 : 420;
+      const pos = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2 * 7.3, r = 2.6 + ((i * 73) % 100) / 100 * 1.6;
+        pos[i * 3] = Math.cos(a) * r;
+        pos[i * 3 + 1] = (((i * 37) % 100) / 100 - 0.5) * 0.8;
+        pos[i * 3 + 2] = Math.sin(a) * r;
+      }
+      const dustGeo = new THREE.BufferGeometry();
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const dust = new THREE.Points(dustGeo, dotMat);
+      dust.rotation.x = 0.35;
+      scene.add(dust);
+
+      const size = () => {
+        const w = el.clientWidth, h = el.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      size();
+      window.addEventListener('resize', size);
+
+      let tx = 0, ty = 0;
+      window.addEventListener('pointermove', (e) => {
+        tx = (e.clientX / window.innerWidth - 0.5) * 0.6;
+        ty = (e.clientY / window.innerHeight - 0.5) * 0.4;
+      }, { passive: true });
+
+      let visible = false, raf = 0, last = 0;
+      const frameGap = isTouchOrSmall ? 33 : 16;
+      const tick = (t) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < frameGap) return;
+        last = t;
+        const s = t * 0.001;
+        group.rotation.z = s * 0.35;
+        group.rotation.x = Math.PI / 2 + Math.sin(s * 0.6) * 0.25 + ty;
+        group.rotation.y += (tx - group.rotation.y) * 0.05;
+        dust.rotation.y = -s * 0.12;
+        renderer.render(scene, camera);
+      };
+      const run = () => { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(tick); };
+      const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+      new IntersectionObserver((entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        visible ? run() : stop();
+      }).observe(el);
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
+      renderer.render(scene, camera);
+      if (window.gsap) gsap.from(canvas, { opacity: 0, scale: .8, duration: 1.2, ease: 'power3.out' });
+    } catch (e) { el.remove(); } };
+  })();
+
+  // ---------- Vue: works page category filter ----------
+  // The project cards stay server-rendered (so they're crawlable and work
+  // without JS); Vue owns only the filter state and the chip bar, and shows /
+  // hides cards by their data-cat. Projects can sit in several groups.
+  (() => {
+    const mount = document.getElementById('works-filter');
+    const grid = document.getElementById('works-grid');
+    if (!mount || !grid) return;
+    const cards = [...grid.querySelectorAll('.work-card')];
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const GROUPS = [
+      { id: 'all', label: T('filter_all', 'All'), test: () => true },
+      { id: 'web', label: T('filter_web', 'Web'), test: (c) => /\bweb|wordpress/i.test(c) },
+      { id: 'shop', label: T('filter_shop', 'E-commerce'), test: (c) => /e-commerce|shopify|marketplace/i.test(c) },
+      { id: 'brand', label: T('filter_brand', 'Branding'), test: (c) => /brand/i.test(c) },
+      { id: 'product', label: T('filter_product', 'Plugins & Products'), test: (c) => /plugin|product|platform|digital|saas|\bai\b/i.test(c) }
+    ];
+
+    loadScript(VUE_SRC).then(() => {
+      const { createApp, ref, computed, watch, nextTick } = window.Vue;
+      createApp({
+        setup() {
+          const active = ref('all');
+          const groups = computed(() => GROUPS.map((g) => ({ ...g, count: cards.filter((c) => g.test(c.dataset.cat || '')).length })).filter((g) => g.count));
+          watch(active, (id) => {
+            const g = GROUPS.find((x) => x.id === id) || GROUPS[0];
+            const shown = [];
+            cards.forEach((c) => { const on = g.test(c.dataset.cat || ''); c.hidden = !on; if (on) shown.push(c); });
+            nextTick(() => {
+              if (window.gsap) gsap.fromTo(shown, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .55, ease: 'power3.out', stagger: .05, overwrite: true });
+              if (window.ScrollTrigger) ScrollTrigger.refresh();
+            });
+          });
+          return { active, groups };
+        },
+        template: `<button v-for="g in groups" :key="g.id" type="button" class="filter-chip" :class="{ 'is-active': active === g.id }" :aria-pressed="active === g.id ? 'true' : 'false'" @click="active = g.id">{{ g.label }}<sup>{{ g.count }}</sup></button>`
+      }).mount(mount);
+      if (window.gsap) gsap.from(mount.children, { opacity: 0, y: 14, duration: .5, ease: 'power2.out', stagger: .05 });
+    }).catch(() => {});
+  })();
 })();
