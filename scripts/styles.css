@@ -37,7 +37,6 @@
     --base-800:oklch(22% 0.006 56.366);
     --paper:oklch(16% 0.004 49.25);
 }
-[data-theme="light"] body{background-image:none}
 [data-theme="light"] body:before{opacity:.05}
 /* These marks are baked white-on-transparent SVGs drawn straight onto the
    page background (not inside a fixed-color card), so they need to flip to
@@ -54,15 +53,35 @@ body{
     color:var(--paper);
     font-family:var(--mono);
     background-color:var(--ink);
-    background-image:url("/assets/theme/bg.jpg");
-    background-size:cover;
-    background-position:center top;
-    background-attachment:fixed;
-    background-repeat:no-repeat;
     overflow-x:clip;
     position:relative;
     max-width:100vw;
 }
+/* The paper texture lives on its own viewport-sized fixed layer instead of
+   background-attachment:fixed, which mobile browsers ignore (they stretch the
+   image over the whole page height, so the texture looked blown-up/different
+   on phones). A fixed layer renders identically on every device and never
+   repaints on scroll. */
+body:after{
+    content:"";
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:url("/assets/theme/bg.jpg") center top/cover no-repeat;
+}
+[data-theme="light"] body:after{display:none}
+/* Overlays that carry the dark paper photo must drop it in light mode too,
+   otherwise light-mode (dark) text lands on a dark image and vanishes. */
+[data-theme="light"] .mobile-nav,
+[data-theme="light"] #gate{background-image:none}
+/* Moving film grain for touch/small screens, where the WebGL grain shader is
+   skipped for performance — a transform-only animation, so it stays on the
+   compositor and costs nothing while scrolling. */
+.grain-css{position:fixed;inset:-50%;z-index:2;pointer-events:none;opacity:.35;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain-shift .5s steps(5) infinite;will-change:transform}
+@keyframes grain-shift{
+    0%{transform:translate(0,0)}20%{transform:translate(-7%,4%)}40%{transform:translate(5%,-6%)}
+    60%{transform:translate(-4%,-3%)}80%{transform:translate(6%,5%)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion:reduce){.grain-css{animation:none}}
 body:before{
     content:"";
     position:fixed;inset:0;z-index:1;pointer-events:none;
@@ -477,7 +496,6 @@ footer li a:hover{color:var(--muted)}
     .journey-step{gap:.6rem}
     .exit-inner{padding:2.5rem 1.25rem}
     .gate-actions{gap:.6rem}
-    body{background-attachment:scroll}
     #cookie-banner{left:.6rem;right:.6rem;bottom:.6rem;padding:.7rem .85rem;gap:.5rem}
     #cookie-banner{flex-wrap:nowrap;align-items:center}
     #cookie-banner p{flex:1 1 auto;font-size:.68rem;line-height:1.45}

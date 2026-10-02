@@ -712,7 +712,12 @@
       });
     }
   } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ } };
-  if (!isTouchOrSmall && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (isTouchOrSmall) {
+    const g = document.createElement('div');
+    g.className = 'grain-css';
+    g.setAttribute('aria-hidden', 'true');
+    document.body.prepend(g);
+  } else if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
     s.onload = initGrain;
