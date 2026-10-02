@@ -134,7 +134,7 @@ def copy_assets():
     theme=ASSETS/"theme"
     if theme.exists():shutil.copytree(theme,SITE/"assets"/"theme",dirs_exist_ok=True)
     public=ROOT/"public"
-    for n in ("favicon.ico","favicon-32.png","icon-192.png","apple-touch-icon.png","og-image.png","odunayo-bolarinwa-portfolio.pdf","odunayo-bolarinwa-cv.pdf"):
+    for n in ("favicon.ico","favicon-32.png","icon-192.png","apple-touch-icon.png","og-image.jpg","odunayo-bolarinwa-portfolio.pdf","odunayo-bolarinwa-cv.pdf"):
         f=public/n
         if f.exists():shutil.copy2(f,SITE/n)
     (SITE/"assets"/"css").mkdir(parents=True);(SITE/"assets"/"js").mkdir(parents=True)
@@ -155,11 +155,24 @@ def _short_hash(path):
     return hashlib.sha1(path.read_bytes()).hexdigest()[:10]
 ASSET_V={"css":_short_hash(ROOT/"scripts"/"styles.css"),"js":_short_hash(ROOT/"scripts"/"script.js")}
 
+# Browser-tab / link-preview title: name + a short line on what I do.
+TAGLINE="Full-Stack Developer Who Designs"
+
+def page_title(title):
+    if title=="Home":return f"Odunayo Bolarinwa · {TAGLINE}"
+    return f"{title} · Odunayo Bolarinwa | {TAGLINE}"
+
 def head(title,desc,canonical):
+    full=esc(page_title(title)); url=f"https://odgrande.github.io{canonical}"
+    # Link previews (WhatsApp, X, LinkedIn, Slack...) use og-image.jpg: the
+    # About page hero, framed for the 1200x630 preview format.
     return f'''<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(title)} · Odunayo Bolarinwa</title><meta name="description" content="{esc(desc)}">
-<link rel="canonical" href="https://odgrande.github.io{canonical}">
-<meta property="og:title" content="{esc(title)} · Odunayo Bolarinwa"><meta property="og:description" content="{esc(desc)}"><meta property="og:image" content="https://odgrande.github.io/og-image.png">
+<title>{full}</title><meta name="description" content="{esc(desc)}">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Odunayo Bolarinwa"><meta property="og:url" content="{url}">
+<meta property="og:title" content="{full}"><meta property="og:description" content="{esc(desc)}">
+<meta property="og:image" content="https://odgrande.github.io/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Odunayo Bolarinwa, Odgrande Digital CEO: Let's create magic together">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@ceodgrande"><meta name="twitter:title" content="{full}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="https://odgrande.github.io/og-image.jpg">
 <link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css?v={ASSET_V['css']}">
