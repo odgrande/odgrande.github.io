@@ -130,7 +130,7 @@ def copy_assets():
     theme=ASSETS/"theme"
     if theme.exists():shutil.copytree(theme,SITE/"assets"/"theme",dirs_exist_ok=True)
     public=ROOT/"public"
-    for n in ("favicon.svg","og-image.png","odunayo-bolarinwa-portfolio.pdf","odunayo-bolarinwa-cv.pdf"):
+    for n in ("favicon.ico","favicon-32.png","icon-192.png","apple-touch-icon.png","og-image.png","odunayo-bolarinwa-portfolio.pdf","odunayo-bolarinwa-cv.pdf"):
         f=public/n
         if f.exists():shutil.copy2(f,SITE/n)
     (SITE/"assets"/"css").mkdir(parents=True);(SITE/"assets"/"js").mkdir(parents=True)
@@ -150,7 +150,7 @@ def head(title,desc,canonical):
 <meta property="og:title" content="{esc(title)} · Odunayo Bolarinwa"><meta property="og:description" content="{esc(desc)}"><meta property="og:image" content="https://odgrande.github.io/og-image.png">
 <link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css">
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
 </head>'''
