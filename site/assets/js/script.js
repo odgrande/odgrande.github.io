@@ -618,7 +618,7 @@
   const hideLightbox = () => { lightbox.classList.remove('open'); document.body.classList.remove('menu-open'); lbImg.src = ''; };
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox-close')) hideLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideLightbox(); });
-  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .bento-item img, .slider-slide img').forEach((img) => {
+  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .bento-item img, .fb-proof img, .slider-slide img').forEach((img) => {
     img.addEventListener('click', () => showLightbox(img.dataset.full || img.currentSrc || img.src, img.alt));
   });
 
