@@ -665,6 +665,19 @@ def related_projects(p,projects):
     cards="".join(work_card(x) for x in picks)
     return f'<section class="container container-lg" style="align-items:center" data-reveal><h2 class="h2 text-center" data-i18n="more_work">More Work</h2><div class="work-grid">{cards}</div></section>'
 
+def project_highlights(p):
+    # Optional "Featured build" panels (site_config: projects.<slug>.highlights)
+    # for standout pieces of work inside a project, e.g. a custom plugin.
+    out=[]
+    for h in p.get("highlights",[]):
+        paras="".join(f'<p class="t-sm">{esc(x)}</p>' for x in h.get("paragraphs",[]))
+        skills="".join(f'<li>{esc(x)}</li>' for x in h.get("skills",[]))
+        out.append(f'''<section class="feature-build" data-reveal>
+<div class="fb-main"><p class="fb-eyebrow" data-i18n="fb_eyebrow">{esc(h.get("eyebrow","Featured build"))}</p><h2 class="fb-title">{esc(h["title"])}</h2><p class="fb-sub">{esc(h.get("subtitle",""))}</p>{paras}</div>
+{f'<aside class="fb-skills"><h3 class="fb-skills-title" data-i18n="fb_skills">Skills it demonstrates</h3><ul>{skills}</ul></aside>' if skills else ""}
+</section>''')
+    return "".join(out)
+
 def project_pager(p,projects):
     # Previous / All works / Next, wrapping around the list.
     i=next(n for n,x in enumerate(projects) if x["slug"]==p["slug"])
@@ -694,6 +707,7 @@ def page_project(p,projects):
 <dl class="spec">{facts_html}</dl>
 {live_btn}
 <div style="max-width:48rem"><p class="t-xl">{esc(p["description"])}</p></div>
+{project_highlights(p)}
 {video_html}
 {gallery}
 {project_pager(p,projects)}
