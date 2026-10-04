@@ -431,7 +431,9 @@ def journey_stepper():
 </section>'''
 
 def work_card(p,home=False):
-    img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
+    # cardImageEverywhere (site_config): use the featured image on every card
+    # (Works page, "More Work"), not only on the home page.
+    img=(p.get("featuredHomeImage") if home or p.get("cardImageEverywhere") else "") or (p["images"][0] if p.get("images") else "")
     # thumbPosition (site_config) picks which part of a wide image the square card shows.
     pos=f' style="object-position:{esc(p["thumbPosition"])}"' if p.get("thumbPosition") else ""
     thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy"{pos}>' if img else placeholder(p["title"],p["category"])
