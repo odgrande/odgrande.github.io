@@ -676,9 +676,11 @@ def project_highlights(p):
         skills="".join(f'<li>{esc(x)}</li>' for x in h.get("skills",[]))
         badge=f'<span class="fb-badge"><i aria-hidden="true"></i>{esc(h["badge"])}</span>' if h.get("badge") else ""
         pr=h.get("proof")
+        ct=h.get("cta")
+        cta=(f'<a class="btn fb-cta" href="{esc(ct["url"])}"><span>{esc(ct["label"])}</span></a>' if ct else "")
         proof=(f'<figure class="fb-proof"><img src="{esc(pr["image"])}" alt="{esc(pr.get("alt",""))}" loading="lazy"><figcaption>{esc(pr.get("caption",""))}</figcaption></figure>' if pr else "")
         out.append(f'''<section class="feature-build" data-reveal>
-<div class="fb-main"><div class="fb-top"><p class="fb-eyebrow" data-i18n="fb_eyebrow">{esc(h.get("eyebrow","Featured build"))}</p>{badge}</div><h2 class="fb-title">{esc(h["title"])}</h2><p class="fb-sub">{esc(h.get("subtitle",""))}</p>{paras}{proof}</div>
+<div class="fb-main"><div class="fb-top"><p class="fb-eyebrow" data-i18n="fb_eyebrow">{esc(h.get("eyebrow","Featured build"))}</p>{badge}</div><h2 class="fb-title">{esc(h["title"])}</h2><p class="fb-sub">{esc(h.get("subtitle",""))}</p>{paras}{cta}{proof}</div>
 {f'<aside class="fb-skills"><h3 class="fb-skills-title" data-i18n="fb_skills">Skills it demonstrates</h3><ul>{skills}</ul></aside>' if skills else ""}
 </section>''')
     return "".join(out)
