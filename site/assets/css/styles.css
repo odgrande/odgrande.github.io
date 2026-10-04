@@ -749,7 +749,6 @@ html,body{max-width:100%;overflow-x:clip}
 .name-entry{margin-top:1.1rem;max-width:36rem;padding-left:1rem;border-left:2px solid var(--paper);font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;color:var(--paper)}
 .name-entry p{margin:0}
 .name-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .7rem;font-size:1.35rem;line-height:1.1}
-.name-syll{color:var(--paper)}
 .name-phon{color:var(--muted);text-transform:none}
 .name-pos{font-style:italic;font-size:1.1rem;color:var(--muted)}
 .name-def{margin-top:.4rem!important;font-size:1.15rem;line-height:1.25}
