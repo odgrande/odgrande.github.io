@@ -598,10 +598,10 @@ def page_home(projects):
 <p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
 <div class="hero-main">
 <div class="hero-copy">
-<a class="btn" href="/contact/"><span data-i18n="hero_badge">Available for work</span></a>
+<a class="btn btn-live" href="/contact/"><i class="live-dot" aria-hidden="true"></i><span data-i18n="hero_badge">Available for work</span></a>
 <h1 class="h1" data-split-text>{esc(site["name"])}</h1>
 <div class="name-entry" aria-label="How to say my name">
-<p class="name-head"><span class="name-syll">O·du·na·yo Bo·la·rin·wa</span> <span class="name-phon">/ore-dune-are-your · bore-lah-rin-wah/</span> <i class="name-pos" data-i18n="pron_pos">noun</i></p>
+<p class="name-head"><span class="name-syll">O·du·na·yo Bo·la·rin·wa</span> <span class="name-phon"><span class="name-label" data-i18n="pron_label">Pronounced:</span> /ore-dune-are-your · bore-lah-rin-wah/</span> <i class="name-pos" data-i18n="pron_pos">noun</i></p>
 <p class="name-def"><b>1.</b> <span data-i18n="pron_def">a full-stack web developer and web designer who bridges design and code.</span></p>
 <p class="name-origin" data-i18n="pron_origin">Yoruba · Ọdúnayọ̀, “a year of joy”</p>
 </div>
