@@ -432,7 +432,9 @@ def journey_stepper():
 
 def work_card(p,home=False):
     img=(p.get("featuredHomeImage") if home else "") or (p["images"][0] if p.get("images") else "")
-    thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy">' if img else placeholder(p["title"],p["category"])
+    # thumbPosition (site_config) picks which part of a wide image the square card shows.
+    pos=f' style="object-position:{esc(p["thumbPosition"])}"' if p.get("thumbPosition") else ""
+    thumb=f'<img class="thumb" src="{esc(img)}" alt="{esc(p["title"])}" loading="lazy"{pos}>' if img else placeholder(p["title"],p["category"])
     return f'''<a class="work-card" href="/works/{esc(p["slug"])}/" data-cat="{esc(p["category"])}"><div class="frame"><div class="label"><span>{esc(p["category"])}</span><img src="/assets/theme/symbol.svg" alt=""></div><div class="texture"></div>{thumb}<div class="disk"></div></div><div class="meta"><h3 class="h4">{esc(p["title"])}</h3><p class="t-md">{esc(p["client"])}</p></div></a>'''
 
 # ---------- personal / credential asset lookups ----------
@@ -685,6 +687,18 @@ def project_highlights(p):
 </section>''')
     return "".join(out)
 
+# Tiny inline-SVG country flags (flag emoji don't render on Windows).
+FLAGS={
+ "NG":("Nigeria",'<svg viewBox="0 0 3 2"><rect width="3" height="2" fill="#fff"/><rect width="1" height="2" fill="#008751"/><rect x="2" width="1" height="2" fill="#008751"/></svg>'),
+ "US":("United States",'<svg viewBox="0 0 19 10"><rect width="19" height="10" fill="#fff"/><path d="M0 0h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0z" fill="#B22234"/><rect width="7.6" height="5.38" fill="#3C3B6E"/></svg>'),
+ "GB":("United Kingdom",'<svg viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="2.4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>'),
+ "CA":("Canada",'<svg viewBox="0 0 40 20"><rect width="40" height="20" fill="#fff"/><rect width="10" height="20" fill="#D80621"/><rect x="30" width="10" height="20" fill="#D80621"/><path d="M20 3.2l1.3 2.6 1.6-.7-.6 3.3 2.2-2.4.5 1.3 2.3-.4-.8 2.5 1 .5-3.6 3 .4 1.3-3.6-.6-.1 3.4h-1.2l-.1-3.4-3.6.6.4-1.3-3.6-3 1-.5-.8-2.5 2.3.4.5-1.3 2.2 2.4-.6-3.3 1.6.7z" fill="#D80621"/></svg>'),
+}
+
+def project_flags(p):
+    out="".join(f'<span class="flag" role="img" aria-label="{FLAGS[c][0]}" title="{FLAGS[c][0]}">{FLAGS[c][1]}</span>' for c in p.get("countries",[]) if c in FLAGS)
+    return f'<span class="flags">{out}</span>' if out else ""
+
 def project_pager(p,projects):
     # Previous / All works / Next, wrapping around the list.
     i=next(n for n,x in enumerate(projects) if x["slug"]==p["slug"])
@@ -701,7 +715,7 @@ def page_project(p,projects):
     # services as tags, inside the site's 2px frame. Four cells on desktop,
     # a 2x2 grid on phones with services spanning the full width.
     services="".join(f'<span>{esc(x)}</span>' for x in p["services"])
-    facts=[("Client","fact_client",esc(p["client"])),("Year","fact_year",esc(p.get("year",""))),("Category","fact_category",esc(p["category"])),("Services","fact_services",f'<span class="spec-tags">{services}</span>')]
+    facts=[("Client","fact_client",project_flags(p)+esc(p["client"])),("Year","fact_year",esc(p.get("year",""))),("Category","fact_category",esc(p["category"])),("Services","fact_services",f'<span class="spec-tags">{services}</span>')]
     facts_html="".join(f'<div class="spec-item spec-{k_i18n[5:]}"><dt><span class="spec-n">{n:02d}</span><span data-i18n="{k_i18n}">{k}</span></dt><dd>{v}</dd></div>' for n,(k,k_i18n,v) in enumerate(facts,1))
     live_btn=f'<a class="btn" href="{esc(p["liveSite"])}" target="_blank" rel="noopener"><span data-i18n="live_site_btn">Live Site</span></a>' if p.get("liveSite") else ""
     video_html=""
