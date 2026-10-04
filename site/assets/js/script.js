@@ -399,6 +399,97 @@
     });
   })();
 
+  // ---------- X-ray mode: a blueprint view of the tech behind the design ----------
+  // Off by default. Labels are injected once, then shown/hidden purely by the
+  // html.xray class, so switching is instant and the normal site is untouched.
+  (() => {
+    const KEY = 'odXray';
+    const root = document.documentElement;
+    const btns = document.querySelectorAll('.xray-toggle');
+    if (!btns.length) return;
+    const MAP = [
+      ['.nav', 'Fixed nav · GSAP stagger entrance · aria-current'],
+      ['.hero .h1', 'GSAP · split-text letter reveal'],
+      ['.btn-live', 'CSS keyframes · live pulse'],
+      ['.name-entry', 'Custom i18n engine · 5 languages'],
+      ['.image-frame.portrait', 'WebP · srcset 800/1600w · lazy · lightbox'],
+      ['.marquee', 'GSAP ScrollTrigger · scroll-velocity marquee · drag'],
+      ['.works-filter', 'Vue 3 · reactive filter'],
+      ['.work-grid', 'CSS grid · WebP thumbnails · GSAP hover'],
+      ['.works-grid', 'Vue 3 · filtered grid · WebP thumbnails'],
+      ['.hero-media', 'WebP hero · srcset 800/1600w · priority load'],
+      ['.spec', 'Spec sheet · inline-SVG flags'],
+      ['.masonry', 'CSS columns · lightbox'],
+      ['.journey', 'GSAP ScrollTrigger · pinned letter scroll'],
+      ['.words-section', 'GSAP ScrollTrigger · sticky card stack'],
+      ['.bento', 'CSS grid bento · GSAP stagger reveal'],
+      ['.photo-slider', 'Vanilla JS slider · touch & keys'],
+      ['.accordion-box', 'Accessible accordion · ARIA'],
+      ['.contact-grid', 'Semantic contact links'],
+      ['.cta-band', 'Three.js r128 · WebGL hexagon'],
+      ['.bottom-mark', 'Scannable barcode → WhatsApp'],
+      ['footer', 'Python static build · GitHub Actions deploy'],
+    ];
+    let built = false;
+    const tag = (el, text) => {
+      if (el.querySelector(':scope > .xray-tag')) return;
+      if (getComputedStyle(el).position === 'static') el.classList.add('xray-rel');
+      el.classList.add('xray-box');
+      const t = document.createElement('span');
+      t.className = 'xray-tag'; t.setAttribute('aria-hidden', 'true'); t.textContent = text;
+      el.appendChild(t);
+    };
+    const build = () => {
+      if (built) return; built = true;
+      MAP.forEach(([sel, text]) => document.querySelectorAll(sel).forEach((el) => tag(el, text)));
+      document.querySelectorAll('.feature-build').forEach((el) => {
+        const b = el.querySelector('.fb-badge');
+        const v = b && (b.textContent.match(/v\d[\d.]*/) || [])[0];
+        tag(el, 'Custom-built from scratch' + (v ? ' · ' + v : '') + ' · PHP / JS');
+      });
+      // Live readout of what this page actually cost to load.
+      const hud = document.createElement('div');
+      hud.className = 'xray-hud'; hud.setAttribute('aria-hidden', 'true');
+      const nav = performance.getEntriesByType('navigation')[0];
+      const res = performance.getEntriesByType('resource');
+      const kb = Math.round((res.reduce((a, r) => a + (r.transferSize || 0), 0) + (nav ? nav.transferSize || 0 : 0)) / 1024);
+      const ms = nav ? Math.round(nav.domContentLoadedEventEnd) : 0;
+      const rows = [
+        ['X-ray', 'On · press X'],
+        ['Ready in', ms ? ms + ' ms' : '—'],
+        ['Requests', String(res.length + 1)],
+        ['Transferred', kb > 4 ? kb + ' KB' : 'cached'],
+        ['DOM nodes', String(document.getElementsByTagName('*').length)],
+        ['Images', String(document.images.length)],
+        ['Stack', 'Python · GSAP · Vue · Three.js'],
+      ];
+      hud.innerHTML = rows.map(([k, v]) => `<span><b>${k}</b><i>${v}</i></span>`).join('');
+      document.body.appendChild(hud);
+    };
+    const apply = (on) => {
+      if (on) build();
+      root.classList.toggle('xray', on);
+      btns.forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
+    };
+    const toggle = () => {
+      const on = !root.classList.contains('xray');
+      apply(on);
+      try { sessionStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+    };
+    btns.forEach((b) => b.addEventListener('click', toggle));
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'x' || e.key === 'X') && !e.ctrlKey && !e.metaKey && !e.altKey &&
+          !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && !e.target.isContentEditable &&
+          !root.classList.contains('no-scroll')) toggle();
+    });
+    let saved = null;
+    try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+    if (saved === '1') {
+      if (document.readyState === 'complete') apply(true);
+      else window.addEventListener('load', () => apply(true));
+    }
+  })();
+
   // ---------- landing gate: a two-way question before the site reveals ----------
   // Shown once per session, FIRST — visible from first paint (see the CSS:
   // this element defaults to visible, it's not waiting on JS to appear), so
@@ -980,7 +1071,7 @@
 
     // Header drops in once the preloader has cleared (or straight away when
     // it's skipped), logo first, then links and controls.
-    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .lang-switcher, .menu-btn');
+    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .xray-toggle, .nav .lang-switcher, .menu-btn');
     gsap.set(navItems, { y: -24, opacity: 0 });
     const showNav = () => {
       gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });
