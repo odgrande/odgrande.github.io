@@ -593,6 +593,40 @@ def certificates():
 
 # ---------- pages ----------
 
+# Clients-around-the-world map (home page). Pins and counts come from each
+# project's "countries" in site_config; the dotted land is a static SVG
+# (assets/theme/world-dots.svg, Natural Earth, equirectangular, lat 82..-56).
+MAP_SPOTS={"NG":(3.4,6.5,"Nigeria"),"GB":(-0.13,51.5,"United Kingdom"),"CA":(-75.1,45.3,"Canada"),"US":(-97.0,36.0,"United States")}
+def world_map(projects):
+    def xy(lon,lat): return ((lon+180)/360*100,(82-lat)/138*100)
+    by={cc:[p for p in projects if cc in p.get("countries",[])] for cc in MAP_SPOTS}
+    by={cc:v for cc,v in by.items() if v}
+    hx,hy=MAP_SPOTS["NG"][0]+180,82-MAP_SPOTS["NG"][1]
+    arcs=""
+    for i,cc in enumerate(c for c in by if c!="NG"):
+        lon,lat,_=MAP_SPOTS[cc]; x,y=lon+180,82-lat
+        mx,my=(hx+x)/2,min(hy,y)-abs(hx-x)*.28
+        arcs+=f'<path class="map-arc" style="--i:{i}" d="M{hx:.1f} {hy:.1f}Q{mx:.1f} {my:.1f} {x:.1f} {y:.1f}" pathLength="1"/>'
+    pins=""; panels=""
+    for i,(cc,items) in enumerate(by.items()):
+        lon,lat,name=MAP_SPOTS[cc]; px,py=xy(lon,lat)
+        on=' is-on' if cc=="NG" else ""
+        pins+=(f'<button class="map-pin{on}" type="button" style="--x:{px:.2f}%;--y:{py:.2f}%;--i:{i}" data-cc="{cc}" aria-pressed="{"true" if on else "false"}" aria-controls="map-panel">'
+               f'<i aria-hidden="true"></i><span class="map-pin-label"><span data-i18n="cc_{cc}">{esc(name)}</span> <b>{len(items)}</b></span></button>')
+        links="".join(f'<li><a href="/works/{esc(p["slug"])}/">{esc(p["title"])}</a></li>' for p in items)
+        flag=FLAGS[cc][1] if cc in FLAGS else ""
+        panels+=(f'<div class="map-list" data-cc="{cc}"{"" if on else " hidden"}><p class="map-list-head"><span class="flag" aria-hidden="true">{flag}</span>'
+                 f'<span data-i18n="cc_{cc}">{esc(name)}</span><span class="map-list-n" data-i18n="map_count" data-i18n-n="{len(items)}">{len(items)} projects</span></p><ul>{links}</ul></div>')
+    return f'''<section class="container container-lg map-section" style="align-items:center" data-reveal>
+<p class="fb-eyebrow" data-i18n="map_eyebrow">Where my work lives</p>
+<h2 class="h2 text-center" data-i18n="map_heading">From Lagos to the world</h2>
+<p class="t-sm text-center map-sub" data-i18n="map_sub">22+ projects shipped for clients in Nigeria, the UK, Canada and the USA. And that's before counting the custom Shopify Liquid themes, WordPress themes and plugins I've built behind the scenes. Tap a pin to explore.</p>
+<div class="world-clip"><div class="world"><div class="world-dots" aria-hidden="true"></div>
+<svg class="world-arcs" viewBox="0 0 360 138" preserveAspectRatio="none" aria-hidden="true">{arcs}</svg>
+{pins}</div></div>
+<div class="map-panel" id="map-panel" aria-live="polite">{panels}</div>
+</section>'''
+
 def page_home(projects):
     site=CONFIG["site"]
     hero_portrait=find_personal(PORTRAIT_HERO) or (personal_images()[0] if personal_images() else "")
@@ -624,6 +658,8 @@ def page_home(projects):
 <div class="work-grid">{"".join(work_card(p,home=True) for p in featured)}</div>
 <a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a>
 </section>
+
+{world_map(projects)}
 
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center" data-i18n="services_heading">Services</h2>
