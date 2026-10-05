@@ -236,7 +236,7 @@ def gate():
     clock=('<div class="gate-clock" aria-label="Local time in Lagos, Nigeria">'
            '<svg class="ng-flag" viewBox="0 0 3 2" aria-hidden="true"><rect width="3" height="2" fill="#fff"/><rect width="1" height="2" fill="#008751"/><rect x="2" width="1" height="2" fill="#008751"/></svg>'
            '<span class="gate-city">Lagos, Nigeria</span><span class="gate-time" id="gateTime">--:--</span></div>')
-    return f'''<div id="gate">{clock}{lang_switcher("gate-lang")}<div class="gate-inner">
+    return f'''<div id="gate">{clock}<div class="gate-controls">{theme_toggle()}{lang_switcher("gate-lang")}</div><div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
 <p class="t-md" data-i18n="gate_eyebrow">Knock, knock</p>
 <h2 class="gate-title"><span data-i18n="gate_headline">Come on in. The websites don't bite.</span> <svg class="gate-smile" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8.4" cy="9.6" r="1.55" fill="currentColor"/><circle cx="15.6" cy="9.6" r="1.55" fill="currentColor"/><path d="M7.3 14.2c1.1 2.1 2.8 3.2 4.7 3.2s3.6-1.1 4.7-3.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></h2>

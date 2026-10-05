@@ -270,7 +270,8 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 .lang-option{width:100%;text-align:left;padding:.5rem .75rem;border-radius:10px;background:transparent;color:var(--paper);font-family:var(--mono);font-size:.8rem;cursor:pointer;transition:background .2s,color .2s}
 .lang-option:hover{background:var(--paper);color:var(--ink)}
 .lang-option[aria-current="true"]{font-weight:700;text-decoration:underline;text-underline-offset:3px}
-.gate-lang{position:absolute;top:1.5rem;right:var(--canvas-pad);z-index:1}
+/* Landing banner: theme switch + language pill, top right. */
+.gate-controls{position:absolute;top:1.5rem;right:var(--canvas-pad);z-index:1;display:flex;align-items:center;gap:.5rem}
 
 /* BUTTON / LINKS */
 .btn{display:inline-block;font-family:var(--grunge);text-transform:uppercase;letter-spacing:.02em;font-size:1.3rem;padding:.7rem 1.6rem;border:2px solid var(--paper);transition:background .2s,color .2s;min-height:44px}
@@ -433,7 +434,7 @@ html.xray .xray-in>.xray-tag{top:0;bottom:auto}
 html.xray .xray-box{outline:1px dashed var(--xray);outline-offset:-1px}
 html.xray .xray-tag{display:block;position:absolute;top:0;left:0;z-index:30;max-width:calc(100% - .5rem);padding:.22rem .45rem;background:var(--xray);color:var(--xray-ink);font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:.06em;line-height:1.25;text-transform:uppercase;white-space:normal;pointer-events:none;animation:xray-in .35s ease-out both}
 html.xray main img,html.xray footer img{filter:grayscale(1) contrast(1.05);opacity:.75;transition:filter .3s,opacity .3s}
-html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:60;gap:.2rem;min-width:13.5rem;padding:.7rem .85rem;border:1px solid var(--xray);background:color-mix(in oklch,var(--ink) 88%,transparent);backdrop-filter:blur(6px);font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--paper);pointer-events:none;animation:xray-in .35s ease-out both}
+html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:60;gap:.2rem;min-width:13.5rem;padding:.75rem .95rem;border:1px solid color-mix(in oklch,var(--xray) 55%,transparent);border-radius:12px;background:linear-gradient(135deg,color-mix(in oklch,var(--paper) 12%,transparent),color-mix(in oklch,var(--paper) 3%,transparent)),color-mix(in oklch,var(--ink) 35%,transparent);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);box-shadow:0 8px 32px rgba(0,0,0,.28),inset 0 1px 0 color-mix(in oklch,var(--paper) 18%,transparent);font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--paper);pointer-events:none;animation:xray-in .35s ease-out both}
 .xray-hud span{display:flex;justify-content:space-between;gap:1rem}
 .xray-hud b{font-weight:700;text-transform:uppercase;color:var(--xray)}
 .xray-hud i{font-style:normal}
