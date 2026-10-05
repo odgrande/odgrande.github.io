@@ -88,6 +88,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        rs_open: "Na {t} for Lagos now. I dey my desk, so I go reply you sharp sharp.", rs_evening: "Na {t} for Lagos now. I don close for today. Expect my reply by {r}.", rs_night: "Na {t} for Lagos now. I don sleep be dat. Expect my reply by {r}.", rs_morning: "Na {t} for Lagos now. I never reach my desk. Expect my reply by {r}.", rs_weekend: "Na {t} for Lagos now, and na weekend. Expect my reply by {r}.", rs_your: "your time",
         pron_label: "How you go call am:",
         fb_eyebrow: "Featured build", fb_skills: "Skills wey e show",
         testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
@@ -145,6 +146,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        rs_open: "Agogo {t} ni ní Èkó báyìí. Mo wà ní ibi iṣẹ́ mi, nítorí náà màá fèsì kíákíá.", rs_evening: "Agogo {t} ni ní Èkó báyìí. Mo ti parí iṣẹ́ fún òní. Màá fèsì ní {r}.", rs_night: "Agogo {t} ni ní Èkó báyìí. Ó ṣeéṣe kí n ti sùn. Màá fèsì ní {r}.", rs_morning: "Agogo {t} ni ní Èkó báyìí. Mi ò tíì dé ibi iṣẹ́. Màá fèsì ní {r}.", rs_weekend: "Agogo {t} ni ní Èkó báyìí, òpin ọ̀sẹ̀ sì ni. Màá fèsì ní {r}.", rs_your: "ní àkókò tìrẹ",
         pron_label: "Bí a ṣe ń pè é:",
         fb_eyebrow: "Iṣẹ́ àfihàn", fb_skills: "Àwọn ọgbọ́n tí ó fi hàn",
         testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
@@ -202,6 +204,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        rs_open: "Ƙarfe {t} ne a Legas yanzu. Ina kan aiki, don haka zan amsa da sauri.", rs_evening: "Ƙarfe {t} ne a Legas yanzu. Na tashi daga aiki na yau. Ka sa ran amsa kafin {r}.", rs_night: "Ƙarfe {t} ne a Legas yanzu. Wataƙila ina barci. Ka sa ran amsa kafin {r}.", rs_morning: "Ƙarfe {t} ne a Legas yanzu. Ban fara aiki ba tukuna. Ka sa ran amsa kafin {r}.", rs_weekend: "Ƙarfe {t} ne a Legas yanzu, kuma ƙarshen mako ne. Ka sa ran amsa kafin {r}.", rs_your: "a lokacinka",
         pron_label: "Yadda ake furtawa:",
         fb_eyebrow: "Fitaccen aiki", fb_skills: "Ƙwarewar da yake nunawa",
         testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
@@ -259,6 +262,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        rs_open: "Il est {t} à Lagos. Je suis à mon bureau, les réponses sont donc rapides.", rs_evening: "Il est {t} à Lagos. J'ai terminé ma journée. Réponse attendue d'ici {r}.", rs_night: "Il est {t} à Lagos. Je dors sûrement. Réponse attendue d'ici {r}.", rs_morning: "Il est {t} à Lagos. Je ne suis pas encore à mon bureau. Réponse attendue d'ici {r}.", rs_weekend: "Il est {t} à Lagos et c'est le week-end. Réponse attendue d'ici {r}.", rs_your: "(votre heure)",
         pron_label: "Prononciation :",
         fb_eyebrow: "Réalisation phare", fb_skills: "Compétences démontrées",
         testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
@@ -415,9 +419,10 @@
       ['.image-frame.portrait', 'WebP · srcset 800/1600w · lazy · lightbox'],
       ['.marquee', 'GSAP ScrollTrigger · scroll-velocity marquee · drag'],
       ['.works-filter', 'Vue 3 · reactive filter'],
-      ['.work-grid', 'CSS grid · WebP thumbnails · GSAP hover'],
-      ['.works-grid', 'Vue 3 · filtered grid · WebP thumbnails'],
-      ['.hero-media', 'WebP hero · srcset 800/1600w · priority load'],
+      ['.work-grid', 'CSS grid · View Transitions card → hero morph'],
+      ['.reply-status', 'Live time-zone maths · Intl API'],
+      ['.works-grid', 'Vue 3 · filtered grid · View Transitions morph'],
+      ['.hero-media', 'WebP hero · View Transitions morph target'],
       ['.spec', 'Spec sheet · inline-SVG flags'],
       ['.masonry', 'CSS columns · lightbox'],
       ['.journey', 'GSAP ScrollTrigger · pinned letter scroll'],
@@ -510,6 +515,46 @@
       if (document.readyState === 'complete') apply(true);
       else window.addEventListener('load', () => apply(true));
     }
+  })();
+
+  // ---------- contact: "will he reply soon?" from the live Lagos clock ----------
+  (() => {
+    const el = document.querySelector('.reply-status');
+    if (!el) return;
+    let cfg;
+    try { cfg = JSON.parse(el.dataset.hours); } catch (e) { return; }
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const text = el.querySelector('.rs-text');
+    const OFF = cfg.utcOffset * 3600e3; // Lagos has no daylight saving
+    const time = (d, tz) => d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', timeZone: tz });
+    const render = () => {
+      const now = new Date();
+      const lag = new Date(now.getTime() + OFF); // read with getUTC* = Lagos wall clock
+      const day = lag.getUTCDay(), h = lag.getUTCHours() + lag.getUTCMinutes() / 60;
+      const workday = cfg.days.includes(day);
+      const open = workday && h >= cfg.start && h < cfg.end;
+      const t = time(now, 'Africa/Lagos');
+      el.classList.toggle('is-open', open);
+      if (open) { text.textContent = T('rs_open', "It's {t} in Lagos. I'm at my desk, so replies are usually quick.").replace('{t}', t); return; }
+      // Next time I'm at my desk, shown in the visitor's own time zone.
+      let next = null;
+      for (let i = 0; i < 8 && !next; i++) {
+        const wall = new Date(Date.UTC(lag.getUTCFullYear(), lag.getUTCMonth(), lag.getUTCDate() + i, cfg.start));
+        const real = new Date(wall.getTime() - OFF);
+        if (real > now && cfg.days.includes(wall.getUTCDay())) next = real;
+      }
+      if (!next) return;
+      let r = next.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      if (next.toDateString() !== now.toDateString()) r = next.toLocaleDateString(undefined, { weekday: 'long' }) + ' ' + r;
+      if (now.getTimezoneOffset() !== -cfg.utcOffset * 60) r += ' ' + T('rs_your', 'your time');
+      const key = !workday ? ['rs_weekend', "It's {t} in Lagos and it's the weekend. Expect a reply by {r}."]
+        : (h >= 22 || h < 6) ? ['rs_night', "It's {t} in Lagos. I'm probably asleep. Expect a reply by {r}."]
+        : h < cfg.start ? ['rs_morning', "It's {t} in Lagos. I'm not at my desk just yet. Expect a reply by {r}."]
+        : ['rs_evening', "It's {t} in Lagos. I've logged off for the evening. Expect a reply by {r}."];
+      text.textContent = T(key[0], key[1]).replace('{t}', t).replace('{r}', r);
+    };
+    render();
+    setInterval(render, 30000);
   })();
 
   // ---------- landing gate: a two-way question before the site reveals ----------

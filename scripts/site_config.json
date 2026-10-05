@@ -1,5 +1,6 @@
 {
   "site": {
+    "replyHours": {"start": 9, "end": 18, "days": [1, 2, 3, 4, 5], "utcOffset": 1},
     "name": "Odunayo Bolarinwa",
     "shortName": "OD",
     "title": "Full-Stack Web Developer & Web Designer",
