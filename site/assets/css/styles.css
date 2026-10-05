@@ -442,14 +442,6 @@ html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:6
 @media(max-width:599px){html.xray .xray-tag{font-size:.52rem}.xm-b{bottom:5.6rem;left:.7rem}.xray-mark span{font-size:.6rem}.xm-r{right:.25rem}.xray-toast{top:4.6rem;font-size:.62rem}html.xray .xray-hud{left:.6rem;right:.6rem;bottom:.6rem;min-width:0;padding:.5rem .65rem;font-size:.58rem;grid-template-columns:1fr 1fr;column-gap:1rem}.xray-hud span:nth-child(5),.xray-hud span:nth-child(7){display:none}}
 @media(prefers-reduced-motion:reduce){html.xray .xray-tag,html.xray .xray-hud{animation:none}}
 
-/* PAGE MORPHS: same-site navigations cross-fade, and a project card's image
-   travels into the project hero (names are set in script.js). */
-@view-transition{navigation:auto}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.32s}
-::view-transition-group(project-hero){animation-duration:.6s;animation-timing-function:cubic-bezier(.65,0,.2,1)}
-::view-transition-old(project-hero),::view-transition-new(project-hero){width:100%;height:100%;object-fit:cover;object-position:top}
-@media(prefers-reduced-motion:reduce){@view-transition{navigation:none}}
-
 /* CONTACT: live "will he reply soon?" line from the Lagos clock. */
 .reply-status{display:inline-flex;align-items:baseline;gap:.65rem;align-self:center;margin:.4rem 0 0;padding:.65rem 1.1rem;border:1px solid color-mix(in oklch,var(--paper) 28%,transparent);font-family:var(--mono);font-size:.78rem;font-weight:700;line-height:1.55;letter-spacing:.02em;text-align:left}
 /* Red while I'm away (asleep / evening / weekend), green while I'm at my desk. */

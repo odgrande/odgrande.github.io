@@ -164,8 +164,6 @@ def page_title(title):
     if title=="Home":return f"Odunayo Bolarinwa · {TAGLINE}"
     return f"{title} · Odunayo Bolarinwa | {TAGLINE}"
 
-VT_HEAD='<script>/* Page morphs (cross-document View Transitions): a project card\'s image glides into the project hero, and Back shrinks it home. Lives in <head> because pagereveal fires before deferred scripts run. */(function(){if(!("onpagereveal" in window))return;var N="project-hero";function slug(u){var m=new URL(u,location.href).pathname.match(/^\\/works\\/([^/]+)\\/$/);return m?m[1]:null}function card(s){var a=document.querySelector(\'.work-card[href="/works/\'+s+\'/"]\');return a&&a.querySelector(".thumb, .ph")}function hero(){return document.querySelector(".hero-media .image-frame")}function mark(el,vt){if(!el)return;el.style.viewTransitionName=N;vt.finished.finally(function(){el.style.viewTransitionName=""})}window.addEventListener("pageswap",function(e){if(!e.viewTransition||!e.activation||!e.activation.entry)return;var to=slug(e.activation.entry.url),here=slug(location.href);if(to)mark(card(to)||(here?hero():null),e.viewTransition);else if(here)mark(hero(),e.viewTransition)});window.addEventListener("pagereveal",function(e){if(!e.viewTransition||!window.navigation||!navigation.activation||!navigation.activation.from)return;var from=slug(navigation.activation.from.url),here=slug(location.href);if(here)mark(hero(),e.viewTransition);else if(from)mark(card(from),e.viewTransition)})})();</script>\n<link rel="expect" href="#vt-ready" blocking="render">'
-
 def head(title,desc,canonical):
     full=esc(page_title(title)); url=f"https://odunayobolarinwa.com{canonical}"
     # Link previews (WhatsApp, X, LinkedIn, Slack...) use og-image.jpg: the
@@ -180,7 +178,6 @@ def head(title,desc,canonical):
 <link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css?v={ASSET_V['css']}">
-{VT_HEAD}
 <script src="/assets/js/vendor/gsap.min.js" defer></script>
 <script src="/assets/js/vendor/ScrollTrigger.min.js" defer></script>
 </head>'''
@@ -302,10 +299,10 @@ def exit_popup():
 </form>
 </div></div>'''
 
-PRELOADER_SKIP_INLINE='<script>try{if(!(sessionStorage.getItem("odGateSeen")&&sessionStorage.getItem("odPreloaderSeen"))){document.documentElement.classList.add("no-scroll","veil")}}catch(e){document.documentElement.classList.add("no-scroll","veil")}if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odPreloaderSeen")){document.documentElement.classList.add("no-preloader")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
+PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odPreloaderSeen")){document.documentElement.classList.add("no-preloader")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
 def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main><i id="vt-ready" hidden></i>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">
