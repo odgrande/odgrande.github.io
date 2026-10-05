@@ -531,6 +531,31 @@ html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:6
 @media(max-width:767px){.map-pin-label{display:none}.map-pin.is-on .map-pin-label{display:block}.map-pin{width:2rem;height:2rem}.map-pin i{width:.65rem;height:.65rem}.map-pin.is-on i{width:.8rem;height:.8rem}.map-list a{font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){.map-pin{transform:translate(-50%,-50%)}.world.is-in .map-pin,.map-pin i{animation:none}.map-arc{stroke-dashoffset:0}.world.is-in .map-arc{animation:none}}
 
+/* FAQ link, changelog, slider drag hint, footer clock, smaller cookie notice. */
+.faq-link{margin-top:.6rem!important}
+.faq-link a{font-weight:700}
+.contact-faq{margin:.2rem 0 0;text-align:center;color:var(--muted)}
+.changelog{list-style:none;margin:2rem 0 0;padding:0;display:flex;flex-direction:column}
+.cl-item{display:grid;grid-template-columns:9rem 1fr;gap:1.5rem;padding:1.4rem 0;border-top:1px solid color-mix(in oklch,var(--paper) 18%,transparent)}
+.cl-item:last-child{border-bottom:1px solid color-mix(in oklch,var(--paper) 18%,transparent)}
+.cl-meta{display:flex;flex-direction:column;gap:.3rem;font-family:var(--mono)}
+.cl-ver{font-family:var(--grunge);font-size:1.6rem;line-height:1;color:var(--paper)}
+.cl-meta time{font-size:.72rem;letter-spacing:.08em;color:var(--muted)}
+.cl-notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.cl-notes li{position:relative;padding-left:1.3rem;font-family:var(--mono);font-size:.85rem;line-height:1.6;color:var(--paper)}
+.cl-notes li:before{content:"✦";position:absolute;left:0;top:.05em;font-size:.7rem;color:var(--muted)}
+@media(max-width:599px){.cl-item{grid-template-columns:1fr;gap:.7rem}.cl-meta{flex-direction:row;align-items:baseline;gap:.8rem}.cl-ver{font-size:1.3rem}.cl-notes li{font-size:.78rem}}
+.photo-slider{position:relative}
+.slider-track.is-dragging{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.slider-track.is-dragging .slider-slide{cursor:grabbing}
+@media(hover:hover) and (pointer:fine){.slider-track,.slider-slide{cursor:grab}}
+.drag-hint{position:absolute;left:0;top:0;z-index:5;margin:-1.1rem 0 0 -2.6rem;padding:.4rem .75rem;border-radius:999px;background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.photo-slider.show-hint .drag-hint{opacity:1}
+.photo-slider.show-hint .slider-track.is-dragging~.drag-hint{opacity:.6}
+/* Visitor time + flag sits alone on its own centred line under the legal links. */
+.ft-flag{display:inline-block;width:1.1rem;height:.75rem;line-height:0;vertical-align:-.1em;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px color-mix(in oklch,var(--paper) 30%,transparent)}.ft-flag svg{width:100%;height:100%;display:block}
+@media(min-width:600px){html #cookie-banner{left:1.25rem;right:auto;bottom:1.25rem;max-width:25rem;margin:0;padding:.75rem 1rem;gap:.6rem .9rem;border-width:1.5px}html #cookie-banner p{flex:1 1 13rem;font-size:.72rem;line-height:1.5}html .cookie-accept{font-size:.85rem;padding:.25rem .75rem;min-height:32px}html .cookie-close{font-size:1.1rem}}
+
 /* FEATURED BUILD — a framed two-column panel inside a project page: the
    story on the left, the skills it shows on the right (stacked on phones). */
 .feature-build{width:100%;max-width:64rem;display:grid;grid-template-columns:1fr;border:2px solid var(--paper);background:color-mix(in oklch,var(--ink) 70%,transparent)}
@@ -820,7 +845,9 @@ footer li{margin-bottom:.6rem}
 footer li a:hover{color:var(--muted)}
 .footer-bottom{text-align:center;margin-top:3rem}
 .footer-bottom p{margin:.3rem 0;font-size:.85rem}
-.footer-bottom p.t-xsm{font-size:.7rem;color:var(--muted)}
+/* "Crafted with :) by ..." — the landing-banner smiley, sized to the text. */
+.ft-smile{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.2em;margin:0 .1em;color:var(--paper)}
+.footer-bottom p.t-xsm{font-size:.6rem;letter-spacing:.03em;color:var(--muted)}
 
 /* ============ MOBILE QA ============ */
 @media(max-width:599px){
@@ -837,7 +864,7 @@ footer li a:hover{color:var(--muted)}
     #cookie-banner p{flex:1 1 auto;font-size:.68rem;line-height:1.45}
     .cookie-actions{gap:.4rem}
     .cookie-accept{font-size:.85rem;padding:.25rem .6rem;min-height:32px}
-    .footer-bottom p.t-xsm{font-size:.62rem}
+    .footer-bottom p.t-xsm{font-size:.5rem}
     .footer-bottom p{font-size:.75rem}
 }
 html,body{max-width:100%;overflow-x:clip}

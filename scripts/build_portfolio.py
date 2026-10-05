@@ -229,6 +229,8 @@ def nav(current="/"):
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
 
+SMILE_SVG='<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8.4" cy="9.6" r="1.55" fill="currentColor"/><circle cx="15.6" cy="9.6" r="1.55" fill="currentColor"/><path d="M7.3 14.2c1.1 2.1 2.8 3.2 4.7 3.2s3.6-1.1 4.7-3.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+
 def gate():
     site=CONFIG["site"]
     # Live Lagos time with an inline Nigerian flag (an SVG, not an emoji:
@@ -239,7 +241,7 @@ def gate():
     return f'''<div id="gate">{clock}<div class="gate-controls">{theme_toggle()}{lang_switcher("gate-lang")}</div><div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
 <p class="t-md" data-i18n="gate_eyebrow">Knock, knock</p>
-<h2 class="gate-title"><span data-i18n="gate_headline">Come on in. The websites don't bite.</span> <svg class="gate-smile" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8.4" cy="9.6" r="1.55" fill="currentColor"/><circle cx="15.6" cy="9.6" r="1.55" fill="currentColor"/><path d="M7.3 14.2c1.1 2.1 2.8 3.2 4.7 3.2s3.6-1.1 4.7-3.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></h2>
+<h2 class="gate-title"><span data-i18n="gate_headline">Come on in. The websites don't bite.</span> {SMILE_SVG.format(cls="gate-smile")}</h2>
 <p class="t-sm gate-sub" style="color:var(--muted)"><span data-i18n="gate_subtext">Well, only the bugs bite, and I squashed every one of them.</span><br><span data-i18n="gate_subtext2">Ready to look around?</span></p>
 <div class="gate-actions">
 <button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, let me in</button>
@@ -310,7 +312,7 @@ def cta_band():
     return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">
 <p class="t-md text-center" data-i18n="footer_whats_next">What's next?</p>
 <h2 class="h2 text-center cta-rotate" data-i18n="footer_cta_heading">Let's work together.</h2>
-<p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
+<p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a custom web app, e-commerce store, WordPress build or digital product in mind? Let's talk about it.</p>
 <a class="btn" href="/start/"><span data-i18n="start_project_btn">Start a project</span></a>
 </div></section>'''
 
@@ -331,7 +333,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{esc(t)}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     return f'''<footer data-reveal><a href="/" class="footer-logo" aria-label="{esc(site["name"])} — home"><img src="/assets/theme/logo.png" alt="">{esc(site["name"])}</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p data-i18n="ft_crafted" data-i18n-n="{esc(site["name"])}">Crafted with joy by {esc(site["name"])}</p><p>© 2026 <span data-i18n="ft_rights">All Rights Reserved</span></p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a><span id="visitor-clock-wrap" style="display:none"> · <span id="visitor-clock"></span></span></p></div></footer>'''
+<div class="footer-bottom"><p class="ft-crafted"><span data-i18n="ft_crafted_pre">Crafted with</span> {SMILE_SVG.format(cls="ft-smile")} <span data-i18n="ft_crafted_by" data-i18n-n="{esc(site["name"].split()[0])}">by {esc(site["name"].split()[0])}</span></p><p>© 2026 <span data-i18n="ft_rights">All Rights Reserved</span></p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a> · <a class="legal-link" href="/faq/"><span data-i18n="footer_faq">FAQ</span></a> · <a class="legal-link" href="/changelog/"><span data-i18n="footer_changelog">Changelog</span></a></p><p class="t-xsm ft-clock" id="visitor-clock-wrap" style="display:none"><span id="visitor-clock"></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -352,11 +354,13 @@ def placeholder(title,sub=""):
             f'<span class="ph-title">{esc(title)}</span>'
             f'<span class="ph-stamp" data-i18n="ph_stamp">Visuals coming soon</span></div>')
 
-def image_frame(src,alt,cls="",sub=""):
+def image_frame(src,alt,cls="",sub="",eager=None):
     if not src:
         return f'<div class="image-frame {cls}"><div class="frame-box frame-ph">{placeholder(alt,sub)}</div></div>'
-    # Portraits sit at the top of Home/About: fetch them first, not lazily.
-    load='loading="eager" fetchpriority="high"' if "portrait" in cls else 'loading="lazy"'
+    # The first big image on a page (hero portrait, project hero) is fetched
+    # first; everything further down loads lazily.
+    if eager is None: eager="portrait" in cls
+    load='loading="eager" fetchpriority="high"' if eager else 'loading="lazy"'
     return f'''<div class="image-frame {cls}">{wa_barcode()}<div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
 
 MQ_KEYS={"Full-Stack Developer":"mq_fullstack","Web Designer":"mq_webdesigner","Let's Build Something Great":"mq_build","Open For Work":"mq_open","4 Countries":"mq_countries","Zero Templates":"mq_zero"}
@@ -633,7 +637,6 @@ def page_home(projects):
     about_portrait=find_personal(PORTRAIT_ABOUT) or hero_portrait
     featured=[p for p in projects if p.get("featured")]
     services=accordion_box(CONFIG["services"])
-    faq=accordion_box(CONFIG["faq"],i18n_prefix="faq")
     reel=home_reel_video(projects)
     body=f'''<section class="container container-xl hero" data-reveal>
 <p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
@@ -651,7 +654,7 @@ def page_home(projects):
 </div>
 </section>
 
-{marquee(["Full-Stack Developer","Web Designer","WordPress","Shopify","Webflow","React"])}
+{marquee(["Full-Stack Developer","Web Designer","React","Node.js","WordPress","Shopify"])}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
 <h2 class="h2 text-center" data-i18n="featured_heading">Featured Works</h2>
@@ -671,11 +674,11 @@ def page_home(projects):
 <div class="split">
 <div class="split-copy">
 <p class="t-xl" data-i18n="about_intro">I'm a Full-Stack Web Developer and Web Designer who enjoys the point where a design stops being a picture and becomes a working product.</p>
-<p class="t-sm">I build, customize and maintain WordPress, WooCommerce and Shopify stores, Webflow sites and custom front-end work for clients across Nigeria, the UK, Canada and the USA.</p>
+<p class="t-sm">I build custom web apps, APIs and front-ends from scratch, and work just as deeply in WordPress, WooCommerce, Shopify and Webflow, for clients across Nigeria, the UK, Canada and the USA.</p>
 <p class="t-sm">When I'm not building for a client, I'm usually improving my own tools, or picking apart a site to see how it was put together.</p>
 <a class="btn" href="/about/"><span data-i18n="more_about_btn">More about me</span></a>
 </div>
-<div class="split-photo">{image_frame(about_portrait,site["name"],"portrait")}</div>
+<div class="split-photo">{image_frame(about_portrait,site["name"],"portrait",eager=False)}</div>
 </div>
 </section>
 
@@ -688,14 +691,15 @@ def page_home(projects):
 
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center" data-i18n="faq_heading">FAQ</h2>
-{faq}
+{faq_box(FAQ_HOME)}
+<a class="btn" href="/faq/" style="align-self:center"><span data-i18n="faq_all_btn">See all questions</span></a>
 </section>'''
     return shell("Home",site["description"],body,"/")
 
 def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
 <h1 class="h1 text-center" data-i18n="works_heading">Works</h1>
-<p class="t-sm text-center" data-i18n="works_intro" data-i18n-n="{len(projects)}">{len(projects)} projects across WordPress, Shopify, Webflow, custom React &amp; PHP builds, e-commerce and brand work.</p>
+<p class="t-sm text-center" data-i18n="works_intro" data-i18n-n="{len(projects)}">{len(projects)} projects across custom React, Node.js &amp; PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.</p>
 </section>
 
 {marquee([f"{len(projects)} Projects","4 Countries","Zero Templates"])}
@@ -769,7 +773,7 @@ def page_project(p,projects):
     gallery=masonry_gallery(rest,p["title"],shots=True)
     body=f'''<section class="container container-xl" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">{esc(p["title"])}</h1>
-<div class="hero-media" style="width:100%">{image_frame(hero,p["title"],sub=p["category"])}</div>
+<div class="hero-media" style="width:100%">{image_frame(hero,p["title"],sub=p["category"],eager=True)}</div>
 <dl class="spec">{facts_html}</dl>
 {live_btn}
 <div style="max-width:48rem"><p class="t-xl">{esc(p["description"])}</p></div>
@@ -813,7 +817,7 @@ def page_about():
 <div class="split">
 <div class="split-copy">
 <p class="t-xl" data-i18n="about_build_text">I build, customize and maintain websites for businesses, organizations and digital products.</p>
-<p class="t-sm" data-i18n="about_work_text">My work sits between visual implementation and practical engineering. I am comfortable working inside WordPress and page builders, then dropping into PHP, JavaScript and CSS when the problem needs more than a visual editor.</p>
+<p class="t-sm" data-i18n="about_work_text">My work sits between visual implementation and practical engineering. I build custom front-ends and back-ends from scratch, and I'm just as comfortable inside WordPress, Shopify and Webflow when a platform is the fastest route to a great result.</p>
 <p class="t-sm" data-i18n="about_bio_text">Full-Stack Web Developer and Web Designer with 5+ years of experience building and maintaining digital products for clients across Nigeria, the UK, Canada and the USA.</p>
 </div>
 <div class="split-photo">{image_frame(portrait,site["name"],"portrait")}</div>
@@ -827,7 +831,7 @@ def page_about():
 <div class="split-photo">{image_frame(magic_standing,"Let's create website magic")}</div>
 <div class="split-copy">
 <p class="t-xl" data-i18n="magic_heading">Let's create website magic.</p>
-<p class="t-sm" data-i18n="magic_text">Whatever the brief — a brand-new WordPress build, an e-commerce store, or a digital product that needs to feel alive — I'd love to help build it.</p>
+<p class="t-sm" data-i18n="magic_text">Whatever the brief — a custom web app, an e-commerce store, a WordPress build or a digital product that needs to feel alive — I'd love to help build it.</p>
 <a class="btn" href="/start/"><span data-i18n="start_project_btn">Start a project</span></a>
 <div class="social-row">{"".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" class="link-inline">{esc(t)}</a>' for t,u in socials_list())}</div>
 </div>
@@ -974,7 +978,51 @@ def page_start():
 </form>
 </div>
 </section>'''
-    return shell("Start a project",f"Plan your website, online shop or WordPress project with {site['name']}: a 3-minute project brief.",body,"/start/",show_cta=False,bare=True)
+    return shell("Start a project",f"Plan your web app, website or online shop with {site['name']}: a 3-minute project brief.",body,"/start/",show_cta=False,bare=True)
+
+def faq_box(order):
+    # Renders FAQ items in a chosen order while keeping each item's i18n keys
+    # tied to its position in site_config (faq_q_N / faq_a_N). An optional
+    # third element [label, url, i18n_key] adds a link under the answer.
+    rows=[]
+    for n,i in enumerate(order):
+        item=CONFIG["faq"][i]; q,a=item[0],item[1]
+        link=""
+        if len(item)>2:
+            label,url,key=item[2]
+            link=f'<p class="t-sm faq-link"><a class="link-inline" href="{esc(url)}"><span data-i18n="{key}">{esc(label)}</span></a></p>'
+        trigger=f'<button class="accordion-trigger" type="button"><span class="t-xl"><span class="num">{n+1}.</span> <span data-i18n="faq_q_{i}">{esc(q)}</span></span>{CHEVRON}</button>'
+        rows.append(f'<div class="accordion-item">{trigger}<div class="accordion-content"><p class="t-sm" data-i18n="faq_a_{i}">{esc(a)}</p>{link}</div></div>')
+    return f'<div class="accordion-box">{"".join(rows)}</div>{bottom_mark()}'
+
+FAQ_HOME=[5,1,0,2,8]
+FAQ_PAGE=[5,8,6,1,0,2,3,4,7]
+
+def page_faq():
+    site=CONFIG["site"]
+    # FAQPage structured data so search engines can show these as rich results.
+    ld={"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":CONFIG["faq"][i][0],"acceptedAnswer":{"@type":"Answer","text":CONFIG["faq"][i][1]}} for i in FAQ_PAGE]}
+    body=f'''<section class="container container-md" data-reveal>
+<h1 class="h1 text-center" data-i18n="faq_heading">FAQ</h1>
+<p class="t-sm text-center" style="max-width:34rem;margin:0 auto" data-i18n="faq_page_intro">Straight answers about how I work, what I build and how to get started.</p>
+{faq_box(FAQ_PAGE)}
+<p class="t-xl text-center" data-i18n="faq_more_q">Still have a question?</p>
+<div class="gate-actions" style="justify-content:center"><a class="btn" href="/start/"><span data-i18n="start_project_btn">Start a project</span></a><a class="btn" href="/contact/"><span data-i18n="nav_contact">CONTACT</span></a></div>
+</section>
+<script type="application/ld+json">{json.dumps(ld,ensure_ascii=False).replace("</","<\\/")}</script>'''
+    return shell("FAQ",f"Frequently asked questions about working with {site['name']}: process, tech stack, timelines, cost and support.",body,"/faq/")
+
+def page_changelog():
+    site=CONFIG["site"]
+    items="".join(
+        f'''<li class="cl-item"><div class="cl-meta"><span class="cl-ver">{esc(v)}</span><time datetime="{esc(d)}">{esc(d)}</time></div><ul class="cl-notes">{"".join(f"<li>{esc(n)}</li>" for n in notes)}</ul></li>'''
+        for v,d,notes in CONFIG.get("changelog",[]))
+    body=f'''<section class="container container-md" data-reveal>
+<h1 class="h1 text-center" data-i18n="cl_heading">Changelog</h1>
+<p class="t-sm text-center" style="color:var(--muted)" data-i18n="cl_intro">What's new on this site, newest first.</p>
+<ol class="changelog">{items}</ol>
+</section>'''
+    return shell("Changelog",f"What's new on {site['name']}'s portfolio site, release by release.",body,"/changelog/",show_cta=False)
 
 def page_contact():
     site=CONFIG["site"]
@@ -993,15 +1041,16 @@ def page_contact():
 <h1 class="h1" data-i18n="contact_heading">Contact</h1>
 <div style="max-width:44rem;display:flex;flex-direction:column;gap:1rem">
 <p class="t-xl" data-i18n="contact_tagline">Let's build something together.</p>
-<p class="t-sm" data-i18n="contact_sub">Have a website, e-commerce build, WordPress problem or digital product in mind? Tell me what you're working on and I'll get back to you within a day or two.</p>
+<p class="t-sm" data-i18n="contact_sub">Have a custom web app, online store, WordPress project or digital product in mind? Tell me what you're working on and I'll get back to you within a day or two.</p>
 <a class="btn" href="/start/" style="align-self:center"><span data-i18n="bf_cta">Fill in a project brief</span></a>
+<p class="t-xsm contact-faq"><a class="legal-link" href="/faq/"><span data-i18n="contact_faq_hint">Got a quick question? Check the FAQ.</span></a></p>
 <p class="reply-status" data-hours='{esc(json.dumps(site["replyHours"]))}' aria-live="polite"><i class="rs-dot" aria-hidden="true"></i><span class="rs-text">Based in Lagos, Nigeria (WAT).</span></p>
 </div>
 </section>
 <section class="container container-md">
 <div class="contact-grid">{cards}</div>
 </section>'''
-    return shell("Contact",f"Contact {site['name']} for WordPress development, e-commerce and digital product work.",body,"/contact/",show_cta=False)
+    return shell("Contact",f"Contact {site['name']} for custom web development, e-commerce, WordPress and digital product work.",body,"/contact/",show_cta=False)
 
 def legal_page(title,desc,canonical,sections,i18n_key=None):
     body_sections="".join(
@@ -1054,7 +1103,7 @@ def page_sitemap(projects):
     def col(heading,i18n_key,links):
         items="".join(f'<li><a class="link-inline" href="{u}">{esc(t)}</a></li>' for t,u in links)
         return f'<div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h5" data-i18n="{i18n_key}">{esc(heading)}</h2><ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem">{items}</ul></div>'
-    main_pages=[("Home","/"),("Works","/works/"),("About","/about/"),("Credentials","/credentials/"),("Contact","/contact/"),("Start a project","/start/")]
+    main_pages=[("Home","/"),("Works","/works/"),("About","/about/"),("Credentials","/credentials/"),("Contact","/contact/"),("Start a project","/start/"),("FAQ","/faq/"),("Changelog","/changelog/")]
     legal_pages=[("Privacy Policy","/privacy/"),("Cookie Policy","/cookies/"),("Sitemap","/sitemap/")]
     project_links=[(p["title"],f'/works/{p["slug"]}/') for p in projects]
     body=f'''<section class="container container-md" data-reveal>
@@ -1164,7 +1213,7 @@ def page_404():
 def write_seo_files(projects):
     # robots.txt + sitemap.xml so search engines find every page.
     base="https://odunayobolarinwa.com"
-    paths=["/","/works/","/about/","/credentials/","/contact/","/start/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
+    paths=["/","/works/","/about/","/credentials/","/contact/","/start/","/faq/","/changelog/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
     urls="".join(f"<url><loc>{base}{u}</loc></url>" for u in paths)
     (SITE/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',encoding="utf-8")
     # Custom domain (also set in the repo's Pages settings).
@@ -1183,6 +1232,8 @@ def main():
     (SITE/"credentials").mkdir();(SITE/"credentials"/"index.html").write_text(page_credentials(),encoding="utf-8")
     (SITE/"contact").mkdir();(SITE/"contact"/"index.html").write_text(page_contact(),encoding="utf-8")
     (SITE/"start").mkdir();(SITE/"start"/"index.html").write_text(page_start(),encoding="utf-8")
+    (SITE/"faq").mkdir();(SITE/"faq"/"index.html").write_text(page_faq(),encoding="utf-8")
+    (SITE/"changelog").mkdir();(SITE/"changelog"/"index.html").write_text(page_changelog(),encoding="utf-8")
     (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
     (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
     (SITE/"sitemap").mkdir();(SITE/"sitemap"/"index.html").write_text(page_sitemap(projects),encoding="utf-8")
