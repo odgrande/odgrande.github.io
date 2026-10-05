@@ -433,7 +433,10 @@
     let built = false;
     const tag = (el, text) => {
       if (el.querySelector(':scope > .xray-tag')) return;
-      if (getComputedStyle(el).position === 'static') el.classList.add('xray-rel');
+      const cs = getComputedStyle(el);
+      if (cs.position === 'static') el.classList.add('xray-rel');
+      // Tabs sit above the box unless the box clips overflow or is the fixed nav.
+      if (cs.position === 'fixed' || /hidden|clip/.test(cs.overflow + cs.overflowY)) el.classList.add('xray-in');
       el.classList.add('xray-box');
       const t = document.createElement('span');
       t.className = 'xray-tag'; t.setAttribute('aria-hidden', 'true'); t.textContent = text;
@@ -465,15 +468,34 @@
       ];
       hud.innerHTML = rows.map(([k, v]) => `<span><b>${k}</b><i>${v}</i></span>`).join('');
       document.body.appendChild(hud);
+      // "Safe mode"-style watermark: faded along the bottom and up the right edge.
+      const mark = document.createElement('div');
+      mark.className = 'xray-mark'; mark.setAttribute('aria-hidden', 'true');
+      mark.innerHTML = '<span class="xm-b">X-ray mode</span><span class="xm-r">X-ray mode</span>';
+      document.body.appendChild(mark);
     };
     const apply = (on) => {
       if (on) build();
       root.classList.toggle('xray', on);
       btns.forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
     };
+    // Brief notice when the mode changes (like a phone entering safe mode).
+    let toast, toastTimer;
+    const notify = (on) => {
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'xray-toast'; toast.setAttribute('role', 'status');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = on ? 'X-ray mode on · the code behind the design' : 'X-ray mode off';
+      toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    };
     const toggle = () => {
       const on = !root.classList.contains('xray');
       apply(on);
+      notify(on);
       try { sessionStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
     };
     btns.forEach((b) => b.addEventListener('click', toggle));
