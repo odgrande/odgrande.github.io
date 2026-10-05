@@ -100,7 +100,7 @@
         journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
         nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
         gate_eyebrow: "Knock, knock", gate_headline: "Come inside. Dis websites no dey bite.",
-        gate_subtext: "Na only bug dey bite, and I don kill all of dem finish. You ready make you look around?",
+        gate_subtext: "Na only bug dey bite, and I don kill all of dem finish.", gate_subtext2: "You ready make you look around?",
         gate_yes: "Yes, make I enter", gate_no: "No, I go pass",
         hero_tagline: "How far! I be Full-Stack Web Developer & Web Designer wey get 5+ years experience dey build digital products for clients for Nigeria, UK, Canada and USA.",
         hero_badge: "I dey available for work",
@@ -157,7 +157,7 @@
         journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
         gate_eyebrow: "Kọ́kọ́, kọ́kọ́", gate_headline: "Ẹ wọlé wá. Àwọn wẹ́ẹ̀bù yìí kì í buni jẹ.",
-        gate_subtext: "Kòkòrò àṣìṣe (bugs) nìkan ló ń buni jẹ, mo sì ti pa gbogbo wọn run. Ṣé o ti ṣetán láti wo yíká?",
+        gate_subtext: "Kòkòrò àṣìṣe (bugs) nìkan ló ń buni jẹ, mo sì ti pa gbogbo wọn run.", gate_subtext2: "Ṣé o ti ṣetán láti wo yíká?",
         gate_yes: "Bẹ́ẹ̀ni, jẹ́ kí n wọlé", gate_no: "Rárá, mo kọjá",
         hero_tagline: "Báwo! Èmi ni Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
         hero_badge: "Mo wà ní àyè fún iṣẹ́",
@@ -214,7 +214,7 @@
         journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
         gate_eyebrow: "Ƙwanƙwasa, ƙwanƙwasa", gate_headline: "Shigo ciki. Waɗannan shafukan ba sa cizo.",
-        gate_subtext: "Ƙwari (bugs) kaɗai ke cizo, kuma na kashe su duka. Ka shirya ka duba ko'ina?",
+        gate_subtext: "Ƙwari (bugs) kaɗai ke cizo, kuma na kashe su duka.", gate_subtext2: "Ka shirya ka duba ko'ina?",
         gate_yes: "Eh, bari in shiga", gate_no: "A'a, zan wuce",
         hero_tagline: "Sannu! Ni ne Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen gina kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
         hero_badge: "Ina samuwa don aiki",
@@ -271,7 +271,7 @@
         journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
         gate_eyebrow: "Toc, toc", gate_headline: "Entrez donc. Ces sites ne mordent pas.",
-        gate_subtext: "Seuls les bugs mordent, et je les ai tous écrasés. Prêt à faire le tour ?",
+        gate_subtext: "Seuls les bugs mordent, et je les ai tous écrasés.", gate_subtext2: "Prêt à faire le tour ?",
         gate_yes: "Oui, je rentre", gate_no: "Non, je passe",
         hero_tagline: "Salut ! Je suis Développeur Web Full-Stack & Designer Web avec plus de 5 ans d'expérience dans la création de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         hero_badge: "Disponible pour travailler",
@@ -589,7 +589,7 @@
       const wa = feedback.dataset.whatsapp || '';
       const reason = feedback.reason.value.trim();
       const email = feedback.email.value.trim();
-      const lines = ["Feedback from odgrande.github.io:", reason, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      const lines = ["Feedback from odunayobolarinwa.com:", reason, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
       // Navigating the tab to WhatsApp IS the "leave". Deliberately NOT marked
       // as seen: only "yes, take me in" lets anyone past the gate, so pressing
       // Back from WhatsApp lands on the question again.
@@ -667,7 +667,7 @@
       const wa = form.dataset.whatsapp || '';
       const idea = form.idea.value.trim();
       const email = form.email.value.trim();
-      const lines = ["Idea from odgrande.github.io:", idea, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      const lines = ["Idea from odunayobolarinwa.com:", idea, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
       window.open(`${wa}?text=${encodeURIComponent(lines)}`, '_blank', 'noopener');
       closePopup();
     });

@@ -165,7 +165,7 @@ def page_title(title):
     return f"{title} · Odunayo Bolarinwa | {TAGLINE}"
 
 def head(title,desc,canonical):
-    full=esc(page_title(title)); url=f"https://odgrande.github.io{canonical}"
+    full=esc(page_title(title)); url=f"https://odunayobolarinwa.com{canonical}"
     # Link previews (WhatsApp, X, LinkedIn, Slack...) use og-image.jpg: the
     # About page hero, framed for the 1200x630 preview format.
     return f'''<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -173,8 +173,8 @@ def head(title,desc,canonical):
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Odunayo Bolarinwa"><meta property="og:url" content="{url}">
 <meta property="og:title" content="{full}"><meta property="og:description" content="{esc(desc)}">
-<meta property="og:image" content="https://odgrande.github.io/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Odunayo Bolarinwa, Odgrande Digital CEO: Let's create magic together">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@ceodgrande"><meta name="twitter:title" content="{full}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="https://odgrande.github.io/og-image.jpg">
+<meta property="og:image" content="https://odunayobolarinwa.com/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Odunayo Bolarinwa, Odgrande Digital CEO: Let's create magic together">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@ceodgrande"><meta name="twitter:title" content="{full}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="https://odunayobolarinwa.com/og-image.jpg">
 <link rel="preload" href="/assets/theme/fonts/road-rage-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/theme/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="stylesheet" href="/assets/css/styles.css?v={ASSET_V['css']}">
@@ -239,8 +239,8 @@ def gate():
     return f'''<div id="gate">{clock}{lang_switcher("gate-lang")}<div class="gate-inner">
 <div class="gate-question" id="gateQuestion">
 <p class="t-md" data-i18n="gate_eyebrow">Knock, knock</p>
-<h2 class="gate-title" data-i18n="gate_headline">Come on in. The websites don't bite.</h2>
-<p class="t-sm" style="color:var(--muted)" data-i18n="gate_subtext">Well, only the bugs bite, and I squashed every one of them. Ready to look around?</p>
+<h2 class="gate-title"><span data-i18n="gate_headline">Come on in. The websites don't bite.</span> <svg class="gate-smile" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="8.4" cy="9.6" r="1.55" fill="currentColor"/><circle cx="15.6" cy="9.6" r="1.55" fill="currentColor"/><path d="M7.3 14.2c1.1 2.1 2.8 3.2 4.7 3.2s3.6-1.1 4.7-3.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></h2>
+<p class="t-sm gate-sub" style="color:var(--muted)"><span data-i18n="gate_subtext">Well, only the bugs bite, and I squashed every one of them.</span><br><span data-i18n="gate_subtext2">Ready to look around?</span></p>
 <div class="gate-actions">
 <button class="btn" id="gateYes" type="button" data-i18n="gate_yes">Yes, let me in</button>
 <button class="btn" id="gateNo" type="button" data-i18n="gate_no">No, I'll pass</button>
@@ -923,7 +923,7 @@ def page_cookies():
 <li><code>odVisitorGeo</code> — the country/timezone result from the footer's one-time IP lookup, cached for the rest of the session so it isn't requested again (session storage). See the <a class="link-inline" href="/privacy/">Privacy Policy</a> for how that lookup works.</li>
 </ul>'''),
         ("Third parties","The site's fonts and libraries (GSAP, Three.js, Vue) are served from this site itself. The loading animation fetches one font from Google Fonts, which may see a standard request (your IP address, browser user-agent) as part of serving it — this site doesn't add any tracking on top of that."),
-        ("Your control","Clearing your browser's site data for odgrande.github.io removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end."),
+        ("Your control","Clearing your browser's site data for odunayobolarinwa.com removes all of the above. Since none of it is sent to a server, there's nothing further to delete on this end."),
         ("Contact",f'Questions about this policy can be sent to <a class="link-inline" href="mailto:{esc(site["email"])}">{esc(site["email"])}</a>.'),
     ]
     return legal_page("Cookie Policy",f"Cookie and local storage policy for {site['name']}'s portfolio site.","/cookies/",sections,"cookies_heading")
@@ -1042,10 +1042,12 @@ def page_404():
 
 def write_seo_files(projects):
     # robots.txt + sitemap.xml so search engines find every page.
-    base="https://odgrande.github.io"
+    base="https://odunayobolarinwa.com"
     paths=["/","/works/","/about/","/credentials/","/contact/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
     urls="".join(f"<url><loc>{base}{u}</loc></url>" for u in paths)
     (SITE/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',encoding="utf-8")
+    # Custom domain (also set in the repo's Pages settings).
+    (SITE/"CNAME").write_text("odunayobolarinwa.com\n",encoding="utf-8")
     (SITE/"robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n",encoding="utf-8")
 
 def main():

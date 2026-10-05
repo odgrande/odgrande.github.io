@@ -586,6 +586,7 @@ html.gate-skip #gate{display:none}
 .gate-inner{position:relative;max-width:38rem;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.5rem}
 /* Short laptop screens: keep the whole question + buttons in one view. */
 @media (max-height:760px){.gate-inner{gap:1rem}.gate-inner .h2{font-size:clamp(2.4rem,9.5vh,4rem)}}
+.gate-sub{margin:0;line-height:1.6;text-wrap:balance}
 .gate-question{display:flex;flex-direction:column;align-items:center;gap:1rem}
 #gatePersuade{display:none}
 #gatePersuade.show{display:flex}
@@ -772,6 +773,8 @@ html,body{max-width:100%;overflow-x:clip}
 @media (max-width:420px){.gate-clock{font-size:.58rem;letter-spacing:.05em;gap:.4rem}.gate-time{padding-left:.4rem}}
 .gate-inner{max-width:min(60rem,100%)}
 .gate-title{font-family:var(--grunge);text-transform:uppercase;font-weight:400;line-height:.88;letter-spacing:-.01em;margin:0;color:var(--paper);font-size:clamp(3.6rem,13vw,9.5rem);text-wrap:balance}
+/* Smiley after the headline: drawn in the text colour (white on dark, ink on light), cap-height sized. */
+.gate-smile{display:inline-block;width:.78em;height:.78em;vertical-align:-.04em;color:var(--paper)}
 @media (max-height:760px){.gate-title{font-size:clamp(3.2rem,15.5vh,7.5rem)}}
 /* Phones: smaller headline and room at the top so the Lagos clock row and
    language pill have breathing space above the question. */
