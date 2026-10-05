@@ -848,6 +848,8 @@ footer li a:hover{color:var(--muted)}
 /* "Crafted with :) by ..." — the landing-banner smiley, sized to the text. */
 .ft-smile{display:inline-block;width:1.05em;height:1.05em;vertical-align:-.2em;margin:0 .1em;color:var(--paper)}
 .footer-bottom p.t-xsm{font-size:.6rem;letter-spacing:.03em;color:var(--muted)}
+/* Visitor time + flag: its own line, with breathing room below the legal links. */
+.footer-bottom p.ft-clock{margin-top:1rem}
 
 /* ============ MOBILE QA ============ */
 @media(max-width:599px){
