@@ -88,6 +88,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        bf_title: "Start a project", bf_eyebrow: "Project brief", bf_hi_name: "How far {n}!", bf_intro: "Make we plan your project together. E go take like 3 minutes, and your answers go stay for your browser until you decide to send am.", bf_begin: "Make we start", bf_next: "Next", bf_back: "Go back", bf_step: "Step {n} of {t}", bf_q_you: "First, who I dey talk to?", bf_l_name: "Your name", bf_l_biz: "Your business or brand (optional)", bf_l_country: "Where you dey? (optional)", bf_ph_name: "e.g. Ada Okafor", bf_ph_biz: "e.g. Ada's Kitchen", bf_ph_country: "e.g. Lagos, Nigeria", bf_q_need: "Wetin you need?", bf_hint_multi: "Pick all the ones wey concern you.", bf_o_website: "New website", bf_o_shop: "Online shop", bf_o_redesign: "Make my site fresh again", bf_o_plugin: "WordPress plugin or custom feature", bf_o_fix: "Fix my site or make am fast", bf_o_brand: "Branding or design", bf_o_other: "Something else", bf_q_platform: "You get any platform for mind?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Custom-built", bf_o_unsure: "I no sure, help me choose", bf_q_features: "Which features e go need?", bf_o_pay: "Online payment", bf_o_book: "Booking or appointment", bf_o_tickets: "Event ticket", bf_o_lang: "Many languages", bf_o_blog: "Blog or news", bf_o_members: "Member login", bf_o_ai: "AI chatbot", bf_o_notyet: "I never sure", bf_q_have: "Wetin you don get already?", bf_o_logo: "Logo and branding", bf_o_content: "Text and photos", bf_o_domain: "Domain and hosting", bf_o_site: "Website wey I dey use now", bf_l_url: "Link to your current website (optional)", bf_l_like: "Websites wey you like (optional)", bf_ph_url: "https://", bf_ph_like: "Paste some links and talk wetin you like about dem", bf_q_when: "Time and budget", bf_l_timeline: "When you need am?", bf_o_asap: "Sharp sharp (inside 2 weeks)", bf_o_month: "Inside one month", bf_o_quarter: "In 2–3 months", bf_o_flex: "Time no too matter", bf_l_budget: "Your budget (any currency, optional)", bf_ph_budget: "e.g. $1,500, £1,000, ₦800,000 or I no sure", bf_q_idea: "Tell me about your project", bf_hint_idea: "Wetin e be, who e dey for, and how success go look for you.", bf_ph_idea: "My idea na...", bf_q_contact: "How I go reach you?", bf_l_email: "Email", bf_ph_email: "you@example.com", bf_l_wa: "WhatsApp number (optional)", bf_ph_wa: "e.g. +234 800 000 0000", bf_l_prefer: "I prefer make we talk for", bf_o_email: "Email", bf_o_whatsapp: "WhatsApp", bf_q_review: "See your brief", bf_hint_review: "Check am well, then send am give me. I go reply you within one or two days.", bf_send_wa: "Send am for WhatsApp", bf_send_email: "Send am by email", bf_copy: "Copy the brief", bf_copied: "E don copy!", bf_edit: "Change my answers", bf_restart: "Start again", bf_done: "E remain small! Just press send for the app wey open. I go reach you soon.", bf_err_name: "Abeg tell me your name.", bf_err_need: "Pick at least one.", bf_err_idea: "Abeg write one or two lines about your idea.", bf_err_contact: "Abeg put correct email or WhatsApp number.", bf_saved: "Your answers dey saved for this device, so you fit come back later.", bf_cta: "Fill my project brief",
         rs_open: "Na {t} for Lagos now. I dey my desk, so I go reply you sharp sharp.", rs_evening: "Na {t} for Lagos now. I don close for today. Expect my reply by {r}.", rs_night: "Na {t} for Lagos now. I don sleep be dat. Expect my reply by {r}.", rs_morning: "Na {t} for Lagos now. I never reach my desk. Expect my reply by {r}.", rs_weekend: "Na {t} for Lagos now, and na weekend. Expect my reply by {r}.", rs_your: "your time",
         pron_label: "How you go call am:",
         fb_eyebrow: "Featured build", fb_skills: "Skills wey e show",
@@ -146,6 +147,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        bf_title: "Bẹ̀rẹ̀ iṣẹ́ àkànṣe", bf_eyebrow: "Àlàyé iṣẹ́ àkànṣe", bf_hi_name: "Ẹ kú àbọ̀, {n}!", bf_intro: "Ẹ jẹ́ ká jọ ṣètò iṣẹ́ àkànṣe yín. Yóò gba ìṣẹ́jú mẹ́ta péré, àwọn ìdáhùn yín yóò sì wà nínú ẹ̀rọ yín títí ẹ ó fi pinnu láti fi ránṣẹ́.", bf_begin: "Ẹ jẹ́ ká bẹ̀rẹ̀", bf_next: "Tẹ̀síwájú", bf_back: "Padà", bf_step: "Ìgbésẹ̀ {n} nínú {t}", bf_q_you: "Àkọ́kọ́, ta ni mò ń bá sọ̀rọ̀?", bf_l_name: "Orúkọ yín", bf_l_biz: "Iṣẹ́ òwò tàbí àmì-ìdámọ̀ (kò pọn dandan)", bf_l_country: "Níbo lẹ wà? (kò pọn dandan)", bf_ph_name: "àpẹẹrẹ: Ada Okafor", bf_ph_biz: "àpẹẹrẹ: Ada's Kitchen", bf_ph_country: "àpẹẹrẹ: Èkó, Nàìjíríà", bf_q_need: "Kí lẹ nílò?", bf_hint_multi: "Ẹ yan gbogbo èyí tó bá yẹ.", bf_o_website: "Wẹ́ẹ̀bù tuntun", bf_o_shop: "Ṣọ́ọ̀bù orí ayélujára", bf_o_redesign: "Àtúnṣe ìrísí wẹ́ẹ̀bù mi", bf_o_plugin: "Plugin WordPress tàbí ẹ̀yà àkànṣe", bf_o_fix: "Àtúnṣe tàbí mímú wẹ́ẹ̀bù mi yára", bf_o_brand: "Àmì-ìdámọ̀ tàbí àwòṣe", bf_o_other: "Nǹkan mìíràn", bf_q_platform: "Ṣé ẹ ní pẹpẹ kan lọ́kàn?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Kíkọ́ àkànṣe", bf_o_unsure: "Kò dá mi lójú, ẹ ràn mí lọ́wọ́", bf_q_features: "Àwọn ẹ̀yà wo ló máa nílò?", bf_o_pay: "Ìsanwó lórí ayélujára", bf_o_book: "Ìforúkọsílẹ̀ ìpàdé", bf_o_tickets: "Tíkẹ́ẹ̀tì ayẹyẹ", bf_o_lang: "Èdè púpọ̀", bf_o_blog: "Búlọ́ọ̀gì tàbí ìròyìn", bf_o_members: "Ìwọlé ọmọ ẹgbẹ́", bf_o_ai: "Chatbot AI", bf_o_notyet: "Mi ò tíì mọ̀", bf_q_have: "Kí lẹ ti ní tẹ́lẹ̀?", bf_o_logo: "Lógò àti àmì-ìdámọ̀", bf_o_content: "Ọ̀rọ̀ àti àwòrán", bf_o_domain: "Domain àti hosting", bf_o_site: "Wẹ́ẹ̀bù tí mò ń lò báyìí", bf_l_url: "Ìjápọ̀ wẹ́ẹ̀bù yín lọ́wọ́lọ́wọ́ (kò pọn dandan)", bf_l_like: "Àwọn wẹ́ẹ̀bù tí ẹ fẹ́ràn (kò pọn dandan)", bf_ph_url: "https://", bf_ph_like: "Ẹ fi àwọn ìjápọ̀ díẹ̀ síbí, kí ẹ sì sọ ohun tí ẹ fẹ́ràn nípa wọn", bf_q_when: "Àkókò àti ìnáwó", bf_l_timeline: "Ìgbà wo lẹ nílò rẹ̀?", bf_o_asap: "Ní kíákíá (láàárín ọ̀sẹ̀ méjì)", bf_o_month: "Láàárín oṣù kan", bf_o_quarter: "Ní oṣù 2–3", bf_o_flex: "Àkókò kò ṣe pàtàkì", bf_l_budget: "Ìnáwó yín (owó èyíkéyìí, kò pọn dandan)", bf_ph_budget: "àpẹẹrẹ: $1,500, £1,000, ₦800,000 tàbí mi ò mọ̀", bf_q_idea: "Ẹ sọ fún mi nípa iṣẹ́ àkànṣe yín", bf_hint_idea: "Kí ni, ta ni fún, àti bí àṣeyọrí ṣe máa rí fún yín.", bf_ph_idea: "Èrò mi ni...", bf_q_contact: "Báwo ni mo ṣe lè kàn sí yín?", bf_l_email: "Ímeèlì", bf_ph_email: "you@example.com", bf_l_wa: "Nọ́mbà WhatsApp (kò pọn dandan)", bf_ph_wa: "àpẹẹrẹ: +234 800 000 0000", bf_l_prefer: "Mo fẹ́ ká sọ̀rọ̀ lórí", bf_o_email: "Ímeèlì", bf_o_whatsapp: "WhatsApp", bf_q_review: "Àlàyé yín nìyí", bf_hint_review: "Ẹ yẹ̀ ẹ́ wò, lẹ́yìn náà ẹ fi ránṣẹ́ sí mi. Màá fèsì láàárín ọjọ́ kan tàbí méjì.", bf_send_wa: "Fi ránṣẹ́ lórí WhatsApp", bf_send_email: "Fi ránṣẹ́ nípasẹ̀ ímeèlì", bf_copy: "Ṣe ẹ̀dà àlàyé", bf_copied: "A ti ṣe ẹ̀dà rẹ̀!", bf_edit: "Ṣàtúnṣe ìdáhùn", bf_restart: "Bẹ̀rẹ̀ lákọ̀tun", bf_done: "Ó kù díẹ̀! Ẹ kàn tẹ ‘send’ nínú áàpù tó ṣí. Màá kàn sí yín láìpẹ́.", bf_err_name: "Ẹ jọ̀ọ́, ẹ sọ orúkọ yín fún mi.", bf_err_need: "Ẹ yan ó kéré tán ọ̀kan.", bf_err_idea: "Ẹ jọ̀ọ́, ẹ kọ gbólóhùn kan tàbí méjì nípa èrò yín.", bf_err_contact: "Ẹ jọ̀ọ́, ẹ fi ímeèlì tàbí nọ́mbà WhatsApp tó tọ́ sí i.", bf_saved: "A ti fi àwọn ìdáhùn yín pamọ́ sórí ẹ̀rọ yìí, ẹ lè padà wá nígbà míì.", bf_cta: "Kún àlàyé iṣẹ́ àkànṣe",
         rs_open: "Agogo {t} ni ní Èkó báyìí. Mo wà ní ibi iṣẹ́ mi, nítorí náà màá fèsì kíákíá.", rs_evening: "Agogo {t} ni ní Èkó báyìí. Mo ti parí iṣẹ́ fún òní. Màá fèsì ní {r}.", rs_night: "Agogo {t} ni ní Èkó báyìí. Ó ṣeéṣe kí n ti sùn. Màá fèsì ní {r}.", rs_morning: "Agogo {t} ni ní Èkó báyìí. Mi ò tíì dé ibi iṣẹ́. Màá fèsì ní {r}.", rs_weekend: "Agogo {t} ni ní Èkó báyìí, òpin ọ̀sẹ̀ sì ni. Màá fèsì ní {r}.", rs_your: "ní àkókò tìrẹ",
         pron_label: "Bí a ṣe ń pè é:",
         fb_eyebrow: "Iṣẹ́ àfihàn", fb_skills: "Àwọn ọgbọ́n tí ó fi hàn",
@@ -204,6 +206,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        bf_title: "Fara aiki", bf_eyebrow: "Bayanin aiki", bf_hi_name: "Barka da zuwa, {n}!", bf_intro: "Mu tsara aikinku tare. Zai ɗauki kusan mintuna 3, kuma amsoshinku za su kasance a burauzarku har sai kun yanke shawarar aikawa.", bf_begin: "Mu fara", bf_next: "Gaba", bf_back: "Baya", bf_step: "Mataki {n} cikin {t}", bf_q_you: "Da farko, da wa nake magana?", bf_l_name: "Sunanka", bf_l_biz: "Kasuwanci ko alama (ba dole ba)", bf_l_country: "Ina kake? (ba dole ba)", bf_ph_name: "misali: Ada Okafor", bf_ph_biz: "misali: Ada's Kitchen", bf_ph_country: "misali: Legas, Najeriya", bf_q_need: "Me kake bukata?", bf_hint_multi: "Zaɓi duk waɗanda suka dace.", bf_o_website: "Sabon gidan yanar gizo", bf_o_shop: "Shagon kan layi", bf_o_redesign: "Sake fasalin shafina", bf_o_plugin: "Plugin na WordPress ko fasali na musamman", bf_o_fix: "Gyara ko sauri shafina", bf_o_brand: "Alama ko zane", bf_o_other: "Wani abu daban", bf_q_platform: "Kana da wani dandali a zuciya?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Gina na musamman", bf_o_unsure: "Ban tabbata ba, taimaka min zaɓa", bf_q_features: "Waɗanne fasaloli zai bukata?", bf_o_pay: "Biyan kuɗi ta yanar gizo", bf_o_book: "Yin alƙawari", bf_o_tickets: "Tikitin taro", bf_o_lang: "Harsuna da yawa", bf_o_blog: "Blog ko labarai", bf_o_members: "Shiga na mambobi", bf_o_ai: "Chatbot na AI", bf_o_notyet: "Ban tabbata ba tukuna", bf_q_have: "Me kake da shi riga?", bf_o_logo: "Tambari da alama", bf_o_content: "Rubutu da hotuna", bf_o_domain: "Domain da hosting", bf_o_site: "Shafin da nake amfani da shi yanzu", bf_l_url: "Hanyar shafinka na yanzu (ba dole ba)", bf_l_like: "Shafukan da kake so (ba dole ba)", bf_ph_url: "https://", bf_ph_like: "Saka wasu hanyoyi ka faɗi abin da kake so game da su", bf_q_when: "Lokaci da kasafin kuɗi", bf_l_timeline: "Yaushe kake bukatarsa?", bf_o_asap: "Da wuri (cikin makonni 2)", bf_o_month: "Cikin wata ɗaya", bf_o_quarter: "Cikin watanni 2–3", bf_o_flex: "Lokaci ba matsala", bf_l_budget: "Kasafin kuɗinka (kowane kuɗi, ba dole ba)", bf_ph_budget: "misali: $1,500, £1,000, ₦800,000 ko ban sani ba", bf_q_idea: "Faɗa min game da aikinka", bf_hint_idea: "Menene shi, don wa, da yadda nasara za ta kasance a gare ka.", bf_ph_idea: "Ra'ayina shi ne...", bf_q_contact: "Ta yaya zan same ka?", bf_l_email: "Imel", bf_ph_email: "you@example.com", bf_l_wa: "Lambar WhatsApp (ba dole ba)", bf_ph_wa: "misali: +234 800 000 0000", bf_l_prefer: "Na fi son mu yi magana ta", bf_o_email: "Imel", bf_o_whatsapp: "WhatsApp", bf_q_review: "Ga bayaninka", bf_hint_review: "Duba shi, sannan ka aiko min. Zan amsa cikin kwana ɗaya ko biyu.", bf_send_wa: "Aika ta WhatsApp", bf_send_email: "Aika ta imel", bf_copy: "Kwafi bayanin", bf_copied: "An kwafa!", bf_edit: "Gyara amsoshi", bf_restart: "Fara sabo", bf_done: "Saura kaɗan! Danna ‘send’ a manhajar da ta buɗe. Zan tuntuɓe ka nan ba da jimawa ba.", bf_err_name: "Don Allah faɗa min sunanka.", bf_err_need: "Zaɓi aƙalla ɗaya.", bf_err_idea: "Don Allah rubuta jimla ɗaya ko biyu game da ra'ayinka.", bf_err_contact: "Don Allah saka imel ko lambar WhatsApp mai inganci.", bf_saved: "An adana amsoshinka a wannan na'ura, za ka iya dawowa daga baya.", bf_cta: "Cike bayanin aiki",
         rs_open: "Ƙarfe {t} ne a Legas yanzu. Ina kan aiki, don haka zan amsa da sauri.", rs_evening: "Ƙarfe {t} ne a Legas yanzu. Na tashi daga aiki na yau. Ka sa ran amsa kafin {r}.", rs_night: "Ƙarfe {t} ne a Legas yanzu. Wataƙila ina barci. Ka sa ran amsa kafin {r}.", rs_morning: "Ƙarfe {t} ne a Legas yanzu. Ban fara aiki ba tukuna. Ka sa ran amsa kafin {r}.", rs_weekend: "Ƙarfe {t} ne a Legas yanzu, kuma ƙarshen mako ne. Ka sa ran amsa kafin {r}.", rs_your: "a lokacinka",
         pron_label: "Yadda ake furtawa:",
         fb_eyebrow: "Fitaccen aiki", fb_skills: "Ƙwarewar da yake nunawa",
@@ -262,6 +265,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        bf_title: "Démarrer un projet", bf_eyebrow: "Brief de projet", bf_hi_name: "Bonjour {n} !", bf_intro: "Planifions votre projet ensemble. Cela prend environ 3 minutes, et vos réponses restent dans votre navigateur jusqu'à ce que vous choisissiez de les envoyer.", bf_begin: "C'est parti", bf_next: "Suivant", bf_back: "Retour", bf_step: "Étape {n} sur {t}", bf_q_you: "D'abord, à qui ai-je le plaisir de parler ?", bf_l_name: "Votre nom", bf_l_biz: "Entreprise ou marque (facultatif)", bf_l_country: "Où êtes-vous basé ? (facultatif)", bf_ph_name: "ex. Ada Okafor", bf_ph_biz: "ex. Ada's Kitchen", bf_ph_country: "ex. Montréal, Canada", bf_q_need: "De quoi avez-vous besoin ?", bf_hint_multi: "Choisissez tout ce qui s'applique.", bf_o_website: "Un nouveau site web", bf_o_shop: "Une boutique en ligne", bf_o_redesign: "Une refonte de mon site", bf_o_plugin: "Un plugin WordPress ou une fonctionnalité sur mesure", bf_o_fix: "Réparer ou accélérer mon site", bf_o_brand: "Identité visuelle ou design", bf_o_other: "Autre chose", bf_q_platform: "Une plateforme en tête ?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Développement sur mesure", bf_o_unsure: "Je ne sais pas, aidez-moi à choisir", bf_q_features: "De quelles fonctionnalités aura-t-il besoin ?", bf_o_pay: "Paiements en ligne", bf_o_book: "Réservations ou rendez-vous", bf_o_tickets: "Billetterie d'événements", bf_o_lang: "Plusieurs langues", bf_o_blog: "Blog ou actualités", bf_o_members: "Espace membres", bf_o_ai: "Chatbot IA", bf_o_notyet: "Pas encore sûr", bf_q_have: "Qu'avez-vous déjà ?", bf_o_logo: "Logo et identité", bf_o_content: "Textes et photos", bf_o_domain: "Nom de domaine et hébergement", bf_o_site: "Un site actuel", bf_l_url: "Lien de votre site actuel (facultatif)", bf_l_like: "Sites que vous aimez (facultatif)", bf_ph_url: "https://", bf_ph_like: "Collez quelques liens et dites ce qui vous plaît", bf_q_when: "Délais et budget", bf_l_timeline: "Pour quand en avez-vous besoin ?", bf_o_asap: "Dès que possible (sous 2 semaines)", bf_o_month: "D'ici un mois", bf_o_quarter: "Dans 2 à 3 mois", bf_o_flex: "Je suis flexible", bf_l_budget: "Votre budget (toute devise, facultatif)", bf_ph_budget: "ex. 1 500 $, 1 000 £, 800 000 ₦ ou je ne sais pas", bf_q_idea: "Parlez-moi de votre projet", bf_hint_idea: "Ce que c'est, pour qui, et à quoi ressemblerait une réussite pour vous.", bf_ph_idea: "Mon idée, c'est...", bf_q_contact: "Comment puis-je vous joindre ?", bf_l_email: "E-mail", bf_ph_email: "vous@exemple.com", bf_l_wa: "Numéro WhatsApp (facultatif)", bf_ph_wa: "ex. +1 514 000 0000", bf_l_prefer: "Je préfère échanger par", bf_o_email: "E-mail", bf_o_whatsapp: "WhatsApp", bf_q_review: "Voici votre brief", bf_hint_review: "Relisez-le, puis envoyez-le-moi. Je réponds sous un ou deux jours.", bf_send_wa: "Envoyer sur WhatsApp", bf_send_email: "Envoyer par e-mail", bf_copy: "Copier le brief", bf_copied: "Copié !", bf_edit: "Modifier mes réponses", bf_restart: "Recommencer", bf_done: "Presque fini ! Appuyez simplement sur « envoyer » dans l'application qui s'est ouverte. Je vous recontacte très vite.", bf_err_name: "Merci d'indiquer votre nom.", bf_err_need: "Choisissez au moins une option.", bf_err_idea: "Une phrase ou deux sur votre idée, s'il vous plaît.", bf_err_contact: "Merci d'ajouter un e-mail ou un numéro WhatsApp valide.", bf_saved: "Vos réponses sont enregistrées sur cet appareil, vous pouvez revenir plus tard.", bf_cta: "Remplir un brief de projet",
         rs_open: "Il est {t} à Lagos. Je suis à mon bureau, les réponses sont donc rapides.", rs_evening: "Il est {t} à Lagos. J'ai terminé ma journée. Réponse attendue d'ici {r}.", rs_night: "Il est {t} à Lagos. Je dors sûrement. Réponse attendue d'ici {r}.", rs_morning: "Il est {t} à Lagos. Je ne suis pas encore à mon bureau. Réponse attendue d'ici {r}.", rs_weekend: "Il est {t} à Lagos et c'est le week-end. Réponse attendue d'ici {r}.", rs_your: "(votre heure)",
         pron_label: "Prononciation :",
         fb_eyebrow: "Réalisation phare", fb_skills: "Compétences démontrées",
@@ -421,6 +425,7 @@
       ['.works-filter', 'Vue 3 · reactive filter'],
       ['.work-grid', 'CSS grid · WebP thumbnails · GSAP hover'],
       ['.reply-status', 'Live time-zone maths · Intl API'],
+      ['.brief', 'Multi-step form · localStorage drafts · WhatsApp / email hand-off'],
       ['.works-grid', 'Vue 3 · filtered grid · WebP thumbnails'],
       ['.hero-media', 'WebP hero · srcset 800/1600w · priority load'],
       ['.spec', 'Spec sheet · inline-SVG flags'],
@@ -555,6 +560,140 @@
     };
     render();
     setInterval(render, 30000);
+  })();
+
+  // ---------- /start/: shareable step-by-step project brief ----------
+  // /start/?for=Ada greets the prospect by name. Answers autosave to
+  // localStorage (odBrief) and are only ever sent when the visitor taps
+  // WhatsApp or email on the review step.
+  (() => {
+    const root = document.getElementById('brief');
+    if (!root) return;
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const KEY = 'odBrief';
+    // Someone who arrives through a brief link has already been welcomed:
+    // don't show them the landing banner or loading screen on later pages.
+    try { sessionStorage.setItem('odGateSeen', '1'); sessionStorage.setItem('odPreloaderSeen', '1'); } catch (e) {}
+    const form = root.querySelector('.bf-form');
+    const steps = [...root.querySelectorAll('.bf-step')];
+    const TOTAL = +root.dataset.total;
+    const nav = root.querySelector('.bf-nav'), prog = root.querySelector('.bf-progress');
+    const back = root.querySelector('.bf-back'), next = root.querySelector('.bf-next');
+    let cur = 0;
+
+    // Personal greeting from ?for=Name
+    const who = (new URLSearchParams(location.search).get('for') || '').replace(/[<>]/g, '').trim().slice(0, 40);
+    if (who) {
+      const hi = root.querySelector('.bf-hi');
+      hi.textContent = T('bf_hi_name', 'Hi {n}!').replace('{n}', who) + ' ';
+      hi.hidden = false;
+    }
+
+    const read = () => {
+      const d = {};
+      new FormData(form).forEach((v, k) => { (d[k] = d[k] || []).push(String(v).trim()); });
+      return d;
+    };
+    const one = (d, k) => (d[k] || []).filter(Boolean).join(', ');
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ d: read(), s: cur })); } catch (e) {} };
+    const restore = () => {
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+      if (!saved || !saved.d) return false;
+      Object.entries(saved.d).forEach(([k, vals]) => {
+        form.querySelectorAll(`[name="${k}"]`).forEach((el) => {
+          if (el.type === 'checkbox' || el.type === 'radio') el.checked = vals.includes(el.value);
+          else el.value = vals[0] || '';
+        });
+      });
+      return true;
+    };
+    const hadDraft = restore();
+    if (!hadDraft && who) { const n = form.querySelector('[name="name"]'); if (n && !n.value) n.value = who; }
+    if (hadDraft) root.querySelector('.bf-saved').hidden = false;
+
+    const show = (i) => {
+      cur = i;
+      steps.forEach((s) => s.classList.toggle('is-active', +s.dataset.step === i));
+      const inForm = i >= 1 && i <= TOTAL;
+      nav.hidden = !inForm; prog.hidden = !inForm;
+      if (inForm) {
+        root.querySelector('.bf-count').textContent = T('bf_step', 'Step {n} of {t}').replace('{n}', i).replace('{t}', TOTAL);
+        root.querySelector('.bf-bar b').style.width = (i / TOTAL * 100) + '%';
+        back.hidden = false;
+      }
+      if (i === TOTAL + 1) { root.querySelector('.bf-summary').textContent = brief(); root.querySelector('.bf-done').hidden = true; }
+      const active = steps.find((s) => +s.dataset.step === i);
+      const focusEl = active && active.querySelector('input:not([type=checkbox]):not([type=radio]), textarea');
+      if (focusEl && matchMedia('(hover:hover)').matches) focusEl.focus({ preventScroll: true });
+      root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      save();
+    };
+
+    const fail = (msg) => {
+      const err = steps.find((s) => +s.dataset.step === cur).querySelector('.bf-error');
+      err.textContent = msg; return false;
+    };
+    const valid = () => {
+      const d = read();
+      const err = steps.find((s) => +s.dataset.step === cur)?.querySelector('.bf-error');
+      if (err) err.textContent = '';
+      if (cur === 1 && !one(d, 'name')) return fail(T('bf_err_name', 'Please tell me your name.'));
+      if (cur === 2 && !one(d, 'needs')) return fail(T('bf_err_need', 'Pick at least one option.'));
+      if (cur === 7 && one(d, 'idea').length < 10) return fail(T('bf_err_idea', 'A sentence or two about your idea, please.'));
+      if (cur === 8) {
+        const email = one(d, 'email'), wa = one(d, 'whatsapp');
+        const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), okWa = wa.replace(/\D/g, '').length >= 7;
+        if (!(okEmail || (!email && okWa)) || (email && !okEmail)) return fail(T('bf_err_contact', 'Please add a valid email or WhatsApp number.'));
+      }
+      return true;
+    };
+
+    const brief = () => {
+      const d = read();
+      const rows = [
+        ['Name', one(d, 'name')], ['Business', one(d, 'business')], ['Based in', one(d, 'location')],
+        ['Needs', one(d, 'needs')], ['Platform', one(d, 'platform')], ['Features', one(d, 'features')],
+        ['Already has', one(d, 'have')], ['Current site', one(d, 'current_site')], ['Sites they like', one(d, 'inspiration')],
+        ['Timeline', one(d, 'timeline')], ['Budget', one(d, 'budget')], ['Project', one(d, 'idea')],
+        ['Email', one(d, 'email')], ['WhatsApp', one(d, 'whatsapp')], ['Prefers', one(d, 'prefer')],
+      ].filter(([, v]) => v);
+      return ['NEW PROJECT BRIEF (odunayobolarinwa.com/start/)', ''].concat(rows.map(([k, v]) => `${k}: ${v}`)).join('\n');
+    };
+
+    root.querySelector('.bf-begin').addEventListener('click', () => show(1));
+    form.addEventListener('submit', (e) => { e.preventDefault(); if (valid()) show(cur + 1); });
+    back.addEventListener('click', () => show(Math.max(0, cur - 1)));
+    form.addEventListener('input', save);
+    form.addEventListener('change', save);
+    // Enter in a text field moves on (textareas keep their new lines).
+    form.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT' && !/checkbox|radio/.test(e.target.type)) { e.preventDefault(); if (valid()) show(cur + 1); }
+    });
+
+    const done = () => { root.querySelector('.bf-done').hidden = false; };
+    root.querySelector('.bf-wa').addEventListener('click', () => {
+      window.open(`${root.dataset.whatsapp}?text=${encodeURIComponent(brief())}`, '_blank', 'noopener'); done();
+    });
+    root.querySelector('.bf-mail').addEventListener('click', () => {
+      const subject = 'Project brief: ' + (one(read(), 'name') || 'new project');
+      location.href = `mailto:${root.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief())}`; done();
+    });
+    root.querySelector('.bf-copy').addEventListener('click', (e) => {
+      const btn = e.currentTarget, label = btn.querySelector('span'), old = label.textContent;
+      const ok = () => { label.textContent = T('bf_copied', 'Copied!'); setTimeout(() => { label.textContent = old; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(brief()).then(ok).catch(() => {});
+      else { const ta = document.createElement('textarea'); ta.value = brief(); document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (x) {} ta.remove(); }
+    });
+    root.querySelector('.bf-edit').addEventListener('click', () => show(1));
+    root.querySelector('.bf-restart').addEventListener('click', () => {
+      form.reset();
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      root.querySelector('.bf-saved').hidden = true;
+      if (who) form.querySelector('[name="name"]').value = who;
+      show(0);
+    });
+    show(0);
   })();
 
   // ---------- landing gate: a two-way question before the site reveals ----------

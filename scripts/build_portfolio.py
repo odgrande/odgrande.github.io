@@ -301,15 +301,17 @@ def exit_popup():
 
 PRELOADER_SKIP_INLINE='<script>document.documentElement.classList.add("no-scroll","veil");if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("no-preloader")}try{localStorage.removeItem("odTheme");if(sessionStorage.getItem("odTheme")==="light"){document.documentElement.setAttribute("data-theme","light")}}catch(e){}try{if(sessionStorage.getItem("odPreloaderSeen")){document.documentElement.classList.add("no-preloader")}}catch(e){}try{if(sessionStorage.getItem("odGateSeen")){document.documentElement.classList.add("gate-skip");setTimeout(function(){document.documentElement.classList.remove("veil","no-scroll")},12000)}}catch(e){}</script>'
 
-def shell(title,desc,body,canonical="/",show_cta=True):
-    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{gate()}{preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
+def shell(title,desc,body,canonical="/",show_cta=True,bare=False):
+    # bare=True (the shareable /start/ brief): no landing gate, loading screen
+    # or exit pop-up, so a prospect opening the link goes straight in.
+    return f'''<!doctype html><html lang="en">{head(title,desc,canonical)}<body>{PRELOADER_SKIP_INLINE}{"" if bare else gate()}{"" if bare else preloader()}{nav(canonical)}<div class="wrap"><main>{body}</main>{cta_band() if show_cta else ""}{footer()}</div>{cookie_banner()}{"" if bare else exit_popup()}<script src="/assets/js/script.js?v={ASSET_V['js']}" defer></script></body></html>'''
 
 def cta_band():
     return '''<section class="cta-band" data-reveal><div class="cta-3d" aria-hidden="true"></div><div class="container container-md" style="align-items:center">
 <p class="t-md text-center" data-i18n="footer_whats_next">What's next?</p>
 <h2 class="h2 text-center cta-rotate" data-i18n="footer_cta_heading">Let's work together.</h2>
 <p class="t-sm text-center" style="max-width:34rem" data-i18n="footer_cta_sub">Have a WordPress build, e-commerce store or digital product in mind? Let's talk about it.</p>
-<a class="btn" href="/contact/"><span data-i18n="start_project_btn">Start a project</span></a>
+<a class="btn" href="/start/"><span data-i18n="start_project_btn">Start a project</span></a>
 </div></section>'''
 
 def socials_list():
@@ -790,7 +792,7 @@ def page_about():
 <div class="split-copy">
 <p class="t-xl" data-i18n="magic_heading">Let's create website magic.</p>
 <p class="t-sm" data-i18n="magic_text">Whatever the brief — a brand-new WordPress build, an e-commerce store, or a digital product that needs to feel alive — I'd love to help build it.</p>
-<a class="btn" href="/contact/"><span data-i18n="start_project_btn">Start a project</span></a>
+<a class="btn" href="/start/"><span data-i18n="start_project_btn">Start a project</span></a>
 <div class="social-row">{"".join(f'<a href="{esc(u)}" target="_blank" rel="noopener" class="link-inline">{esc(t)}</a>' for t,u in socials_list())}</div>
 </div>
 </div>
@@ -858,6 +860,86 @@ def page_credentials():
 </section>'''
     return shell("Credentials","Credentials and recognition archive.",body,"/credentials/")
 
+def page_start():
+    # /start/ — a shareable step-by-step project brief. Send prospects
+    # /start/?for=Name for a personal greeting. Answers stay in the visitor's
+    # browser (localStorage) until they send the brief by WhatsApp or email.
+    site=CONFIG["site"]
+    def chip(name,kind,value,key,label):
+        return f'<label class="bf-chip"><input type="{kind}" name="{name}" value="{esc(value)}"><span data-i18n="{key}">{esc(label)}</span></label>'
+    def chips(name,kind,opts):
+        return '<div class="bf-chips">'+"".join(chip(name,kind,v,k,l) for v,k,l in opts)+'</div>'
+    def field(name,key,label,ph_key,ph,kind="text",extra=""):
+        return f'<label class="bf-field"><span class="bf-label" data-i18n="{key}">{esc(label)}</span><input type="{kind}" name="{name}" placeholder="{esc(ph)}" data-i18n-ph="{ph_key}"{extra}></label>'
+    def step(n,q_key,q,inner,hint_key=None,hint=None):
+        h=f'<p class="bf-hint" data-i18n="{hint_key}">{esc(hint)}</p>' if hint_key else ""
+        return f'<fieldset class="bf-step" data-step="{n}"><legend class="bf-q" data-i18n="{q_key}">{esc(q)}</legend>{h}{inner}<p class="bf-error" role="alert"></p></fieldset>'
+    needs=[("New website","bf_o_website","A new website"),("Online shop","bf_o_shop","An online shop"),("Redesign","bf_o_redesign","A redesign of my site"),
+           ("WordPress plugin / custom feature","bf_o_plugin","A WordPress plugin or custom feature"),("Fix or speed up a site","bf_o_fix","Fix or speed up my site"),
+           ("Branding / design","bf_o_brand","Branding or design"),("Something else","bf_o_other","Something else")]
+    platforms=[("WordPress","bf_o_wp","WordPress"),("Shopify","bf_o_shopify","Shopify"),("Webflow","bf_o_webflow","Webflow"),
+               ("Custom-built","bf_o_custom","Custom-built"),("Not sure, help me choose","bf_o_unsure","Not sure, help me choose")]
+    features=[("Online payments","bf_o_pay","Online payments"),("Bookings / appointments","bf_o_book","Bookings or appointments"),("Event ticketing","bf_o_tickets","Event ticketing"),
+              ("Multiple languages","bf_o_lang","Multiple languages"),("Blog / news","bf_o_blog","Blog or news"),("Member login","bf_o_members","Member login"),
+              ("AI chatbot","bf_o_ai","AI chatbot"),("Not sure yet","bf_o_notyet","Not sure yet")]
+    have=[("Logo & branding","bf_o_logo","Logo and branding"),("Text & photos","bf_o_content","Text and photos"),
+          ("Domain & hosting","bf_o_domain","Domain and hosting"),("A current website","bf_o_site","A current website")]
+    timeline=[("ASAP (within 2 weeks)","bf_o_asap","As soon as possible (within 2 weeks)"),("Within a month","bf_o_month","Within a month"),
+              ("In 2-3 months","bf_o_quarter","In 2–3 months"),("Flexible","bf_o_flex","I'm flexible")]
+    prefer=[("Email","bf_o_email","Email"),("WhatsApp","bf_o_whatsapp","WhatsApp")]
+    steps="".join([
+        step(1,"bf_q_you","First, who am I talking to?",
+             field("name","bf_l_name","Your name","bf_ph_name","e.g. Ada Okafor",extra=' autocomplete="name"')
+             +field("business","bf_l_biz","Business or brand (optional)","bf_ph_biz","e.g. Ada's Kitchen",extra=' autocomplete="organization"')
+             +field("location","bf_l_country","Where are you based? (optional)","bf_ph_country","e.g. London, UK")),
+        step(2,"bf_q_need","What do you need?",chips("needs","checkbox",needs),"bf_hint_multi","Pick all that apply."),
+        step(3,"bf_q_platform","Any platform in mind?",chips("platform","radio",platforms)),
+        step(4,"bf_q_features","Which features will it need?",chips("features","checkbox",features),"bf_hint_multi","Pick all that apply."),
+        step(5,"bf_q_have","What do you already have?",chips("have","checkbox",have)
+             +field("current_site","bf_l_url","Current website link (optional)","bf_ph_url","https://",kind="url")
+             +f'<label class="bf-field"><span class="bf-label" data-i18n="bf_l_like">Websites you like (optional)</span><textarea name="inspiration" rows="3" placeholder="Paste a few links and say what you like about them" data-i18n-ph="bf_ph_like"></textarea></label>',
+             "bf_hint_multi","Pick all that apply."),
+        step(6,"bf_q_when","Timeline and budget",
+             f'<p class="bf-label" data-i18n="bf_l_timeline">When do you need it?</p>'+chips("timeline","radio",timeline)
+             +field("budget","bf_l_budget","Your budget (any currency, optional)","bf_ph_budget","e.g. $1,500, £1,000, ₦800,000 or not sure")),
+        step(7,"bf_q_idea","Tell me about your project",
+             f'<label class="bf-field"><textarea name="idea" rows="6" placeholder="My idea is..." data-i18n-ph="bf_ph_idea" aria-label="Your project idea"></textarea></label>',
+             "bf_hint_idea","What it is, who it's for, and what a win looks like for you."),
+        step(8,"bf_q_contact","How can I reach you?",
+             field("email","bf_l_email","Email","bf_ph_email","you@example.com",kind="email",extra=' autocomplete="email"')
+             +field("whatsapp","bf_l_wa","WhatsApp number (optional)","bf_ph_wa","e.g. +234 800 000 0000",kind="tel",extra=' autocomplete="tel"')
+             +f'<p class="bf-label" data-i18n="bf_l_prefer">I prefer to talk on</p>'+chips("prefer","radio",prefer)),
+    ])
+    body=f'''<section class="container container-md brief-wrap">
+<div class="brief" id="brief" data-whatsapp="{esc(site["whatsapp"])}" data-email="{esc(site["email"])}" data-total="8">
+<div class="bf-intro bf-step is-active" data-step="0">
+<p class="fb-eyebrow" data-i18n="bf_eyebrow">Project brief</p>
+<h1 class="h2 bf-title"><span class="bf-hi" hidden></span><span data-i18n="bf_title">Start a project</span></h1>
+<p class="t-sm" data-i18n="bf_intro">Let's plan your project together. It takes about 3 minutes, and your answers stay in your browser until you choose to send them.</p>
+<p class="bf-saved" hidden data-i18n="bf_saved">Your answers are saved on this device, so you can come back later.</p>
+<button class="btn bf-begin" type="button"><span data-i18n="bf_begin">Let's start</span></button>
+</div>
+<form class="bf-form" novalidate>
+<div class="bf-progress" hidden><span class="bf-count" aria-live="polite"></span><i class="bf-bar"><b></b></i></div>
+{steps}
+<div class="bf-step bf-review" data-step="9">
+<p class="bf-q" data-i18n="bf_q_review">Here's your brief</p>
+<p class="bf-hint" data-i18n="bf_hint_review">Check it over, then send it to me. I'll reply within a day or two.</p>
+<pre class="bf-summary"></pre>
+<div class="bf-send">
+<button class="btn bf-wa" type="button"><span data-i18n="bf_send_wa">Send on WhatsApp</span></button>
+<button class="btn bf-mail" type="button"><span data-i18n="bf_send_email">Send by email</span></button>
+<button class="btn bf-copy" type="button"><span data-i18n="bf_copy">Copy brief</span></button>
+</div>
+<p class="bf-done" hidden data-i18n="bf_done">Almost done! Just press send in the app that opened. I'll be in touch soon.</p>
+<div class="bf-review-links"><button class="bf-link bf-edit" type="button" data-i18n="bf_edit">Edit answers</button><button class="bf-link bf-restart" type="button" data-i18n="bf_restart">Start over</button></div>
+</div>
+<div class="bf-nav" hidden><button class="btn bf-back" type="button"><span data-i18n="bf_back">Back</span></button><button class="btn bf-next" type="submit"><span data-i18n="bf_next">Next</span></button></div>
+</form>
+</div>
+</section>'''
+    return shell("Start a project",f"Plan your website, online shop or WordPress project with {site['name']}: a 3-minute project brief.",body,"/start/",show_cta=False,bare=True)
+
 def page_contact():
     site=CONFIG["site"]
     items=[("Email","contact_label_email",site["email"],f'mailto:{site["email"]}')]
@@ -876,6 +958,7 @@ def page_contact():
 <div style="max-width:44rem;display:flex;flex-direction:column;gap:1rem">
 <p class="t-xl" data-i18n="contact_tagline">Let's build something together.</p>
 <p class="t-sm" data-i18n="contact_sub">Have a website, e-commerce build, WordPress problem or digital product in mind? Tell me what you're working on and I'll get back to you within a day or two.</p>
+<a class="btn" href="/start/" style="align-self:center"><span data-i18n="bf_cta">Fill in a project brief</span></a>
 <p class="reply-status" data-hours='{esc(json.dumps(site["replyHours"]))}' aria-live="polite"><i class="rs-dot" aria-hidden="true"></i><span class="rs-text">Based in Lagos, Nigeria (WAT).</span></p>
 </div>
 </section>
@@ -914,6 +997,7 @@ def page_cookies():
     sections=[
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
+<li><code>odBrief</code> — the answers you type into the project brief (/start/), kept on your device (local storage) so you can finish later. Nothing is sent anywhere until you choose to send it, and "Start over" clears it.</li>
 <li><code>odXray</code> — whether X-ray mode is switched on, for this visit only (session storage).</li>
 <li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
@@ -934,7 +1018,7 @@ def page_sitemap(projects):
     def col(heading,i18n_key,links):
         items="".join(f'<li><a class="link-inline" href="{u}">{esc(t)}</a></li>' for t,u in links)
         return f'<div style="display:flex;flex-direction:column;gap:.75rem"><h2 class="h5" data-i18n="{i18n_key}">{esc(heading)}</h2><ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.5rem">{items}</ul></div>'
-    main_pages=[("Home","/"),("Works","/works/"),("About","/about/"),("Credentials","/credentials/"),("Contact","/contact/")]
+    main_pages=[("Home","/"),("Works","/works/"),("About","/about/"),("Credentials","/credentials/"),("Contact","/contact/"),("Start a project","/start/")]
     legal_pages=[("Privacy Policy","/privacy/"),("Cookie Policy","/cookies/"),("Sitemap","/sitemap/")]
     project_links=[(p["title"],f'/works/{p["slug"]}/') for p in projects]
     body=f'''<section class="container container-md" data-reveal>
@@ -1044,7 +1128,7 @@ def page_404():
 def write_seo_files(projects):
     # robots.txt + sitemap.xml so search engines find every page.
     base="https://odunayobolarinwa.com"
-    paths=["/","/works/","/about/","/credentials/","/contact/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
+    paths=["/","/works/","/about/","/credentials/","/contact/","/start/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
     urls="".join(f"<url><loc>{base}{u}</loc></url>" for u in paths)
     (SITE/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',encoding="utf-8")
     # Custom domain (also set in the repo's Pages settings).
@@ -1062,6 +1146,7 @@ def main():
     (SITE/"about").mkdir();(SITE/"about"/"index.html").write_text(page_about(),encoding="utf-8")
     (SITE/"credentials").mkdir();(SITE/"credentials"/"index.html").write_text(page_credentials(),encoding="utf-8")
     (SITE/"contact").mkdir();(SITE/"contact"/"index.html").write_text(page_contact(),encoding="utf-8")
+    (SITE/"start").mkdir();(SITE/"start"/"index.html").write_text(page_start(),encoding="utf-8")
     (SITE/"privacy").mkdir();(SITE/"privacy"/"index.html").write_text(page_privacy(),encoding="utf-8")
     (SITE/"cookies").mkdir();(SITE/"cookies"/"index.html").write_text(page_cookies(),encoding="utf-8")
     (SITE/"sitemap").mkdir();(SITE/"sitemap"/"index.html").write_text(page_sitemap(projects),encoding="utf-8")
