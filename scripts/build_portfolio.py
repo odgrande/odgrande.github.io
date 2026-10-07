@@ -718,6 +718,44 @@ def related_projects(p,projects):
     cards="".join(work_card(x) for x in picks)
     return f'<section class="container container-lg" style="align-items:center" data-reveal><h2 class="h2 text-center" data-i18n="more_work">More Work</h2><div class="work-grid">{cards}</div></section>'
 
+def project_image(p,name):
+    # Resolve a filename from site_config to the project's image URL.
+    from urllib.parse import unquote as _uq
+    return next((im for im in p.get("images",[]) if _uq(im.rsplit("/",1)[-1])==name),"")
+
+def stack_html(groups,heading=True):
+    rows="".join(f'<div class="cs-stack-row"><dt>{esc(g)}</dt><dd>{"".join(f"<span>{esc(x)}</span>" for x in items)}</dd></div>' for g,items in groups)
+    head='<p class="fb-eyebrow" data-i18n="cs_stack">Under the hood</p>' if heading else ""
+    return f'<div class="cs-stack">{head}<dl>{rows}</dl></div>'
+
+def case_study(p):
+    # Optional long-form case study (site_config: projects.<slug>.caseStudy):
+    # challenge, approach, what was built, stack, outcome, then the product
+    # screens as a sticky card stack and a strip of phone screenshots.
+    cs=p.get("caseStudy")
+    if not cs:
+        return f'<section class="case-study cs-lite" data-reveal>{stack_html(p["stack"])}</section>' if p.get("stack") else ""
+    paras=lambda xs:"".join(f'<p class="t-sm">{esc(x)}</p>' for x in xs)
+    built="".join(f'<li><h4>{esc(t)}</h4><p>{esc(d)}</p></li>' for t,d in cs.get("built",[]))
+    outcome="".join(f'<li>{esc(x)}</li>' for x in cs.get("outcome",[]))
+    cards=""
+    for i,(name,cap) in enumerate(cs.get("screens",[])):
+        src=project_image(p,name)
+        if src: cards+=f'<figure class="cs-card" style="--i:{i}"><img src="{esc(src)}" alt="{esc(p["title"])}: {esc(cap)}" loading="lazy"><figcaption><span class="cs-n">{i+1:02d}</span>{esc(cap)}</figcaption></figure>'
+    phones="".join(f'<figure class="cs-phone"><img src="{esc(project_image(p,n))}" alt="{esc(p["title"])} on a phone" loading="lazy"></figure>' for n in cs.get("mobile",[]) if project_image(p,n))
+    return f"""<section class="case-study" data-reveal>
+<header class="cs-head"><p class="fb-eyebrow" data-i18n="cs_eyebrow">Case study</p><h2 class="h2 cs-title">{esc(cs["title"])}</h2></header>
+<div class="cs-cols">
+<div class="cs-block"><h3 class="cs-label" data-i18n="cs_challenge">The challenge</h3>{paras(cs.get("challenge",[]))}</div>
+<div class="cs-block"><h3 class="cs-label" data-i18n="cs_approach">The approach</h3>{paras(cs.get("approach",[]))}</div>
+</div>
+<div class="cs-block"><h3 class="cs-label" data-i18n="cs_built">What I built</h3><ul class="cs-built">{built}</ul></div>
+{stack_html(cs.get("stack",[]))}
+{f'<div class="cs-block"><h3 class="cs-label" data-i18n="cs_outcome">The outcome</h3><ul class="cs-outcome">{outcome}</ul></div>' if outcome else ""}
+{f'<div class="cs-block cs-screens"><h3 class="cs-label" data-i18n="cs_screens">Inside the product</h3><div class="cs-deck">{cards}</div></div>' if cards else ""}
+{f'<div class="cs-block"><h3 class="cs-label" data-i18n="cs_mobile">On mobile</h3><div class="cs-phones">{phones}</div></div>' if phones else ""}
+</section>"""
+
 def project_highlights(p):
     # Optional "Featured build" panels (site_config: projects.<slug>.highlights)
     # for standout pieces of work inside a project, e.g. a custom plugin.
@@ -770,13 +808,16 @@ def page_project(p,projects):
     video_html=""
     if p.get("videos"):
         video_html="".join(f'<div class="project-video"><video controls preload="metadata" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(v)}"></video></div>' for v in p["videos"])
-    gallery=masonry_gallery(rest,p["title"],shots=True)
+    # Screens already shown in the case study aren't repeated in the gallery.
+    used={project_image(p,n) for n,_ in p.get("caseStudy",{}).get("screens",[])}|{project_image(p,n) for n in p.get("caseStudy",{}).get("mobile",[])}
+    gallery=masonry_gallery([x for x in rest if x not in used],p["title"],shots=True)
     body=f'''<section class="container container-xl" style="align-items:center" data-reveal>
 <h1 class="h1 text-center">{esc(p["title"])}</h1>
 <div class="hero-media" style="width:100%">{image_frame(hero,p["title"],sub=p["category"],eager=True)}</div>
 <dl class="spec">{facts_html}</dl>
 {live_btn}
 <div style="max-width:48rem"><p class="t-xl">{esc(p["description"])}</p></div>
+{case_study(p)}
 {project_highlights(p)}
 {video_html}
 {gallery}
