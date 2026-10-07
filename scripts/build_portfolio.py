@@ -730,12 +730,15 @@ def stack_html(groups,heading=True):
 
 def case_study(p):
     # Optional long-form case study (site_config: projects.<slug>.caseStudy):
-    # challenge, approach, what was built, stack, outcome, then the product
-    # screens as a sticky card stack and a strip of phone screenshots.
+    # big stat tiles, challenge, approach, what was built, stack, outcome, a
+    # video, then product screens as a sticky card stack and phone shots.
+    # Every block is optional and only renders when it has content.
     cs=p.get("caseStudy")
     if not cs:
         return f'<section class="case-study cs-lite" data-reveal>{stack_html(p["stack"])}</section>' if p.get("stack") else ""
     paras=lambda xs:"".join(f'<p class="t-sm">{esc(x)}</p>' for x in xs)
+    block=lambda key,label,inner,cls="":f'<div class="cs-block {cls}"><h3 class="cs-label" data-i18n="{key}">{label}</h3>{inner}</div>' if inner else ""
+    stats="".join(f'<div class="cs-stat"><b>{esc(v)}</b><span>{esc(l)}</span></div>' for v,l in cs.get("stats",[]))
     built="".join(f'<li><h4>{esc(t)}</h4><p>{esc(d)}</p></li>' for t,d in cs.get("built",[]))
     outcome="".join(f'<li>{esc(x)}</li>' for x in cs.get("outcome",[]))
     cards=""
@@ -743,17 +746,20 @@ def case_study(p):
         src=project_image(p,name)
         if src: cards+=f'<figure class="cs-card" style="--i:{i}"><img src="{esc(src)}" alt="{esc(p["title"])}: {esc(cap)}" loading="lazy"><figcaption><span class="cs-n">{i+1:02d}</span>{esc(cap)}</figcaption></figure>'
     phones="".join(f'<figure class="cs-phone"><img src="{esc(project_image(p,n))}" alt="{esc(p["title"])} on a phone" loading="lazy"></figure>' for n in cs.get("mobile",[]) if project_image(p,n))
+    vsrc=testimonial_video() if cs.get("video")=="about-testimonial" else cs.get("video","")
+    video=f'<div class="video-frame cs-video"><video controls preload="none" playsinline poster="/assets/theme/video-poster.svg"><source src="{esc(vsrc)}"></video></div>' if vsrc else ""
+    ch,ap=paras(cs.get("challenge",[])),paras(cs.get("approach",[]))
+    cols=block("cs_challenge","The challenge",ch)+block("cs_approach","The approach",ap)
     return f"""<section class="case-study" data-reveal>
-<header class="cs-head"><p class="fb-eyebrow" data-i18n="cs_eyebrow">Case study</p><h2 class="h2 cs-title">{esc(cs["title"])}</h2></header>
-<div class="cs-cols">
-<div class="cs-block"><h3 class="cs-label" data-i18n="cs_challenge">The challenge</h3>{paras(cs.get("challenge",[]))}</div>
-<div class="cs-block"><h3 class="cs-label" data-i18n="cs_approach">The approach</h3>{paras(cs.get("approach",[]))}</div>
-</div>
-<div class="cs-block"><h3 class="cs-label" data-i18n="cs_built">What I built</h3><ul class="cs-built">{built}</ul></div>
-{stack_html(cs.get("stack",[]))}
-{f'<div class="cs-block"><h3 class="cs-label" data-i18n="cs_outcome">The outcome</h3><ul class="cs-outcome">{outcome}</ul></div>' if outcome else ""}
-{f'<div class="cs-block cs-screens"><h3 class="cs-label" data-i18n="cs_screens">Inside the product</h3><div class="cs-deck">{cards}</div></div>' if cards else ""}
-{f'<div class="cs-block"><h3 class="cs-label" data-i18n="cs_mobile">On mobile</h3><div class="cs-phones">{phones}</div></div>' if phones else ""}
+<header class="cs-head"><p class="fb-eyebrow" data-i18n="cs_eyebrow">Case study</p>{f'<h2 class="h2 cs-title">{esc(cs["title"])}</h2>' if cs.get("title") else ""}</header>
+{f'<div class="cs-stats">{stats}</div>' if stats else ""}
+{f'<div class="cs-cols">{cols}</div>' if cols else ""}
+{block("cs_built","What I built",f'<ul class="cs-built">{built}</ul>' if built else "")}
+{stack_html(cs["stack"]) if cs.get("stack") else (stack_html(p["stack"]) if p.get("stack") else "")}
+{block("cs_outcome","The outcome",f'<ul class="cs-outcome">{outcome}</ul>' if outcome else "")}
+{block("cs_feedback","In their words",video)}
+{block("cs_screens","Inside the product",f'<div class="cs-deck">{cards}</div>' if cards else "","cs-screens")}
+{block("cs_mobile","On mobile",f'<div class="cs-phones">{phones}</div>' if phones else "")}
 </section>"""
 
 def project_highlights(p):
