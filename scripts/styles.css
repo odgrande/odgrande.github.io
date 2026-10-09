@@ -980,4 +980,7 @@ html,body{max-width:100%;overflow-x:clip}
    on the dots can still scroll the page; a tap changes shape. */
 .ptc{position:relative;display:grid;place-items:center;gap:.75rem;width:100%}
 .ptc-canvas{display:block;width:100%;max-width:480px;height:auto;aspect-ratio:480/400;color:var(--paper);cursor:crosshair;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
+/* home: no caption, so it is big enough to be found by the mouse;
+   96vh keeps the whole shape on a short laptop screen (400/480 × 96 = 80vh) */
+.ptc-big .ptc-canvas{width:min(100%,780px,96vh);max-width:none}
 .ptc-hint{margin:0;color:var(--muted);text-align:center}

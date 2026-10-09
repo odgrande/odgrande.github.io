@@ -631,9 +631,10 @@ def world_map(projects):
 <div class="map-panel" id="map-panel" aria-live="polite">{panels}</div>
 </section>'''
 
-def particles(shape="Circle",hint=True):
+def particles(shape="Circle",hint=True,big=False):
     # Bencho's Particles (MIT): a shape made of dots, driven by script.js.
-    return (f'<div class="ptc" data-particles data-shape="{shape}">'
+    # big: the home version, larger and left to explain itself.
+    return (f'<div class="ptc{" ptc-big" if big else ""}" data-particles data-shape="{shape}"{' data-reach="110"' if big else ""}>'
             f'<canvas class="ptc-canvas" width="480" height="400" role="img" aria-label="A shape made of dots. Move over it; press to change the shape."></canvas>'
             + ('<p class="t-sm ptc-hint" data-i18n="ptc_hint">Move over the dots. Click or tap to change the shape.</p>' if hint else "")
             + '</div>')
@@ -676,9 +677,8 @@ def page_home(projects):
 {services}
 </section>
 
-<section class="container container-md" style="align-items:center" data-reveal>
-<h2 class="h2 text-center" data-i18n="ptc_heading">Just for Fun</h2>
-{particles("Circle")}
+<section class="container container-lg" style="align-items:center" data-reveal>
+{particles("Circle",hint=False,big=True)}
 </section>
 
 <section class="container container-xl" data-reveal>

@@ -109,7 +109,7 @@
         testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
         g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted_pre: "Na with", ft_crafted_by: "{n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects across custom React, Node.js & PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
         ph_stamp: "Pictures dey come soon",
-        ptc_heading: "Just for Play", ptc_about_heading: "When I No Dey Work", ptc_hint: "Move over the dots. Click or tap make the shape change.", nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
+        ptc_about_heading: "When I No Dey Work", ptc_hint: "Move over the dots. Click or tap make the shape change.", nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
         pager_prev: "Before", pager_next: "Next",
         pron_pos: "noun", pron_def: "full-stack web developer and web designer wey dey join design and code together.", pron_origin: "Yoruba · Ọdúnayọ̀, “year of joy”",
         filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
@@ -172,7 +172,7 @@
         testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
         g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted_pre: "A fi", ft_crafted_by: "ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ àkànṣe {n} ní React, Node.js àti PHP àkànṣe, WordPress, Shopify, Webflow, ìṣòwò orí ayélujára àti iṣẹ́ àmì-ìdámọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
         ph_stamp: "Àwòrán ń bọ̀ láìpẹ́",
-        ptc_heading: "Fún Ìgbádùn", ptc_about_heading: "Lẹ́yìn Iṣẹ́", ptc_hint: "Gbé kọ́sọ̀ kọjá lórí àwọn àmì náà. Tẹ̀ ẹ́ láti yí ìrísí padà.", nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
+        ptc_about_heading: "Lẹ́yìn Iṣẹ́", ptc_hint: "Gbé kọ́sọ̀ kọjá lórí àwọn àmì náà. Tẹ̀ ẹ́ láti yí ìrísí padà.", nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
         pager_prev: "Ti tẹ́lẹ̀", pager_next: "Èyí tó kàn",
         pron_pos: "orúkọ", pron_def: "olùgbéejáde àti apẹ̀rẹ wẹ́ẹ̀bù tí ó so àpẹrẹ àti kóòdù pọ̀.", pron_origin: "Yorùbá · Ọdúnayọ̀, “ọdún ayọ̀”",
         filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
@@ -235,7 +235,7 @@
         testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
         g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted_pre: "An ƙirƙira da", ft_crafted_by: "daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n} a cikin ginin React, Node.js da PHP na musamman, WordPress, Shopify, Webflow, kasuwancin kan layi da aikin alama.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
         ph_stamp: "Hotuna na zuwa nan ba da jimawa ba",
-        ptc_heading: "Don Nishaɗi", ptc_about_heading: "Bayan Aiki", ptc_hint: "Matsa kan ɗigogin. Danna don canza siffa.", nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
+        ptc_about_heading: "Bayan Aiki", ptc_hint: "Matsa kan ɗigogin. Danna don canza siffa.", nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
         pager_prev: "Na baya", pager_next: "Na gaba",
         pron_pos: "suna", pron_def: "mai haɓaka yanar gizo kuma mai zane wanda ke haɗa zane da lamba.", pron_origin: "Yarbanci · Ọdúnayọ̀, “shekarar farin ciki”",
         filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
@@ -298,7 +298,7 @@
         testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
         g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted_pre: "Conçu avec", ft_crafted_by: "par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : développements sur mesure React, Node.js et PHP, WordPress, Shopify, Webflow, e-commerce et identité de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
         ph_stamp: "Visuels bientôt",
-        ptc_heading: "Juste pour le plaisir", ptc_about_heading: "Hors du bureau", ptc_hint: "Survolez les points. Cliquez ou touchez pour changer de forme.", nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
+        ptc_about_heading: "Hors du bureau", ptc_hint: "Survolez les points. Cliquez ou touchez pour changer de forme.", nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
         pager_prev: "Précédent", pager_next: "Suivant",
         pron_pos: "nom", pron_def: "développeur web full-stack et web designer qui relie design et code.", pron_origin: "Yoruba · Ọdúnayọ̀, « une année de joie »",
         filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
@@ -1731,9 +1731,18 @@
       let hand = null;
       let raf = 0;
 
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
-      cv.width = Math.round(W * dpr);
-      cv.height = Math.round(H * dpr);
+      /* the drawing space stays 480×400; the backing store follows the
+         size CSS gives the canvas, so the big home version is as sharp
+         as the small one. draw() scales by cv.width / W. */
+      const fit = () => {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const k = (cv.getBoundingClientRect().width || W) / W;
+        const w = Math.round(W * k * dpr);
+        if (w === cv.width) return;
+        cv.width = w;
+        cv.height = Math.round(H * k * dpr);
+        draw();
+      };
 
       /* ── give every dot a home in a shape ────────────────── */
       const become = (s) => {
@@ -1855,7 +1864,9 @@
       new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
       become(at);
+      fit();
       draw();
+      if (window.ResizeObserver) new ResizeObserver(fit).observe(cv);
     });
   })();
 })();
