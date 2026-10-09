@@ -966,3 +966,18 @@ html,body{max-width:100%;overflow-x:clip}
     .name-def{font-size:.9rem}
     .name-origin{font-size:.74rem}
 }
+
+/* ══ Particles ═════════════════════════════════════════════
+   Bencho's Particles (MIT), ported in script.js. The dots are
+   drawn on a canvas in the element's own `color`, so the ink is
+   set here and the theme carries it.
+   Bencho's --fill-on / --ink mean "the colour things are drawn
+   in". Here that job is --paper: this site's --ink is the page
+   ground, so mapping --ink to --ink would draw the dots in the
+   background colour and they would vanish.
+   The canvas draws at 480×400 and CSS scales it down to fit a
+   phone. touch-action is pan-y, not Bencho's none, so a finger
+   on the dots can still scroll the page; a tap changes shape. */
+.ptc{position:relative;display:grid;place-items:center;gap:.75rem;width:100%}
+.ptc-canvas{display:block;width:100%;max-width:480px;height:auto;aspect-ratio:480/400;color:var(--paper);cursor:crosshair;touch-action:pan-y;user-select:none;-webkit-tap-highlight-color:transparent}
+.ptc-hint{margin:0;color:var(--muted);text-align:center}

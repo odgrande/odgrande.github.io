@@ -109,7 +109,7 @@
         testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
         g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted_pre: "Na with", ft_crafted_by: "{n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects across custom React, Node.js & PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
         ph_stamp: "Pictures dey come soon",
-        nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
+        ptc_heading: "Just for Play", ptc_about_heading: "When I No Dey Work", ptc_hint: "Move over the dots. Click or tap make the shape change.", nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
         pager_prev: "Before", pager_next: "Next",
         pron_pos: "noun", pron_def: "full-stack web developer and web designer wey dey join design and code together.", pron_origin: "Yoruba · Ọdúnayọ̀, “year of joy”",
         filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
@@ -172,7 +172,7 @@
         testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
         g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted_pre: "A fi", ft_crafted_by: "ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ àkànṣe {n} ní React, Node.js àti PHP àkànṣe, WordPress, Shopify, Webflow, ìṣòwò orí ayélujára àti iṣẹ́ àmì-ìdámọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
         ph_stamp: "Àwòrán ń bọ̀ láìpẹ́",
-        nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
+        ptc_heading: "Fún Ìgbádùn", ptc_about_heading: "Lẹ́yìn Iṣẹ́", ptc_hint: "Gbé kọ́sọ̀ kọjá lórí àwọn àmì náà. Tẹ̀ ẹ́ láti yí ìrísí padà.", nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
         pager_prev: "Ti tẹ́lẹ̀", pager_next: "Èyí tó kàn",
         pron_pos: "orúkọ", pron_def: "olùgbéejáde àti apẹ̀rẹ wẹ́ẹ̀bù tí ó so àpẹrẹ àti kóòdù pọ̀.", pron_origin: "Yorùbá · Ọdúnayọ̀, “ọdún ayọ̀”",
         filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
@@ -235,7 +235,7 @@
         testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
         g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted_pre: "An ƙirƙira da", ft_crafted_by: "daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n} a cikin ginin React, Node.js da PHP na musamman, WordPress, Shopify, Webflow, kasuwancin kan layi da aikin alama.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
         ph_stamp: "Hotuna na zuwa nan ba da jimawa ba",
-        nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
+        ptc_heading: "Don Nishaɗi", ptc_about_heading: "Bayan Aiki", ptc_hint: "Matsa kan ɗigogin. Danna don canza siffa.", nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
         pager_prev: "Na baya", pager_next: "Na gaba",
         pron_pos: "suna", pron_def: "mai haɓaka yanar gizo kuma mai zane wanda ke haɗa zane da lamba.", pron_origin: "Yarbanci · Ọdúnayọ̀, “shekarar farin ciki”",
         filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
@@ -298,7 +298,7 @@
         testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
         g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted_pre: "Conçu avec", ft_crafted_by: "par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : développements sur mesure React, Node.js et PHP, WordPress, Shopify, Webflow, e-commerce et identité de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
         ph_stamp: "Visuels bientôt",
-        nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
+        ptc_heading: "Juste pour le plaisir", ptc_about_heading: "Hors du bureau", ptc_hint: "Survolez les points. Cliquez ou touchez pour changer de forme.", nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
         pager_prev: "Précédent", pager_next: "Suivant",
         pron_pos: "nom", pron_def: "développeur web full-stack et web designer qui relie design et code.", pron_origin: "Yoruba · Ọdúnayọ̀, « une année de joie »",
         filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
@@ -462,6 +462,7 @@
       ['.words-section', 'GSAP ScrollTrigger · sticky card stack'],
       ['.bento', 'CSS grid bento · GSAP stagger reveal'],
       ['.photo-slider', 'Vanilla JS slider · touch & keys'],
+      ['.ptc', 'Canvas 2D · 720 dots on springs · frame-rate-independent damping'],
       ['.accordion-box', 'Accessible accordion · ARIA'],
       ['.contact-grid', 'Semantic contact links'],
       ['.cta-band', 'Three.js r128 · WebGL hexagon'],
@@ -1608,5 +1609,253 @@
       }).mount(mount);
       if (window.gsap) gsap.from(mount.children, { opacity: 0, y: 14, duration: .5, ease: 'power2.out', stagger: .05 });
     }).catch(() => {});
+  })();
+  // ---------- Particles: a shape made of dots (home, About, 404) ----------
+  // Ported from Bencho's Particles component (MIT, bencho.dev/licence) to
+  // plain JS, since this site has no React. One instance per [data-particles];
+  // data-shape picks the shape it opens as. Bencho's notes are kept below.
+  (() => {
+    /* ══ Particles ════════════════════════════════════════════
+       A shape made of dots. Move over it and the dots are pushed
+       away from the pointer and spring home behind it; press and a
+       shockwave throws them out, and they gather again into the
+       NEXT shape — circle, square, flower, round again.
+
+       ── ONE SET OF DOTS, MANY SHAPES ────────────────────────
+       The dots never change, only where home is. Every shape is
+       sampled to the same number of points, and a change of shape
+       pairs each dot with a new home by angle round the middle, so
+       the swarm sweeps round into the new outline rather than
+       crossing itself.
+
+       ── STRETCHED BY SPEED ──────────────────────────────────
+       A dot at rest is round; a moving one is drawn a little long
+       along the way it is going, which is what makes a burst read
+       as a splash rather than a scatter of points. */
+
+    /* ── one spring, for everything that settles ───────────────
+       Frames, not milliseconds. `dt` is expressed in sixtieths of
+       a second and the damping is RAISED to it rather than
+       multiplied by it, so a dropped frame decays the same amount
+       of energy as the two frames it replaced. Multiplying is the
+       version that makes a spring behave differently on a busy
+       page, which is the hardest kind of bug to see.
+
+       The loop parks itself the moment the value has settled, so
+       nothing runs while the dots are at rest. */
+    const roots = document.querySelectorAll('[data-particles]');
+    if (!roots.length) return;
+
+    /* Read once. A preference, not a live input. */
+    const still = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    const W = 480;
+    const H = 400;
+    const CX = W / 2;
+    const CY = H / 2;
+    /* how many dots every shape is sampled to */
+    const N = 720;
+    const SHAPES = ['Circle', 'Square', 'Flower'];
+
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    const outline = (s) => {
+      const p = new Path2D();
+      if (s === 'Circle') p.arc(CX, CY, 150, 0, Math.PI * 2);
+      else if (s === 'Square') {
+        if (p.roundRect) p.roundRect(CX - 140, CY - 140, 280, 280, 36);
+        else p.rect(CX - 140, CY - 140, 280, 280); // Safari < 16
+      } else {
+        /* five round petals round a smaller middle — circles drawn
+           the same way round, so the fill is their union. Petals
+           just touching their neighbours, so the notches between
+           them read at the dots' own grain */
+        for (let i = 0; i < 5; i++) {
+          const a = -Math.PI / 2 + (i * Math.PI * 2) / 5;
+          const x = CX + Math.cos(a) * 104;
+          const y = CY + 8 + Math.sin(a) * 104;
+          p.moveTo(x + 60, y);
+          p.arc(x, y, 60, 0, Math.PI * 2);
+        }
+        p.moveTo(CX + 58, CY + 8);
+        p.arc(CX, CY + 8, 58, 0, Math.PI * 2);
+      }
+      return p;
+    };
+
+    /* ── N points, spread evenly over the inside of a shape ──
+       A hex grid spaced so the shape holds about N of them — its
+       area over N, which is the spacing that fills it evenly — then
+       trimmed or topped up to exactly N. It was a fixed fine grid
+       thinned by a stride, and the stride beat against the grid:
+       the circle came out in zigzag bands.
+       Shapes are fixed, so each is sampled once and shared by every
+       instance on the page. */
+    const cache = {};
+    const homes = (s) => {
+      if (cache[s]) return cache[s];
+      const c = document.createElement('canvas');
+      c.width = W;
+      c.height = H;
+      const g = c.getContext('2d');
+      const path = outline(s);
+      let area = 0;
+      for (let y = 1; y < H; y += 2) for (let x = 1; x < W; x += 2) if (g.isPointInPath(path, x, y)) area += 4;
+      const sp = Math.sqrt((area / N) * (2 / Math.sqrt(3)));
+      const rowH = (sp * Math.sqrt(3)) / 2;
+      const pts = [];
+      for (let y = rowH / 2, row = 0; y < H; y += rowH, row++) {
+        for (let x = sp / 2 + (row % 2) * (sp / 2); x < W; x += sp) {
+          if (g.isPointInPath(path, x, y)) pts.push([x, y]);
+        }
+      }
+      /* within a few of N either way; drop evenly or repeat evenly */
+      const out = [];
+      for (let i = 0; i < N; i++) out.push(pts[Math.floor((i * pts.length) / N)]);
+      return (cache[s] = out);
+    };
+
+    const angle = (x, y) => Math.atan2(y - CY, x - CX);
+
+    roots.forEach((root) => {
+      const cv = root.querySelector('canvas');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      /* how far the pointer's push reaches, px; how hard it pushes, 0..100 */
+      const reach = clamp(+root.dataset.reach || 80, 30, 160);
+      const force = clamp(+root.dataset.force || 60, 0, 100);
+      /* the size of a dot */
+      const r = root.dataset.grain === 'Coarse' ? 2.7 : 1.9;
+      let dots = [];
+      let at = SHAPES.includes(root.dataset.shape) ? root.dataset.shape : 'Circle';
+      let hand = null;
+      let raf = 0;
+
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+
+      /* ── give every dot a home in a shape ────────────────── */
+      const become = (s) => {
+        at = s;
+        const next = homes(s);
+        if (!dots.length) {
+          dots = next.map(([x, y]) => ({ hx: x, hy: y, x, y, vx: 0, vy: 0 }));
+          return;
+        }
+        /* pair by angle round the middle, so the swarm sweeps */
+        const a = dots.map((d, i) => [angle(d.x, d.y), i]).sort((p, q) => p[0] - q[0]);
+        const b = next.map((h, i) => [angle(h[0], h[1]), i]).sort((p, q) => p[0] - q[0]);
+        a.forEach(([, di], k) => {
+          const h = next[b[k][1]];
+          dots[di].hx = h[0];
+          dots[di].hy = h[1];
+          if (still) { dots[di].x = h[0]; dots[di].y = h[1]; }
+        });
+      };
+
+      const draw = () => {
+        const k = cv.width / W;
+        ctx.setTransform(k, 0, 0, k, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        /* the dots are drawn in the canvas's own CSS colour, so the
+           theme carries them */
+        ctx.fillStyle = getComputedStyle(cv).color;
+        ctx.beginPath();
+        for (const d of dots) {
+          const sp = Math.hypot(d.vx, d.vy);
+          if (sp < 0.3) {
+            ctx.moveTo(d.x + r, d.y);
+            ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
+          } else {
+            /* long along its path, a little thin across it */
+            const s = Math.min(2.6, 1 + sp * 0.12);
+            const rot = Math.atan2(d.vy, d.vx);
+            ctx.moveTo(d.x + Math.cos(rot) * r * s, d.y + Math.sin(rot) * r * s);
+            ctx.ellipse(d.x, d.y, r * s, r / Math.sqrt(s), rot, 0, Math.PI * 2);
+          }
+        }
+        ctx.fill();
+      };
+
+      const run = () => {
+        if (raf) return;
+        let prev = 0;
+        const S = (force / 100) * 11;
+        const tick = (t) => {
+          const dt = prev ? clamp((t - prev) / 16.67, 0, 2.5) : 1;
+          prev = t;
+          const h = hand;
+          let busy = !!h;
+          for (const d of dots) {
+            if (h) {
+              const dx = d.x - h.x;
+              const dy = d.y - h.y;
+              const dd = Math.hypot(dx, dy);
+              if (dd < reach && dd > 0.01) {
+                const f = Math.pow(1 - dd / reach, 2) * S;
+                d.vx += (dx / dd) * f * dt;
+                d.vy += (dy / dd) * f * dt;
+              }
+            }
+            d.vx = (d.vx + (d.hx - d.x) * 0.05 * dt) * Math.pow(0.84, dt);
+            d.vy = (d.vy + (d.hy - d.y) * 0.05 * dt) * Math.pow(0.84, dt);
+            d.x += d.vx * dt;
+            d.y += d.vy * dt;
+            if (Math.abs(d.hx - d.x) < 0.05 && Math.abs(d.hy - d.y) < 0.05 && Math.abs(d.vx) < 0.02 && Math.abs(d.vy) < 0.02) {
+              d.x = d.hx; d.y = d.hy; d.vx = 0; d.vy = 0;
+            } else busy = true;
+          }
+          draw();
+          raf = busy ? requestAnimationFrame(tick) : 0;
+        };
+        raf = requestAnimationFrame(tick);
+      };
+
+      /* the canvas is scaled down by CSS on narrow screens, so the
+         pointer is mapped back into the 480×400 drawing space */
+      const where = (e) => {
+        const b = cv.getBoundingClientRect();
+        const k = b.width / W;
+        return { x: (e.clientX - b.left) / k, y: (e.clientY - b.top) / k };
+      };
+
+      cv.addEventListener('pointermove', (e) => {
+        if (still) return;
+        hand = where(e);
+        run();
+      });
+      /* a finger that starts a scroll fires pointercancel, not leave */
+      const away = () => { hand = null; run(); };
+      cv.addEventListener('pointerleave', away);
+      cv.addEventListener('pointercancel', away);
+      cv.addEventListener('pointerdown', (e) => {
+        /* the shockwave, then the next shape */
+        const p = where(e);
+        if (!still) {
+          const S = 0.4 + (force / 100) * 1.2;
+          for (const d of dots) {
+            const dx = d.x - p.x;
+            const dy = d.y - p.y;
+            const dd = Math.hypot(dx, dy);
+            if (dd > 200 || dd < 0.01) continue;
+            const f = (1 - dd / 200) * 30 * S;
+            d.vx += (dx / dd) * f;
+            d.vy += (dy / dd) * f;
+          }
+        }
+        become(SHAPES[(SHAPES.indexOf(at) + 1) % SHAPES.length]);
+        draw();
+        run();
+        /* on touch, a tap is the whole gesture: let the dots settle */
+        if (e.pointerType !== 'mouse') hand = null;
+      });
+
+      /* redraw in the new ink when the theme flips */
+      new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+      become(at);
+      draw();
+    });
   })();
 })();

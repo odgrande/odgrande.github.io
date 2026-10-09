@@ -631,6 +631,13 @@ def world_map(projects):
 <div class="map-panel" id="map-panel" aria-live="polite">{panels}</div>
 </section>'''
 
+def particles(shape="Circle",hint=True):
+    # Bencho's Particles (MIT): a shape made of dots, driven by script.js.
+    return (f'<div class="ptc" data-particles data-shape="{shape}">'
+            f'<canvas class="ptc-canvas" width="480" height="400" role="img" aria-label="A shape made of dots. Move over it; press to change the shape."></canvas>'
+            + ('<p class="t-sm ptc-hint" data-i18n="ptc_hint">Move over the dots. Click or tap to change the shape.</p>' if hint else "")
+            + '</div>')
+
 def page_home(projects):
     site=CONFIG["site"]
     hero_portrait=find_personal(PORTRAIT_HERO) or (personal_images()[0] if personal_images() else "")
@@ -667,6 +674,11 @@ def page_home(projects):
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center" data-i18n="services_heading">Services</h2>
 {services}
+</section>
+
+<section class="container container-md" style="align-items:center" data-reveal>
+<h2 class="h2 text-center" data-i18n="ptc_heading">Just for Fun</h2>
+{particles("Circle")}
 </section>
 
 <section class="container container-xl" data-reveal>
@@ -898,6 +910,11 @@ def page_about():
 <section class="container container-md" data-reveal>
 <h2 class="h2 text-center" data-i18n="toolkit_heading">Toolkit</h2>
 <div class="tag-list">{tags}</div>
+</section>
+
+<section class="container container-md" style="align-items:center" data-reveal>
+<h2 class="h2 text-center" data-i18n="ptc_about_heading">Off the Clock</h2>
+{particles("Flower")}
 </section>
 
 {f'''<section class="container container-md" data-reveal>
@@ -1249,9 +1266,10 @@ def rewrite_images(mapping):
         if s2!=s:f.write_text(s2,encoding="utf-8")
 
 def page_404():
-    body='''<section class="container container-md notfound" style="align-items:center" data-reveal>
+    body=f'''<section class="container container-md notfound" style="align-items:center" data-reveal>
 <p class="t-md text-center" data-i18n="nf_eyebrow">Error 404</p>
 <h1 class="h1 text-center" data-i18n="nf_heading">Lost in the code.</h1>
+{particles("Square")}
 <p class="t-sm text-center" style="max-width:32rem" data-i18n="nf_text">This page doesn't exist (or it moved while I was refactoring). Let's get you somewhere useful.</p>
 <div class="gate-actions"><a class="btn" href="/"><span data-i18n="nf_home">Back home</span></a><a class="btn" href="/works/"><span data-i18n="all_works_btn">All Works</span></a></div>
 </section>'''
