@@ -1,0 +1,1872 @@
+(() => {
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const close = document.getElementById('mobile-close');
+  const open = () => {
+    if (!menu) return;
+    menu.classList.add('open');
+    document.body.classList.add('menu-open');
+    toggle?.setAttribute('aria-expanded', 'true');
+    if (window.gsap) {
+      gsap.fromTo(menu, { clipPath: 'circle(0% at calc(100% - 44px) 44px)' }, { clipPath: 'circle(150% at calc(100% - 44px) 44px)', duration: .7, ease: 'power3.inOut', clearProps: 'clipPath' });
+      gsap.from(menu.querySelectorAll('ul a, .mobile-nav-logo'), { y: 40, opacity: 0, rotate: -3, duration: .6, ease: 'power3.out', stagger: .06, delay: .25 });
+    }
+    close?.focus({ preventScroll: true });
+  };
+  const shut = () => {
+    if (!menu || !menu.classList.contains('open')) return;
+    menu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  };
+  toggle?.setAttribute('aria-expanded', 'false');
+  toggle?.setAttribute('aria-controls', 'mobile-menu');
+  toggle?.addEventListener('click', open);
+  close?.addEventListener('click', () => { shut(); toggle?.focus({ preventScroll: true }); });
+  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', shut));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
+  // Rotating to desktop width with the menu open would otherwise leave the
+  // page scroll-locked behind a now-hidden overlay.
+  window.matchMedia('(min-width: 768px)').addEventListener?.('change', (e) => { if (e.matches) shut(); });
+
+  document.querySelectorAll('.accordion-item').forEach((item) => {
+    const trigger = item.querySelector('.accordion-trigger');
+    trigger?.addEventListener('click', () => item.classList.toggle('open'));
+  });
+
+  // ---------- visitor clock: tiny local time + country flag in the footer ----------
+  // One client-side lookup per session via ipwho.is (free, no key, no cookie)
+  // to get the visitor's country + timezone; cached in sessionStorage so it
+  // only ever runs once per visit. Disclosed in the Privacy Policy. Fails
+  // silently (element just stays empty) if the request is blocked or offline.
+  (() => {
+    const el = document.getElementById('visitor-clock');
+    const wrap = document.getElementById('visitor-clock-wrap');
+    if (!el || !wrap) return;
+    const KEY = 'odVisitorGeo';
+    const SVG_FLAGS = {
+      NG: '<svg viewBox="0 0 3 2"><rect width="3" height="2" fill="#fff"/><rect width="1" height="2" fill="#008751"/><rect x="2" width="1" height="2" fill="#008751"/></svg>',
+      GB: '<svg viewBox="0 0 60 30"><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="2.4"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg>',
+      US: '<svg viewBox="0 0 19 10"><rect width="19" height="10" fill="#fff"/><path d="M0 0h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0zm0 1.54h19v.77H0z" fill="#B22234"/><rect width="7.6" height="5.38" fill="#3C3B6E"/></svg>',
+      CA: '<svg viewBox="0 0 40 20"><rect width="40" height="20" fill="#fff"/><rect width="10" height="20" fill="#D80621"/><rect x="30" width="10" height="20" fill="#D80621"/><path d="M20 3.2l1.3 2.6 1.6-.7-.6 3.3 2.2-2.4.5 1.3 2.3-.4-.8 2.5 1 .5-3.6 3 .4 1.3-3.6-.6-.1 3.4h-1.2l-.1-3.4-3.6.6.4-1.3-3.6-3 1-.5-.8-2.5 2.3.4.5-1.3 2.2 2.4-.6-3.3 1.6.7z" fill="#D80621"/></svg>',
+    };
+
+    const flagFor = (cc) => {
+      if (!cc || cc.length !== 2) return '';
+      return [...cc.toUpperCase()].map((c) => String.fromCodePoint(127397 + c.charCodeAt(0))).join('');
+    };
+    const render = (cc, tz) => {
+      const flag = flagFor(cc);
+      const tick = () => {
+        let time = '';
+        try { time = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: tz || undefined }).format(new Date()); } catch (e) {}
+        const text = [flag, time].filter(Boolean).join(' ');
+        // Windows shows flag emoji as letters ("NG"), so the main client
+        // countries get a drawn SVG flag; everyone else keeps the emoji.
+        const svg = SVG_FLAGS[(cc || '').toUpperCase()];
+        if (svg && time) el.innerHTML = `<span class="ft-flag" aria-hidden="true">${svg}</span> ${time}`;
+        else el.textContent = text;
+        wrap.style.display = text ? '' : 'none';
+      };
+      tick();
+      setInterval(tick, 30000);
+    };
+
+    let cached;
+    try { cached = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+    if (cached) { render(cached.cc, cached.tz); return; }
+
+    fetch('https://ipwho.is/').then((r) => r.json()).then((d) => {
+      if (!d || d.success === false) return;
+      const cc = d.country_code || '';
+      const tz = (d.timezone && d.timezone.id) || '';
+      try { sessionStorage.setItem(KEY, JSON.stringify({ cc, tz })); } catch (e) {}
+      render(cc, tz);
+    }).catch(() => {});
+  })();
+
+  // ---------- language switcher: Pidgin / Yoruba / Hausa / French ----------
+  // Covers the gate plus every page's headings, intro copy, buttons and the
+  // home FAQ (full project names, categories, skill/tech tags and legal
+  // body text are intentionally left in English — see the comment on
+  // TRANSLATIONS below). English is always the default: a choice lasts only
+  // for the current visit (sessionStorage). Switching SETS it then reloads
+  // the page, rather than live-patching the DOM: translations are applied
+  // once, on load, from the server-rendered English text, which is the only
+  // way that's reliably correct on every page regardless of what else ran
+  // before the switch.
+  (() => {
+    const TRANSLATIONS = {
+      pcm: {
+        cs_feedback: "Wetin dem talk",
+        cs_eyebrow: "Case study", cs_challenge: "Wetin be the wahala", cs_approach: "How I take run am", cs_built: "Wetin I build", cs_stack: "Wetin dey under the hood", cs_outcome: "How e land", cs_screens: "Inside the product", cs_mobile: "For phone",
+        faq_q_5: "How I go take start project with you?", faq_a_5: "Fill my 3-minute project brief. E go waka you through your goals, features, timeline and budget, then e go send everything give me for WhatsApp or email so I fit come back with clear plan.", faq_q_6: "Which tech stack you dey use?", faq_a_6: "Anything wey fit the work. Front-end: HTML, CSS, JavaScript and React. Back-end: Node.js, PHP and Python/Django with PostgreSQL and REST APIs. Platforms: WordPress, WooCommerce, Shopify (Liquid), Webflow and Framer. Plus payment, automation and AI integrations like Stripe and Claude API.", faq_q_7: "You dey give support after launch?", faq_a_7: "Yes. Plenty of my clients still dey with me after launch for maintenance, fixes, updates and new features as their business dey grow.", faq_q_8: "How much project dey cost?", faq_a_8: "E depend on wetin you need, so no be one price for everybody. Share your goals and budget for the project brief and I go come back with plan wey fit am.", faq_link_start: "Start your project brief →", faq_all_btn: "See all the questions", faq_page_intro: "Straight answers about how I dey work, wetin I dey build and how to start.", faq_more_q: "Question still dey your mind?", footer_faq: "FAQ", footer_changelog: "Changelog", cl_heading: "Changelog", cl_intro: "Wetin new for this site, the latest first.", contact_faq_hint: "You get quick question? Check the FAQ.", sl_drag: "Drag am",
+        map_eyebrow: "Where my work dey", map_heading: "From Lagos reach the whole world", map_sub: "Pass 22 projects wey I don ship for clients for Nigeria, UK, Canada and USA. And I never even count the custom Shopify Liquid themes, WordPress themes and plugins wey I build for back. Tap any pin make you see.", map_count: "{n} projects", cc_NG: "Nigeria", cc_GB: "UK", cc_CA: "Canada", cc_US: "America",
+        bf_title: "Start a project", bf_eyebrow: "Project brief", bf_hi_name: "How far {n}!", bf_intro: "Make we plan your project together. E go take like 3 minutes, and your answers go stay for your browser until you decide to send am.", bf_begin: "Make we start", bf_next: "Next", bf_back: "Go back", bf_step: "Step {n} of {t}", bf_q_you: "First, who I dey talk to?", bf_l_name: "Your name", bf_l_biz: "Your business or brand (optional)", bf_l_country: "Where you dey? (optional)", bf_ph_name: "e.g. Ada Okafor", bf_ph_biz: "e.g. Ada's Kitchen", bf_ph_country: "e.g. Lagos, Nigeria", bf_q_need: "Wetin you need?", bf_hint_multi: "Pick all the ones wey concern you.", bf_o_website: "New website", bf_o_shop: "Online shop", bf_o_redesign: "Make my site fresh again", bf_o_plugin: "WordPress plugin or custom feature", bf_o_fix: "Fix my site or make am fast", bf_o_brand: "Branding or design", bf_o_other: "Something else", bf_q_platform: "You get any platform for mind?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Custom-built", bf_o_unsure: "I no sure, help me choose", bf_q_features: "Which features e go need?", bf_o_pay: "Online payment", bf_o_book: "Booking or appointment", bf_o_tickets: "Event ticket", bf_o_lang: "Many languages", bf_o_blog: "Blog or news", bf_o_members: "Member login", bf_o_ai: "AI chatbot", bf_o_notyet: "I never sure", bf_q_have: "Wetin you don get already?", bf_o_logo: "Logo and branding", bf_o_content: "Text and photos", bf_o_domain: "Domain and hosting", bf_o_site: "Website wey I dey use now", bf_l_url: "Link to your current website (optional)", bf_l_like: "Websites wey you like (optional)", bf_ph_url: "https://", bf_ph_like: "Paste some links and talk wetin you like about dem", bf_q_when: "Time and budget", bf_l_timeline: "When you need am?", bf_o_asap: "Sharp sharp (inside 2 weeks)", bf_o_month: "Inside one month", bf_o_quarter: "In 2–3 months", bf_o_flex: "Time no too matter", bf_l_budget: "Your budget (any currency, optional)", bf_ph_budget: "e.g. $1,500, £1,000, ₦800,000 or I no sure", bf_q_idea: "Tell me about your project", bf_hint_idea: "Wetin e be, who e dey for, and how success go look for you.", bf_ph_idea: "My idea na...", bf_q_contact: "How I go reach you?", bf_l_email: "Email", bf_ph_email: "you@example.com", bf_l_wa: "WhatsApp number (optional)", bf_ph_wa: "e.g. +234 800 000 0000", bf_l_prefer: "I prefer make we talk for", bf_o_email: "Email", bf_o_whatsapp: "WhatsApp", bf_q_review: "See your brief", bf_hint_review: "Check am well, then send am give me. I go reply you within one or two days.", bf_send_wa: "Send am for WhatsApp", bf_send_email: "Send am by email", bf_copy: "Copy the brief", bf_copied: "E don copy!", bf_edit: "Change my answers", bf_restart: "Start again", bf_done: "E remain small! Just press send for the app wey open. I go reach you soon.", bf_err_name: "Abeg tell me your name.", bf_err_need: "Pick at least one.", bf_err_idea: "Abeg write one or two lines about your idea.", bf_err_contact: "Abeg put correct email or WhatsApp number.", bf_saved: "Your answers dey saved for this device, so you fit come back later.", bf_cta: "Fill my project brief",
+        rs_open: "Na {t} for Lagos now. I dey my desk, so I go reply you sharp sharp.", rs_evening: "Na {t} for Lagos now. I don close for today. Expect my reply by {r}.", rs_night: "Na {t} for Lagos now. I don sleep be dat. Expect my reply by {r}.", rs_morning: "Na {t} for Lagos now. I never reach my desk. Expect my reply by {r}.", rs_weekend: "Na {t} for Lagos now, and na weekend. Expect my reply by {r}.", rs_your: "your time",
+        pron_label: "How you go call am:",
+        fb_eyebrow: "Featured build", fb_skills: "Skills wey e show",
+        testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
+        g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted_pre: "Na with", ft_crafted_by: "{n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects across custom React, Node.js & PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
+        ph_stamp: "Pictures dey come soon",
+        ptc_about_heading: "When I No Dey Work", ptc_hint: "Move over the dots. Click or tap make the shape change.", nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
+        pager_prev: "Before", pager_next: "Next",
+        pron_pos: "noun", pron_def: "full-stack web developer and web designer wey dey join design and code together.", pron_origin: "Yoruba · Ọdúnayọ̀, “year of joy”",
+        filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
+        journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
+        nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
+        gate_eyebrow: "Knock, knock", gate_headline: "Come inside. Dis websites no dey bite.",
+        gate_subtext: "Na only bug dey bite, and I don kill all of dem finish.", gate_subtext2: "You ready make you look around?",
+        gate_yes: "Yes, make I enter", gate_no: "No, I go pass",
+        hero_tagline: "How far! I be Full-Stack Web Developer & Web Designer wey get 5+ years experience dey build digital products for clients for Nigeria, UK, Canada and USA.",
+        hero_badge: "I dey available for work",
+        featured_heading: "Works Wey Sweet Pass", services_heading: "Wetin I Dey Do",
+        about_heading: "Who I Be", about_intro: "I be Full-Stack Web Developer and Web Designer wey like the point wey design no be just picture again, e don turn to work wey dey functional.",
+        faq_heading: "Questions Wey People Dey Ask",
+        footer_cta_heading: "Make we build something together.",
+        footer_cta_sub: "You get custom web app, online shop, WordPress build or digital product for mind? Make we talk am.",
+        faq_q_0: "Wetin be your normal project timeline?",
+        faq_a_0: "E depend on how big the work be. Landing page or brand site fit finish for 1-2 weeks, but full custom build, online shop or plugin fit take 3-6 weeks with revisions.",
+        faq_q_1: "You be WordPress developer or full-stack developer?",
+        faq_a_1: "Full-stack. I dey build custom web apps, APIs and features from scratch with JavaScript/React, Node.js, PHP and Python/Django on PostgreSQL. WordPress, Shopify and Webflow dey my toolbox too, and I dey use dem when platform na the fastest and most correct road for your project.",
+        faq_q_2: "You fit take over website wey don already dey?",
+        faq_a_2: "Yes. Plenty of the work for this portfolio na maintenance, fixes and new features wey I add for sites wey I no build originally.",
+        faq_q_3: "You dey work with clients remotely?",
+        faq_a_3: "Yes, every project for this portfolio na remote I deliver am, for clients wey dey Nigeria, UK, Canada and USA.",
+        faq_q_4: "Wetin you need from me make we start?",
+        faq_a_4: "Access to the hosting/domain (or plan to get am), any brand assets wey you don already get, and short description of wetin the site need to do. I fit helep fill the gaps from there.",
+        about_meet: "Meet",
+        about_build_text: "I dey build, customize and maintain websites for businesses, organizations and digital products.",
+        about_work_text: "My work dey between design wey you fit see and solid engineering. I dey build custom front-end and back-end from scratch, and I still sabi WordPress, Shopify and Webflow well well when platform na the fastest road to better result.",
+        about_bio_text: "Full-Stack Web Developer and Web Designer wey get 5+ years experience dey build and maintain digital products for clients for Nigeria, UK, Canada and USA.",
+        magic_heading: "Make we create website magic.",
+        magic_text: "Whatever the brief — custom web app, online shop, WordPress build or digital product wey need to feel alive — I go like help you build am.",
+        start_project_btn: "Start a project",
+        experience_heading: "Experience", education_heading: "Education", toolkit_heading: "Toolkit",
+        certifications_heading: "Certifications", designer_award_heading: "Designer Of The Year",
+        testimonials_heading: "Wetin Pipo Talk", archive_heading: "Personal Archive",
+        view_credentials_btn: "View Credentials", view_cv_btn: "View CV", view_full_cv_btn: "View Full CV", view_pdf_btn: "View PDF",
+        works_heading: "Works", all_works_btn: "All Works", more_about_btn: "Sabi more about me",
+        credentials_heading: "Credentials", contact_heading: "Contact",
+        contact_tagline: "Make we build something together.",
+        contact_sub: "You get custom web app, online shop, WordPress project or digital product for mind? Tell me wetin you dey work on and I go reply you within one or two days.",
+        contact_label_email: "Email", contact_label_phone: "Phone", contact_label_location: "Location",
+        footer_socials_heading: "Socials", footer_nav_heading: "Navigation",
+        footer_privacy: "Privacy", footer_cookies: "Cookies", footer_sitemap: "Sitemap",
+        footer_whats_next: "Wetin dey come next?",
+        sitemap_sub: "Every page wey dey this site, for one place.",
+        sitemap_main_pages: "Main Pages", sitemap_legal: "Legal",
+        privacy_heading: "Privacy Policy", cookies_heading: "Cookie Policy",
+        fact_client: "Client", fact_category: "Category", fact_services: "Services", fact_year: "Year",
+        live_site_btn: "Live Site"
+      },
+      yo: {
+        cs_feedback: "Ọ̀rọ̀ wọn",
+        cs_eyebrow: "Ìtàn iṣẹ́", cs_challenge: "Ìpèníjà náà", cs_approach: "Ọ̀nà tí mo gbà", cs_built: "Ohun tí mo kọ́", cs_stack: "Àwọn irinṣẹ́ inú rẹ̀", cs_outcome: "Àbájáde", cs_screens: "Nínú ọjà náà", cs_mobile: "Lórí fóònù",
+        faq_q_5: "Báwo ni mo ṣe lè bẹ̀rẹ̀ iṣẹ́ àkànṣe pẹ̀lú rẹ?", faq_a_5: "Kún àlàyé iṣẹ́ àkànṣe ìṣẹ́jú mẹ́ta mi. Yóò tọ́ ọ sọ́nà nípa àwọn àfojúsùn rẹ, ẹ̀yà, àkókò àti ìnáwó, lẹ́yìn náà yóò fi gbogbo rẹ̀ ránṣẹ́ sí mi lórí WhatsApp tàbí ímeèlì kí n lè padà wá pẹ̀lú ètò tó ṣe kedere.", faq_q_6: "Àwọn irinṣẹ́ ìmọ̀ ẹ̀rọ wo lo máa ń lò?", faq_a_6: "Ohunkóhun tó bá yẹ iṣẹ́ náà. Front-end: HTML, CSS, JavaScript àti React. Back-end: Node.js, PHP àti Python/Django pẹ̀lú PostgreSQL àti REST API. Pẹpẹ: WordPress, WooCommerce, Shopify (Liquid), Webflow àti Framer. Bákan náà ìsopọ̀ ìsanwó, adáṣiṣẹ́ àti AI bíi Stripe àti Claude API.", faq_q_7: "Ṣé o máa ń ṣe àtìlẹ́yìn lẹ́yìn ìfilọ́lẹ̀?", faq_a_7: "Bẹ́ẹ̀ni. Ọ̀pọ̀ àjọṣe mi pẹ̀lú àwọn oníbàárà máa ń tẹ̀síwájú lẹ́yìn ìfilọ́lẹ̀ pẹ̀lú ìtọ́jú, àtúnṣe, ìmúdójúìwọ̀n àti ẹ̀yà tuntun bí iṣẹ́ wọn ṣe ń dàgbà.", faq_q_8: "Èló ni iṣẹ́ àkànṣe máa ń náni?", faq_a_8: "Ó dá lórí ohun tí o nílò, nítorí náà kò sí iye kan fún gbogbo ènìyàn. Pín àwọn àfojúsùn àti ìnáwó rẹ nínú àlàyé iṣẹ́ àkànṣe, màá sì padà wá pẹ̀lú ètò tó bá a mu.", faq_link_start: "Bẹ̀rẹ̀ àlàyé iṣẹ́ àkànṣe rẹ →", faq_all_btn: "Wo gbogbo ìbéèrè", faq_page_intro: "Ìdáhùn tààrà nípa bí mo ṣe ń ṣiṣẹ́, ohun tí mo ń kọ́ àti bí a ṣe lè bẹ̀rẹ̀.", faq_more_q: "Ṣé o ṣì ní ìbéèrè?", footer_faq: "Ìbéèrè", footer_changelog: "Àkọsílẹ̀ àyípadà", cl_heading: "Àkọsílẹ̀ àyípadà", cl_intro: "Ohun tuntun lórí ojúlé yìí, tuntun jù lọ ní àkọ́kọ́.", contact_faq_hint: "Ṣé o ní ìbéèrè kíákíá? Wo FAQ.", sl_drag: "Fà á",
+        map_eyebrow: "Ibi tí iṣẹ́ mi wà", map_heading: "Láti Èkó dé gbogbo àgbáyé", map_sub: "Ó ju iṣẹ́ àkànṣe 22 lọ tí mo ti parí fún àwọn oníbàárà ní Nàìjíríà, UK, Kánádà àti Amẹ́ríkà. Èyí kò tíì ka àwọn àkòrí Shopify Liquid, àkòrí WordPress àti plugin tí mo kọ́ lẹ́yìn ìtàgé. Tẹ pin kan láti wò ó.", map_count: "iṣẹ́ àkànṣe {n}", cc_NG: "Nàìjíríà", cc_GB: "UK", cc_CA: "Kánádà", cc_US: "Amẹ́ríkà",
+        bf_title: "Bẹ̀rẹ̀ iṣẹ́ àkànṣe", bf_eyebrow: "Àlàyé iṣẹ́ àkànṣe", bf_hi_name: "Ẹ kú àbọ̀, {n}!", bf_intro: "Ẹ jẹ́ ká jọ ṣètò iṣẹ́ àkànṣe yín. Yóò gba ìṣẹ́jú mẹ́ta péré, àwọn ìdáhùn yín yóò sì wà nínú ẹ̀rọ yín títí ẹ ó fi pinnu láti fi ránṣẹ́.", bf_begin: "Ẹ jẹ́ ká bẹ̀rẹ̀", bf_next: "Tẹ̀síwájú", bf_back: "Padà", bf_step: "Ìgbésẹ̀ {n} nínú {t}", bf_q_you: "Àkọ́kọ́, ta ni mò ń bá sọ̀rọ̀?", bf_l_name: "Orúkọ yín", bf_l_biz: "Iṣẹ́ òwò tàbí àmì-ìdámọ̀ (kò pọn dandan)", bf_l_country: "Níbo lẹ wà? (kò pọn dandan)", bf_ph_name: "àpẹẹrẹ: Ada Okafor", bf_ph_biz: "àpẹẹrẹ: Ada's Kitchen", bf_ph_country: "àpẹẹrẹ: Èkó, Nàìjíríà", bf_q_need: "Kí lẹ nílò?", bf_hint_multi: "Ẹ yan gbogbo èyí tó bá yẹ.", bf_o_website: "Wẹ́ẹ̀bù tuntun", bf_o_shop: "Ṣọ́ọ̀bù orí ayélujára", bf_o_redesign: "Àtúnṣe ìrísí wẹ́ẹ̀bù mi", bf_o_plugin: "Plugin WordPress tàbí ẹ̀yà àkànṣe", bf_o_fix: "Àtúnṣe tàbí mímú wẹ́ẹ̀bù mi yára", bf_o_brand: "Àmì-ìdámọ̀ tàbí àwòṣe", bf_o_other: "Nǹkan mìíràn", bf_q_platform: "Ṣé ẹ ní pẹpẹ kan lọ́kàn?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Kíkọ́ àkànṣe", bf_o_unsure: "Kò dá mi lójú, ẹ ràn mí lọ́wọ́", bf_q_features: "Àwọn ẹ̀yà wo ló máa nílò?", bf_o_pay: "Ìsanwó lórí ayélujára", bf_o_book: "Ìforúkọsílẹ̀ ìpàdé", bf_o_tickets: "Tíkẹ́ẹ̀tì ayẹyẹ", bf_o_lang: "Èdè púpọ̀", bf_o_blog: "Búlọ́ọ̀gì tàbí ìròyìn", bf_o_members: "Ìwọlé ọmọ ẹgbẹ́", bf_o_ai: "Chatbot AI", bf_o_notyet: "Mi ò tíì mọ̀", bf_q_have: "Kí lẹ ti ní tẹ́lẹ̀?", bf_o_logo: "Lógò àti àmì-ìdámọ̀", bf_o_content: "Ọ̀rọ̀ àti àwòrán", bf_o_domain: "Domain àti hosting", bf_o_site: "Wẹ́ẹ̀bù tí mò ń lò báyìí", bf_l_url: "Ìjápọ̀ wẹ́ẹ̀bù yín lọ́wọ́lọ́wọ́ (kò pọn dandan)", bf_l_like: "Àwọn wẹ́ẹ̀bù tí ẹ fẹ́ràn (kò pọn dandan)", bf_ph_url: "https://", bf_ph_like: "Ẹ fi àwọn ìjápọ̀ díẹ̀ síbí, kí ẹ sì sọ ohun tí ẹ fẹ́ràn nípa wọn", bf_q_when: "Àkókò àti ìnáwó", bf_l_timeline: "Ìgbà wo lẹ nílò rẹ̀?", bf_o_asap: "Ní kíákíá (láàárín ọ̀sẹ̀ méjì)", bf_o_month: "Láàárín oṣù kan", bf_o_quarter: "Ní oṣù 2–3", bf_o_flex: "Àkókò kò ṣe pàtàkì", bf_l_budget: "Ìnáwó yín (owó èyíkéyìí, kò pọn dandan)", bf_ph_budget: "àpẹẹrẹ: $1,500, £1,000, ₦800,000 tàbí mi ò mọ̀", bf_q_idea: "Ẹ sọ fún mi nípa iṣẹ́ àkànṣe yín", bf_hint_idea: "Kí ni, ta ni fún, àti bí àṣeyọrí ṣe máa rí fún yín.", bf_ph_idea: "Èrò mi ni...", bf_q_contact: "Báwo ni mo ṣe lè kàn sí yín?", bf_l_email: "Ímeèlì", bf_ph_email: "you@example.com", bf_l_wa: "Nọ́mbà WhatsApp (kò pọn dandan)", bf_ph_wa: "àpẹẹrẹ: +234 800 000 0000", bf_l_prefer: "Mo fẹ́ ká sọ̀rọ̀ lórí", bf_o_email: "Ímeèlì", bf_o_whatsapp: "WhatsApp", bf_q_review: "Àlàyé yín nìyí", bf_hint_review: "Ẹ yẹ̀ ẹ́ wò, lẹ́yìn náà ẹ fi ránṣẹ́ sí mi. Màá fèsì láàárín ọjọ́ kan tàbí méjì.", bf_send_wa: "Fi ránṣẹ́ lórí WhatsApp", bf_send_email: "Fi ránṣẹ́ nípasẹ̀ ímeèlì", bf_copy: "Ṣe ẹ̀dà àlàyé", bf_copied: "A ti ṣe ẹ̀dà rẹ̀!", bf_edit: "Ṣàtúnṣe ìdáhùn", bf_restart: "Bẹ̀rẹ̀ lákọ̀tun", bf_done: "Ó kù díẹ̀! Ẹ kàn tẹ ‘send’ nínú áàpù tó ṣí. Màá kàn sí yín láìpẹ́.", bf_err_name: "Ẹ jọ̀ọ́, ẹ sọ orúkọ yín fún mi.", bf_err_need: "Ẹ yan ó kéré tán ọ̀kan.", bf_err_idea: "Ẹ jọ̀ọ́, ẹ kọ gbólóhùn kan tàbí méjì nípa èrò yín.", bf_err_contact: "Ẹ jọ̀ọ́, ẹ fi ímeèlì tàbí nọ́mbà WhatsApp tó tọ́ sí i.", bf_saved: "A ti fi àwọn ìdáhùn yín pamọ́ sórí ẹ̀rọ yìí, ẹ lè padà wá nígbà míì.", bf_cta: "Kún àlàyé iṣẹ́ àkànṣe",
+        rs_open: "Agogo {t} ni ní Èkó báyìí. Mo wà ní ibi iṣẹ́ mi, nítorí náà màá fèsì kíákíá.", rs_evening: "Agogo {t} ni ní Èkó báyìí. Mo ti parí iṣẹ́ fún òní. Màá fèsì ní {r}.", rs_night: "Agogo {t} ni ní Èkó báyìí. Ó ṣeéṣe kí n ti sùn. Màá fèsì ní {r}.", rs_morning: "Agogo {t} ni ní Èkó báyìí. Mi ò tíì dé ibi iṣẹ́. Màá fèsì ní {r}.", rs_weekend: "Agogo {t} ni ní Èkó báyìí, òpin ọ̀sẹ̀ sì ni. Màá fèsì ní {r}.", rs_your: "ní àkókò tìrẹ",
+        pron_label: "Bí a ṣe ń pè é:",
+        fb_eyebrow: "Iṣẹ́ àfihàn", fb_skills: "Àwọn ọgbọ́n tí ó fi hàn",
+        testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
+        g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted_pre: "A fi", ft_crafted_by: "ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ àkànṣe {n} ní React, Node.js àti PHP àkànṣe, WordPress, Shopify, Webflow, ìṣòwò orí ayélujára àti iṣẹ́ àmì-ìdámọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
+        ph_stamp: "Àwòrán ń bọ̀ láìpẹ́",
+        ptc_about_heading: "Lẹ́yìn Iṣẹ́", ptc_hint: "Gbé kọ́sọ̀ kọjá lórí àwọn àmì náà. Tẹ̀ ẹ́ láti yí ìrísí padà.", nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
+        pager_prev: "Ti tẹ́lẹ̀", pager_next: "Èyí tó kàn",
+        pron_pos: "orúkọ", pron_def: "olùgbéejáde àti apẹ̀rẹ wẹ́ẹ̀bù tí ó so àpẹrẹ àti kóòdù pọ̀.", pron_origin: "Yorùbá · Ọdúnayọ̀, “ọdún ayọ̀”",
+        filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
+        journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
+        nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
+        gate_eyebrow: "Kọ́kọ́, kọ́kọ́", gate_headline: "Ẹ wọlé wá. Àwọn wẹ́ẹ̀bù yìí kì í buni jẹ.",
+        gate_subtext: "Kòkòrò àṣìṣe (bugs) nìkan ló ń buni jẹ, mo sì ti pa gbogbo wọn run.", gate_subtext2: "Ṣé o ti ṣetán láti wo yíká?",
+        gate_yes: "Bẹ́ẹ̀ni, jẹ́ kí n wọlé", gate_no: "Rárá, mo kọjá",
+        hero_tagline: "Báwo! Èmi ni Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        hero_badge: "Mo wà ní àyè fún iṣẹ́",
+        featured_heading: "Àwọn Iṣẹ́ Tó Dára Jùlọ", services_heading: "Àwọn Iṣẹ́ Tí Mo Ń Ṣe",
+        about_heading: "Nípa Mi", about_intro: "Èmi ni Full-Stack Web Developer àti Web Designer tí inú rẹ̀ dùn sí ibi tí àpẹẹrẹ (design) ti máa dá ṣiṣẹ́ gẹ́gẹ́ bí ọjà gidi.",
+        faq_heading: "Àwọn Ìbéèrè Tí Wọ́n Sábà Máa Ń Béèrè",
+        footer_cta_heading: "Jẹ́ ká ṣiṣẹ́ papọ̀.",
+        footer_cta_sub: "Ṣé o ní áàpù wẹ́ẹ̀bù àkànṣe, ṣọ́ọ̀bù orí ayélujára, iṣẹ́ WordPress tàbí ọjà dígítà kan lọ́kàn? Jẹ́ ká sọ̀rọ̀ nípa rẹ̀.",
+        faq_q_0: "Kí ni àkókò tí iṣẹ́ rẹ máa ń gbà déédéé?",
+        faq_a_0: "Ó dá lórí bí iṣẹ́ náà ṣe tóbi tó. Ojú-ìwé ìbalẹ̀ tàbí ojúlé àmì-ìdámọ̀ lè parí ní ọ̀sẹ̀ 1-2, nígbà tí iṣẹ́ àkànṣe kíkún, ṣọ́ọ̀bù orí ayélujára tàbí plugin máa ń gba ọ̀sẹ̀ 3-6 pẹ̀lú àtúnṣe.",
+        faq_q_1: "Ṣé olùgbéejáde WordPress ni ọ́ tàbí olùgbéejáde full-stack?",
+        faq_a_1: "Full-stack ni mí. Mo ń kọ́ áàpù wẹ́ẹ̀bù, API àti ẹ̀yà àkànṣe láti ìpìlẹ̀ pẹ̀lú JavaScript/React, Node.js, PHP àti Python/Django lórí PostgreSQL. WordPress, Shopify àti Webflow náà wà lára irinṣẹ́ mi, mo sì máa ń lò wọ́n nígbà tí pẹpẹ bá jẹ́ ọ̀nà tó yára jù lọ tó sì wúlò jù fún iṣẹ́ rẹ.",
+        faq_q_2: "Ṣé o lè gba ojúlé tó ti wà tẹ́lẹ̀ rí?",
+        faq_a_2: "Bẹ́ẹ̀ni. Ọ̀pọ̀lọ́pọ̀ iṣẹ́ nínú portfolio yìí jẹ́ ìtọ́jú, àtúnṣe àti àwọn ẹ̀yà tuntun tí mo fi kún àwọn ojúlé tí kì í ṣe èmi ni mo kọ́ wọn ní àkọ́kọ́.",
+        faq_q_3: "Ṣé o máa ń ṣiṣẹ́ pẹ̀lú àwọn oníbàárà láti ọ̀nà jíjìn?",
+        faq_a_3: "Bẹ́ẹ̀ni, gbogbo iṣẹ́ nínú portfolio yìí ni mo ṣe láti ọ̀nà jíjìn, fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        faq_q_4: "Kí ni o nílò lọ́wọ́ mi kí a tó bẹ̀rẹ̀?",
+        faq_a_4: "Ààyè sí hosting/domain (tàbí ìpinnu láti rí i gbà), àwọn èròjà àmì-ọjà tí o ti ní, àti ọ̀rọ̀ kúkúrú nípa ohun tí ojúlé náà nílò láti ṣe. Mo lè ràn ọ́ lọ́wọ́ láti kún àwọn àlàfo yòókù láti ibẹ̀.",
+        about_meet: "Pàdé",
+        about_build_text: "Mo máa ń kọ́, ṣe àtúnṣe àti bójútó àwọn ojúlé fún àwọn iṣẹ́, àjọ àti àwọn ọjà dígítà.",
+        about_work_text: "Iṣẹ́ mi wà láàárín ìmúṣẹ àwòṣe àti ìmọ̀ ẹ̀rọ tó wúlò. Mo ń kọ́ front-end àti back-end àkànṣe láti ìpìlẹ̀, mo sì tún mọ WordPress, Shopify àti Webflow dáadáa nígbà tí pẹpẹ bá jẹ́ ọ̀nà tó yára jù lọ sí àbájáde tó dára.",
+        about_bio_text: "Full-Stack Web Developer àti Web Designer tó ní ìrírí ọdún 5+ nínú kíkọ́ àti bíbójútó àwọn ọjà dígítà fún àwọn oníbàárà kárí Nàìjíríà, UK, Canada àti USA.",
+        magic_heading: "Jẹ́ ká ṣẹ̀dá idán ojúlé.",
+        magic_text: "Ohunkóhun tí iṣẹ́ náà bá jẹ́ — áàpù wẹ́ẹ̀bù àkànṣe, ṣọ́ọ̀bù orí ayélujára, iṣẹ́ WordPress tàbí ọjà dígítà tó nílò láti ní ẹ̀mí — inú mi á dùn láti ràn ọ́ lọ́wọ́ kọ́ ọ.",
+        start_project_btn: "Bẹ̀rẹ̀ iṣẹ́ kan",
+        experience_heading: "Ìrírí", education_heading: "Ẹ̀kọ́", toolkit_heading: "Àwọn Irinṣẹ́",
+        certifications_heading: "Àwọn Ẹ̀rí", designer_award_heading: "Oníṣẹ́-aṣàpẹẹrẹ Ọdún",
+        testimonials_heading: "Ọ̀rọ̀ Wọn", archive_heading: "Àkójọpọ̀ Ti Ara Ẹni",
+        view_credentials_btn: "Wo Àwọn Ẹ̀rí", view_cv_btn: "Wo CV", view_full_cv_btn: "Wo CV Kíkún", view_pdf_btn: "Wo PDF",
+        works_heading: "Iṣẹ́", all_works_btn: "Gbogbo Iṣẹ́", more_about_btn: "Kàwé síwájú sí mi",
+        credentials_heading: "Àwọn Ẹ̀rí", contact_heading: "Kàn Sí Mi",
+        contact_tagline: "Jẹ́ ká ṣiṣẹ́ papọ̀.",
+        contact_sub: "Ṣé o ní áàpù wẹ́ẹ̀bù àkànṣe, ṣọ́ọ̀bù orí ayélujára, iṣẹ́ WordPress tàbí ọjà dígítà kan lọ́kàn? Sọ ohun tí o ń ṣiṣẹ́ lé lórí fún mi, màá sì fèsì láàárín ọjọ́ kan tàbí méjì.",
+        contact_label_email: "Imeèlì", contact_label_phone: "Fóònù", contact_label_location: "Ibùdó",
+        footer_socials_heading: "Àwùjọ", footer_nav_heading: "Ìtọ́sọ́nà",
+        footer_privacy: "Àṣírí", footer_cookies: "Kúkì", footer_sitemap: "Àwòrán Ojúlé",
+        footer_whats_next: "Kí ni ó kàn?",
+        sitemap_sub: "Gbogbo ojú-ewé lórí ojúlé yìí, ní ibì kan.",
+        sitemap_main_pages: "Àwọn Ojú-Ewé Pàtàkì", sitemap_legal: "Òfin",
+        privacy_heading: "Ìlànà Àṣírí", cookies_heading: "Ìlànà Kúkì",
+        fact_client: "Oníbàárà", fact_category: "Ẹ̀ka", fact_services: "Iṣẹ́", fact_year: "Ọdún",
+        live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
+      },
+      ha: {
+        cs_feedback: "Abin da suka ce",
+        cs_eyebrow: "Nazarin aiki", cs_challenge: "Kalubalen", cs_approach: "Hanyar da na bi", cs_built: "Abin da na gina", cs_stack: "Abin da ke ciki", cs_outcome: "Sakamakon", cs_screens: "Cikin samfurin", cs_mobile: "A wayar hannu",
+        faq_q_5: "Ta yaya zan fara aiki tare da kai?", faq_a_5: "Cike bayanin aiki na minti 3. Zai bi da kai ta burinka, fasaloli, lokaci da kasafin kuɗi, sannan ya aiko min komai ta WhatsApp ko imel don in dawo maka da tsari bayyananne.", faq_q_6: "Waɗanne fasahohi kake amfani da su?", faq_a_6: "Duk abin da ya dace da aikin. Front-end: HTML, CSS, JavaScript da React. Back-end: Node.js, PHP da Python/Django tare da PostgreSQL da REST API. Dandali: WordPress, WooCommerce, Shopify (Liquid), Webflow da Framer. Da haɗin biyan kuɗi, sarrafa kai da AI kamar Stripe da Claude API.", faq_q_7: "Kana bayar da tallafi bayan ƙaddamarwa?", faq_a_7: "Ee. Yawancin dangantakata da abokan ciniki na ci gaba bayan ƙaddamarwa tare da kulawa, gyare-gyare, sabuntawa da sababbin fasaloli yayin da kasuwancinsu ke girma.", faq_q_8: "Nawa ne kuɗin aiki?", faq_a_8: "Ya danganta da abin da kake bukata, don haka babu farashi ɗaya ga kowa. Raba burinka da kasafin kuɗinka a cikin bayanin aiki kuma zan dawo maka da tsarin da ya dace.", faq_link_start: "Fara bayanin aikinka →", faq_all_btn: "Duba duk tambayoyi", faq_page_intro: "Amsoshi kai tsaye game da yadda nake aiki, abin da nake ginawa da yadda ake farawa.", faq_more_q: "Har yanzu kana da tambaya?", footer_faq: "Tambayoyi", footer_changelog: "Tarihin canje-canje", cl_heading: "Tarihin canje-canje", cl_intro: "Abin da ke sabo a wannan shafin, sabon farko.", contact_faq_hint: "Kana da tambaya mai sauri? Duba FAQ.", sl_drag: "Ja",
+        map_eyebrow: "Inda ayyukana suke", map_heading: "Daga Legas zuwa duniya", map_sub: "Ayyuka sama da 22 da na kammala wa abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka. Kuma ban ma ƙirga jigogin Shopify Liquid, jigogin WordPress da plugins da na gina a bayan fage ba. Danna wani fil don dubawa.", map_count: "ayyuka {n}", cc_NG: "Najeriya", cc_GB: "Birtaniya", cc_CA: "Kanada", cc_US: "Amurka",
+        bf_title: "Fara aiki", bf_eyebrow: "Bayanin aiki", bf_hi_name: "Barka da zuwa, {n}!", bf_intro: "Mu tsara aikinku tare. Zai ɗauki kusan mintuna 3, kuma amsoshinku za su kasance a burauzarku har sai kun yanke shawarar aikawa.", bf_begin: "Mu fara", bf_next: "Gaba", bf_back: "Baya", bf_step: "Mataki {n} cikin {t}", bf_q_you: "Da farko, da wa nake magana?", bf_l_name: "Sunanka", bf_l_biz: "Kasuwanci ko alama (ba dole ba)", bf_l_country: "Ina kake? (ba dole ba)", bf_ph_name: "misali: Ada Okafor", bf_ph_biz: "misali: Ada's Kitchen", bf_ph_country: "misali: Legas, Najeriya", bf_q_need: "Me kake bukata?", bf_hint_multi: "Zaɓi duk waɗanda suka dace.", bf_o_website: "Sabon gidan yanar gizo", bf_o_shop: "Shagon kan layi", bf_o_redesign: "Sake fasalin shafina", bf_o_plugin: "Plugin na WordPress ko fasali na musamman", bf_o_fix: "Gyara ko sauri shafina", bf_o_brand: "Alama ko zane", bf_o_other: "Wani abu daban", bf_q_platform: "Kana da wani dandali a zuciya?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Gina na musamman", bf_o_unsure: "Ban tabbata ba, taimaka min zaɓa", bf_q_features: "Waɗanne fasaloli zai bukata?", bf_o_pay: "Biyan kuɗi ta yanar gizo", bf_o_book: "Yin alƙawari", bf_o_tickets: "Tikitin taro", bf_o_lang: "Harsuna da yawa", bf_o_blog: "Blog ko labarai", bf_o_members: "Shiga na mambobi", bf_o_ai: "Chatbot na AI", bf_o_notyet: "Ban tabbata ba tukuna", bf_q_have: "Me kake da shi riga?", bf_o_logo: "Tambari da alama", bf_o_content: "Rubutu da hotuna", bf_o_domain: "Domain da hosting", bf_o_site: "Shafin da nake amfani da shi yanzu", bf_l_url: "Hanyar shafinka na yanzu (ba dole ba)", bf_l_like: "Shafukan da kake so (ba dole ba)", bf_ph_url: "https://", bf_ph_like: "Saka wasu hanyoyi ka faɗi abin da kake so game da su", bf_q_when: "Lokaci da kasafin kuɗi", bf_l_timeline: "Yaushe kake bukatarsa?", bf_o_asap: "Da wuri (cikin makonni 2)", bf_o_month: "Cikin wata ɗaya", bf_o_quarter: "Cikin watanni 2–3", bf_o_flex: "Lokaci ba matsala", bf_l_budget: "Kasafin kuɗinka (kowane kuɗi, ba dole ba)", bf_ph_budget: "misali: $1,500, £1,000, ₦800,000 ko ban sani ba", bf_q_idea: "Faɗa min game da aikinka", bf_hint_idea: "Menene shi, don wa, da yadda nasara za ta kasance a gare ka.", bf_ph_idea: "Ra'ayina shi ne...", bf_q_contact: "Ta yaya zan same ka?", bf_l_email: "Imel", bf_ph_email: "you@example.com", bf_l_wa: "Lambar WhatsApp (ba dole ba)", bf_ph_wa: "misali: +234 800 000 0000", bf_l_prefer: "Na fi son mu yi magana ta", bf_o_email: "Imel", bf_o_whatsapp: "WhatsApp", bf_q_review: "Ga bayaninka", bf_hint_review: "Duba shi, sannan ka aiko min. Zan amsa cikin kwana ɗaya ko biyu.", bf_send_wa: "Aika ta WhatsApp", bf_send_email: "Aika ta imel", bf_copy: "Kwafi bayanin", bf_copied: "An kwafa!", bf_edit: "Gyara amsoshi", bf_restart: "Fara sabo", bf_done: "Saura kaɗan! Danna ‘send’ a manhajar da ta buɗe. Zan tuntuɓe ka nan ba da jimawa ba.", bf_err_name: "Don Allah faɗa min sunanka.", bf_err_need: "Zaɓi aƙalla ɗaya.", bf_err_idea: "Don Allah rubuta jimla ɗaya ko biyu game da ra'ayinka.", bf_err_contact: "Don Allah saka imel ko lambar WhatsApp mai inganci.", bf_saved: "An adana amsoshinka a wannan na'ura, za ka iya dawowa daga baya.", bf_cta: "Cike bayanin aiki",
+        rs_open: "Ƙarfe {t} ne a Legas yanzu. Ina kan aiki, don haka zan amsa da sauri.", rs_evening: "Ƙarfe {t} ne a Legas yanzu. Na tashi daga aiki na yau. Ka sa ran amsa kafin {r}.", rs_night: "Ƙarfe {t} ne a Legas yanzu. Wataƙila ina barci. Ka sa ran amsa kafin {r}.", rs_morning: "Ƙarfe {t} ne a Legas yanzu. Ban fara aiki ba tukuna. Ka sa ran amsa kafin {r}.", rs_weekend: "Ƙarfe {t} ne a Legas yanzu, kuma ƙarshen mako ne. Ka sa ran amsa kafin {r}.", rs_your: "a lokacinka",
+        pron_label: "Yadda ake furtawa:",
+        fb_eyebrow: "Fitaccen aiki", fb_skills: "Ƙwarewar da yake nunawa",
+        testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
+        g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted_pre: "An ƙirƙira da", ft_crafted_by: "daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n} a cikin ginin React, Node.js da PHP na musamman, WordPress, Shopify, Webflow, kasuwancin kan layi da aikin alama.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
+        ph_stamp: "Hotuna na zuwa nan ba da jimawa ba",
+        ptc_about_heading: "Bayan Aiki", ptc_hint: "Matsa kan ɗigogin. Danna don canza siffa.", nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
+        pager_prev: "Na baya", pager_next: "Na gaba",
+        pron_pos: "suna", pron_def: "mai haɓaka yanar gizo kuma mai zane wanda ke haɗa zane da lamba.", pron_origin: "Yarbanci · Ọdúnayọ̀, “shekarar farin ciki”",
+        filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
+        journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
+        nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
+        gate_eyebrow: "Ƙwanƙwasa, ƙwanƙwasa", gate_headline: "Shigo ciki. Waɗannan shafukan ba sa cizo.",
+        gate_subtext: "Ƙwari (bugs) kaɗai ke cizo, kuma na kashe su duka.", gate_subtext2: "Ka shirya ka duba ko'ina?",
+        gate_yes: "Eh, bari in shiga", gate_no: "A'a, zan wuce",
+        hero_tagline: "Sannu! Ni ne Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen gina kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        hero_badge: "Ina samuwa don aiki",
+        featured_heading: "Ayyukan Da Aka Fi So", services_heading: "Ayyukan Da Nake Yi",
+        about_heading: "Game da Ni", about_intro: "Ni ne Full-Stack Web Developer da Web Designer wanda ke jin daɗin lokacin da zane ya daina zama hoto kawai ya koma kayan aiki mai amfani.",
+        faq_heading: "Tambayoyin Da Ake Yawan Yi",
+        footer_cta_heading: "Bari mu gina wani abu tare.",
+        footer_cta_sub: "Kana da manhajar yanar gizo ta musamman, shagon kan layi, aikin WordPress ko samfurin dijital a zuciya? Mu tattauna shi.",
+        faq_q_0: "Mene ne tsarin lokacin da ake amfani da shi a aikinka?",
+        faq_a_0: "Ya danganta da girman aikin. Shafin saukowa ko shafin alama zai iya kammala cikin makonni 1-2, yayin da cikakken gini na musamman, shagon kan layi ko plugin yakan ɗauki makonni 3-6 tare da gyare-gyare.",
+        faq_q_1: "Kai mai haɓaka WordPress ne ko mai haɓaka full-stack?",
+        faq_a_1: "Full-stack. Ina gina manhajojin yanar gizo, API da fasaloli na musamman daga tushe da JavaScript/React, Node.js, PHP da Python/Django a kan PostgreSQL. WordPress, Shopify da Webflow ma suna cikin kayan aikina, kuma ina amfani da su idan dandali ne hanya mafi sauri da dacewa ga aikinka.",
+        faq_q_2: "Za ka iya karɓar gidan yanar gizo da ake da shi tun da?",
+        faq_a_2: "E. Yawancin aikin da ke cikin wannan portfolio shi ne kulawa, gyare-gyare da sabbin fasaloli da na ƙara wa shafukan da ban gina su tun farko ba.",
+        faq_q_3: "Kana aiki da abokan ciniki daga nesa?",
+        faq_a_3: "E, kowane aiki a cikin wannan portfolio an kai shi daga nesa, ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        faq_q_4: "Me kake bukata daga gare ni mu fara?",
+        faq_a_4: "Shiga cikin hosting/domain (ko shiri na samunsa), duk wasu kayan alama da ka riga ka samu, da ɗan taƙaitaccen bayani game da abin da shafin yake bukata ya yi. Zan iya taimaka cike giɓi daga nan.",
+        about_meet: "Haɗu da",
+        about_build_text: "Ina ginawa, daidaitawa da kula da shafukan yanar gizo don kasuwanci, ƙungiyoyi da kayayyakin dijital.",
+        about_work_text: "Aikina yana tsakanin aiwatar da zane da injiniyanci mai amfani. Ina gina front-end da back-end na musamman daga tushe, kuma ina iya aiki sosai a WordPress, Shopify da Webflow idan dandali ne hanya mafi sauri zuwa kyakkyawan sakamako.",
+        about_bio_text: "Full-Stack Web Developer da Web Designer mai fiye da shekaru 5 na gogewa wajen ginawa da kula da kayayyakin dijital ga abokan ciniki a Najeriya, Birtaniya, Kanada da Amurka.",
+        magic_heading: "Bari mu ƙirƙiri sihirin shafin yanar gizo.",
+        magic_text: "Ko menene aikin — manhajar yanar gizo ta musamman, shagon kan layi, aikin WordPress ko samfurin dijital da ke bukatar rayuwa — zan so in taimaka maka gina shi.",
+        start_project_btn: "Fara aiki",
+        experience_heading: "Gogewa", education_heading: "Ilimi", toolkit_heading: "Kayan Aiki",
+        certifications_heading: "Takardun Shaida", designer_award_heading: "Mai Zane Na Shekara",
+        testimonials_heading: "Abin Da Suka Ce", archive_heading: "Tarin Hotuna Na Kai",
+        view_credentials_btn: "Duba Takardun Shaida", view_cv_btn: "Duba CV", view_full_cv_btn: "Duba Cikakken CV", view_pdf_btn: "Duba PDF",
+        works_heading: "Ayyuka", all_works_btn: "Dukkan Ayyuka", more_about_btn: "Ƙarin bayani game da ni",
+        credentials_heading: "Takardun Shaida", contact_heading: "Tuntuɓe Ni",
+        contact_tagline: "Bari mu gina wani abu tare.",
+        contact_sub: "Kana da manhajar yanar gizo ta musamman, shagon kan layi, aikin WordPress ko samfurin dijital a zuciya? Faɗa min abin da kake aiki a kai kuma zan dawo maka cikin kwana ɗaya ko biyu.",
+        contact_label_email: "Imel", contact_label_phone: "Waya", contact_label_location: "Wuri",
+        footer_socials_heading: "Hanyoyin Sada Zumunta", footer_nav_heading: "Kewayawa",
+        footer_privacy: "Sirri", footer_cookies: "Cookies", footer_sitemap: "Taswirar Shafi",
+        footer_whats_next: "Mene ne na gaba?",
+        sitemap_sub: "Kowane shafi a wannan gidan yanar gizo, a wuri ɗaya.",
+        sitemap_main_pages: "Manyan Shafuka", sitemap_legal: "Shari'a",
+        privacy_heading: "Manufar Sirri", cookies_heading: "Manufar Cookies",
+        fact_client: "Abokin Ciniki", fact_category: "Rukuni", fact_services: "Ayyuka", fact_year: "Shekara",
+        live_site_btn: "Shafin Yanar Gizo"
+      },
+      fr: {
+        cs_feedback: "Leurs mots",
+        cs_eyebrow: "Étude de cas", cs_challenge: "Le défi", cs_approach: "L'approche", cs_built: "Ce que j'ai construit", cs_stack: "Sous le capot", cs_outcome: "Le résultat", cs_screens: "À l'intérieur du produit", cs_mobile: "Sur mobile",
+        faq_q_5: "Comment démarrer un projet avec vous ?", faq_a_5: "Remplissez mon brief de projet de 3 minutes. Il vous guide à travers vos objectifs, fonctionnalités, délais et budget, puis m'envoie le tout par WhatsApp ou e-mail pour que je revienne vers vous avec un plan clair.", faq_q_6: "Quelle est votre stack technique ?", faq_a_6: "Ce qui convient au projet. Front-end : HTML, CSS, JavaScript et React. Back-end : Node.js, PHP et Python/Django avec PostgreSQL et des API REST. Plateformes : WordPress, WooCommerce, Shopify (Liquid), Webflow et Framer. Plus des intégrations de paiement, d'automatisation et d'IA comme Stripe et l'API Claude.", faq_q_7: "Proposez-vous un accompagnement après le lancement ?", faq_a_7: "Oui. Beaucoup de mes collaborations se poursuivent bien après le lancement : maintenance, corrections, mises à jour et nouvelles fonctionnalités au fil de la croissance de l'entreprise.", faq_q_8: "Combien coûte un projet ?", faq_a_8: "Cela dépend de vos besoins, il n'y a donc pas de prix unique. Partagez vos objectifs et votre budget dans le brief de projet et je reviendrai vers vous avec un plan adapté.", faq_link_start: "Commencer votre brief de projet →", faq_all_btn: "Voir toutes les questions", faq_page_intro: "Des réponses claires sur ma façon de travailler, ce que je construis et comment démarrer.", faq_more_q: "Vous avez encore une question ?", footer_faq: "FAQ", footer_changelog: "Journal des modifications", cl_heading: "Journal des modifications", cl_intro: "Les nouveautés du site, des plus récentes aux plus anciennes.", contact_faq_hint: "Une question rapide ? Consultez la FAQ.", sl_drag: "Glisser",
+        map_eyebrow: "Où vit mon travail", map_heading: "De Lagos au monde entier", map_sub: "Plus de 22 projets livrés pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis. Et c'est sans compter les thèmes Shopify Liquid sur mesure, les thèmes WordPress et les plugins créés en coulisses. Touchez une épingle pour explorer.", map_count: "{n} projets", cc_NG: "Nigeria", cc_GB: "Royaume-Uni", cc_CA: "Canada", cc_US: "États-Unis",
+        bf_title: "Démarrer un projet", bf_eyebrow: "Brief de projet", bf_hi_name: "Bonjour {n} !", bf_intro: "Planifions votre projet ensemble. Cela prend environ 3 minutes, et vos réponses restent dans votre navigateur jusqu'à ce que vous choisissiez de les envoyer.", bf_begin: "C'est parti", bf_next: "Suivant", bf_back: "Retour", bf_step: "Étape {n} sur {t}", bf_q_you: "D'abord, à qui ai-je le plaisir de parler ?", bf_l_name: "Votre nom", bf_l_biz: "Entreprise ou marque (facultatif)", bf_l_country: "Où êtes-vous basé ? (facultatif)", bf_ph_name: "ex. Ada Okafor", bf_ph_biz: "ex. Ada's Kitchen", bf_ph_country: "ex. Montréal, Canada", bf_q_need: "De quoi avez-vous besoin ?", bf_hint_multi: "Choisissez tout ce qui s'applique.", bf_o_website: "Un nouveau site web", bf_o_shop: "Une boutique en ligne", bf_o_redesign: "Une refonte de mon site", bf_o_plugin: "Un plugin WordPress ou une fonctionnalité sur mesure", bf_o_fix: "Réparer ou accélérer mon site", bf_o_brand: "Identité visuelle ou design", bf_o_other: "Autre chose", bf_q_platform: "Une plateforme en tête ?", bf_o_wp: "WordPress", bf_o_shopify: "Shopify", bf_o_webflow: "Webflow", bf_o_custom: "Développement sur mesure", bf_o_unsure: "Je ne sais pas, aidez-moi à choisir", bf_q_features: "De quelles fonctionnalités aura-t-il besoin ?", bf_o_pay: "Paiements en ligne", bf_o_book: "Réservations ou rendez-vous", bf_o_tickets: "Billetterie d'événements", bf_o_lang: "Plusieurs langues", bf_o_blog: "Blog ou actualités", bf_o_members: "Espace membres", bf_o_ai: "Chatbot IA", bf_o_notyet: "Pas encore sûr", bf_q_have: "Qu'avez-vous déjà ?", bf_o_logo: "Logo et identité", bf_o_content: "Textes et photos", bf_o_domain: "Nom de domaine et hébergement", bf_o_site: "Un site actuel", bf_l_url: "Lien de votre site actuel (facultatif)", bf_l_like: "Sites que vous aimez (facultatif)", bf_ph_url: "https://", bf_ph_like: "Collez quelques liens et dites ce qui vous plaît", bf_q_when: "Délais et budget", bf_l_timeline: "Pour quand en avez-vous besoin ?", bf_o_asap: "Dès que possible (sous 2 semaines)", bf_o_month: "D'ici un mois", bf_o_quarter: "Dans 2 à 3 mois", bf_o_flex: "Je suis flexible", bf_l_budget: "Votre budget (toute devise, facultatif)", bf_ph_budget: "ex. 1 500 $, 1 000 £, 800 000 ₦ ou je ne sais pas", bf_q_idea: "Parlez-moi de votre projet", bf_hint_idea: "Ce que c'est, pour qui, et à quoi ressemblerait une réussite pour vous.", bf_ph_idea: "Mon idée, c'est...", bf_q_contact: "Comment puis-je vous joindre ?", bf_l_email: "E-mail", bf_ph_email: "vous@exemple.com", bf_l_wa: "Numéro WhatsApp (facultatif)", bf_ph_wa: "ex. +1 514 000 0000", bf_l_prefer: "Je préfère échanger par", bf_o_email: "E-mail", bf_o_whatsapp: "WhatsApp", bf_q_review: "Voici votre brief", bf_hint_review: "Relisez-le, puis envoyez-le-moi. Je réponds sous un ou deux jours.", bf_send_wa: "Envoyer sur WhatsApp", bf_send_email: "Envoyer par e-mail", bf_copy: "Copier le brief", bf_copied: "Copié !", bf_edit: "Modifier mes réponses", bf_restart: "Recommencer", bf_done: "Presque fini ! Appuyez simplement sur « envoyer » dans l'application qui s'est ouverte. Je vous recontacte très vite.", bf_err_name: "Merci d'indiquer votre nom.", bf_err_need: "Choisissez au moins une option.", bf_err_idea: "Une phrase ou deux sur votre idée, s'il vous plaît.", bf_err_contact: "Merci d'ajouter un e-mail ou un numéro WhatsApp valide.", bf_saved: "Vos réponses sont enregistrées sur cet appareil, vous pouvez revenir plus tard.", bf_cta: "Remplir un brief de projet",
+        rs_open: "Il est {t} à Lagos. Je suis à mon bureau, les réponses sont donc rapides.", rs_evening: "Il est {t} à Lagos. J'ai terminé ma journée. Réponse attendue d'ici {r}.", rs_night: "Il est {t} à Lagos. Je dors sûrement. Réponse attendue d'ici {r}.", rs_morning: "Il est {t} à Lagos. Je ne suis pas encore à mon bureau. Réponse attendue d'ici {r}.", rs_weekend: "Il est {t} à Lagos et c'est le week-end. Réponse attendue d'ici {r}.", rs_your: "(votre heure)",
+        pron_label: "Prononciation :",
+        fb_eyebrow: "Réalisation phare", fb_skills: "Compétences démontrées",
+        testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
+        g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted_pre: "Conçu avec", ft_crafted_by: "par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : développements sur mesure React, Node.js et PHP, WordPress, Shopify, Webflow, e-commerce et identité de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
+        ph_stamp: "Visuels bientôt",
+        ptc_about_heading: "Hors du bureau", ptc_hint: "Survolez les points. Cliquez ou touchez pour changer de forme.", nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
+        pager_prev: "Précédent", pager_next: "Suivant",
+        pron_pos: "nom", pron_def: "développeur web full-stack et web designer qui relie design et code.", pron_origin: "Yoruba · Ọdúnayọ̀, « une année de joie »",
+        filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
+        journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
+        gate_eyebrow: "Toc, toc", gate_headline: "Entrez donc. Ces sites ne mordent pas.",
+        gate_subtext: "Seuls les bugs mordent, et je les ai tous écrasés.", gate_subtext2: "Prêt à faire le tour ?",
+        gate_yes: "Oui, je rentre", gate_no: "Non, je passe",
+        hero_tagline: "Salut ! Je suis Développeur Web Full-Stack & Designer Web avec plus de 5 ans d'expérience dans la création de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        hero_badge: "Disponible pour travailler",
+        featured_heading: "Projets Phares", services_heading: "Services",
+        about_heading: "À propos", about_intro: "Je suis Développeur Web Full-Stack et Designer Web qui aime le moment où un design cesse d'être une image pour devenir un produit fonctionnel.",
+        faq_heading: "FAQ",
+        footer_cta_heading: "Travaillons ensemble.",
+        footer_cta_sub: "Une application web sur mesure, une boutique en ligne, un site WordPress ou un produit numérique en tête ? Parlons-en.",
+        faq_q_0: "Quel est le délai habituel d'un projet ?",
+        faq_a_0: "Cela dépend du périmètre. Une page d'atterrissage ou un site vitrine peut être livré en 1 à 2 semaines, tandis qu'un développement sur mesure complet, une boutique en ligne ou un plugin prend généralement 3 à 6 semaines, révisions comprises.",
+        faq_q_1: "Êtes-vous développeur WordPress ou développeur full-stack ?",
+        faq_a_1: "Full-stack. Je développe des applications web, des API et des fonctionnalités sur mesure de A à Z avec JavaScript/React, Node.js, PHP et Python/Django sur PostgreSQL. WordPress, Shopify et Webflow font aussi partie de ma boîte à outils, et je les utilise quand une plateforme est la voie la plus rapide et la plus pratique pour votre projet.",
+        faq_q_2: "Pouvez-vous reprendre un site existant ?",
+        faq_a_2: "Oui. Une grande partie du travail présenté dans ce portfolio consiste en maintenance, corrections et nouvelles fonctionnalités ajoutées à des sites que je n'ai pas construits à l'origine.",
+        faq_q_3: "Travaillez-vous avec des clients à distance ?",
+        faq_a_3: "Oui, chaque projet de ce portfolio a été livré à distance, pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        faq_q_4: "De quoi avez-vous besoin de ma part pour commencer ?",
+        faq_a_4: "L'accès à l'hébergement/domaine (ou un plan pour l'obtenir), tous les éléments de marque que vous avez déjà, et une courte description de ce que le site doit faire. Je peux aider à combler les lacunes à partir de là.",
+        about_meet: "Rencontrez",
+        about_build_text: "Je construis, personnalise et maintiens des sites web pour des entreprises, des organisations et des produits numériques.",
+        about_work_text: "Mon travail se situe entre l'intégration visuelle et l'ingénierie concrète. Je développe des front-ends et des back-ends sur mesure de A à Z, et je suis tout aussi à l'aise dans WordPress, Shopify et Webflow quand une plateforme est la voie la plus rapide vers un excellent résultat.",
+        about_bio_text: "Développeur Web Full-Stack et Designer Web avec plus de 5 ans d'expérience dans la création et la maintenance de produits numériques pour des clients au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
+        magic_heading: "Créons de la magie web.",
+        magic_text: "Quel que soit le projet — une application web sur mesure, une boutique en ligne, un site WordPress ou un produit numérique qui doit prendre vie — j'adorerais vous aider à le construire.",
+        start_project_btn: "Démarrer un projet",
+        experience_heading: "Expérience", education_heading: "Formation", toolkit_heading: "Boîte à outils",
+        certifications_heading: "Certifications", designer_award_heading: "Designer De L'Année",
+        testimonials_heading: "Leurs Témoignages", archive_heading: "Archives Personnelles",
+        view_credentials_btn: "Voir les qualifications", view_cv_btn: "Voir le CV", view_full_cv_btn: "Voir le CV complet", view_pdf_btn: "Voir le PDF",
+        works_heading: "Travaux", all_works_btn: "Tous les travaux", more_about_btn: "En savoir plus sur moi",
+        credentials_heading: "Qualifications", contact_heading: "Contact",
+        contact_tagline: "Construisons quelque chose ensemble.",
+        contact_sub: "Une application web sur mesure, une boutique en ligne, un projet WordPress ou un produit numérique en tête ? Dites-moi sur quoi vous travaillez et je vous réponds sous un ou deux jours.",
+        contact_label_email: "E-mail", contact_label_phone: "Téléphone", contact_label_location: "Lieu",
+        footer_socials_heading: "Réseaux", footer_nav_heading: "Navigation",
+        footer_privacy: "Confidentialité", footer_cookies: "Cookies", footer_sitemap: "Plan du site",
+        footer_whats_next: "Et maintenant ?",
+        sitemap_sub: "Toutes les pages de ce site, au même endroit.",
+        sitemap_main_pages: "Pages Principales", sitemap_legal: "Mentions Légales",
+        privacy_heading: "Politique de Confidentialité", cookies_heading: "Politique de Cookies",
+        fact_client: "Client", fact_category: "Catégorie", fact_services: "Services", fact_year: "Année",
+        live_site_btn: "Site en ligne"
+      }
+    };
+    // Project names, client names, categories, service/tech tags (WordPress,
+    // Shopify, PHP, etc.), the Toolkit tag list and the full Privacy/Cookie
+    // policy body text are deliberately NOT translated above — they're
+    // proper nouns or technical terms that don't have a meaningful
+    // translation, or (for the legal body copy) too long to hand-translate
+    // reliably across four languages at launch.
+    const LABELS = { en: "EN", pcm: "Pidgin", yo: "Yoruba", ha: "Hausa", fr: "Français" };
+    const KEY = 'odLang';
+
+    const apply = (lang) => {
+      const dict = TRANSLATIONS[lang];
+      if (!dict) return;
+      // {n} in a translation is filled from data-i18n-n (live counts, names).
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const t = dict[el.dataset.i18n];
+        if (t) el.textContent = el.dataset.i18nN !== undefined ? t.replace('{n}', el.dataset.i18nN) : t;
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach((el) => {
+        const t = dict[el.dataset.i18nPh];
+        if (t) el.setAttribute('placeholder', t);
+      });
+      // Keep <html lang> honest once real translated text is on the page —
+      // otherwise Chrome's own "Translate this page" can trigger on the
+      // mismatch and silently rewrite everything back to the browser's
+      // preferred language.
+      document.documentElement.lang = lang;
+    };
+
+    let saved;
+    try { localStorage.removeItem(KEY); } catch (e) {} // retire the old persistent choice
+    try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+    if (saved && !TRANSLATIONS[saved]) saved = 'en';
+    if (saved && saved !== 'en') apply(saved);
+    // Shared lookup for text rendered later by script (e.g. the Vue works filter).
+    window.odT = (key, fallback) => (TRANSLATIONS[saved] && TRANSLATIONS[saved][key]) || fallback;
+
+    document.querySelectorAll('.lang-current').forEach((el) => { el.textContent = LABELS[saved] || 'EN'; });
+    document.querySelectorAll('.lang-option').forEach((btn) => {
+      btn.setAttribute('aria-current', btn.dataset.lang === (saved || 'en') ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('.lang-switcher').forEach((sw) => {
+      const toggle = sw.querySelector('.lang-toggle');
+      toggle?.addEventListener('click', () => {
+        const open = sw.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+    document.querySelectorAll('.lang-option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        try { sessionStorage.setItem(KEY, lang); } catch (e) {}
+        location.reload();
+      });
+    });
+    document.addEventListener('click', (e) => {
+      document.querySelectorAll('.lang-switcher.open').forEach((sw) => {
+        if (!sw.contains(e.target)) sw.classList.remove('open');
+      });
+    });
+  })();
+
+  // ---------- theme toggle (dark default, light on request) ----------
+  (() => {
+    const KEY = 'odTheme';
+    const root = document.documentElement;
+    const apply = (theme) => {
+      if (theme === 'light') root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
+      document.querySelectorAll('.theme-toggle').forEach((btn) => {
+        btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      });
+    };
+    apply(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    document.querySelectorAll('.theme-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        apply(next);
+        try { sessionStorage.setItem(KEY, next); } catch (e) {}
+      });
+    });
+  })();
+
+  // ---------- X-ray mode: a blueprint view of the tech behind the design ----------
+  // Off by default. Labels are injected once, then shown/hidden purely by the
+  // html.xray class, so switching is instant and the normal site is untouched.
+  (() => {
+    const KEY = 'odXray';
+    const root = document.documentElement;
+    const btns = document.querySelectorAll('.xray-toggle');
+    if (!btns.length) return;
+    const MAP = [
+      ['.nav', 'Fixed nav · GSAP stagger entrance · aria-current'],
+      ['.hero .h1', 'GSAP · split-text letter reveal'],
+      ['.btn-live', 'CSS keyframes · live pulse'],
+      ['.name-entry', 'Custom i18n engine · 5 languages'],
+      ['.image-frame.portrait', 'WebP · srcset 800/1600w · lazy · lightbox'],
+      ['.marquee', 'GSAP ScrollTrigger · scroll-velocity marquee · drag'],
+      ['.works-filter', 'Vue 3 · reactive filter'],
+      ['.work-grid', 'CSS grid · WebP thumbnails · GSAP hover'],
+      ['.reply-status', 'Live time-zone maths · Intl API'],
+      ['.world', 'Natural Earth data · SVG mask · CSS-drawn flight lines'],
+      ['.cs-deck', 'CSS position: sticky card stack · lazy WebP'],
+      ['.brief', 'Multi-step form · localStorage drafts · WhatsApp / email hand-off'],
+      ['.works-grid', 'Vue 3 · filtered grid · WebP thumbnails'],
+      ['.hero-media', 'WebP hero · srcset 800/1600w · priority load'],
+      ['.spec', 'Spec sheet · inline-SVG flags'],
+      ['.masonry', 'CSS columns · lightbox'],
+      ['.journey', 'GSAP ScrollTrigger · pinned letter scroll'],
+      ['.words-section', 'GSAP ScrollTrigger · sticky card stack'],
+      ['.bento', 'CSS grid bento · GSAP stagger reveal'],
+      ['.photo-slider', 'Vanilla JS slider · touch & keys'],
+      ['.ptc', 'Canvas 2D · 720 dots on springs · frame-rate-independent damping'],
+      ['.accordion-box', 'Accessible accordion · ARIA'],
+      ['.contact-grid', 'Semantic contact links'],
+      ['.cta-band', 'Three.js r128 · WebGL hexagon'],
+      ['.bottom-mark', 'Scannable barcode → WhatsApp'],
+      ['footer', 'Python static build · GitHub Actions deploy'],
+    ];
+    let built = false;
+    const tag = (el, text) => {
+      if (el.querySelector(':scope > .xray-tag')) return;
+      const cs = getComputedStyle(el);
+      if (cs.position === 'static') el.classList.add('xray-rel');
+      // Tabs sit above the box unless the box clips overflow or is the fixed nav.
+      if (cs.position === 'fixed' || /hidden|clip/.test(cs.overflow + cs.overflowY)) el.classList.add('xray-in');
+      el.classList.add('xray-box');
+      const t = document.createElement('span');
+      t.className = 'xray-tag'; t.setAttribute('aria-hidden', 'true'); t.textContent = text;
+      el.appendChild(t);
+    };
+    const build = () => {
+      if (built) return; built = true;
+      MAP.forEach(([sel, text]) => document.querySelectorAll(sel).forEach((el) => tag(el, text)));
+      document.querySelectorAll('.feature-build').forEach((el) => {
+        const b = el.querySelector('.fb-badge');
+        const v = b && (b.textContent.match(/v\d[\d.]*/) || [])[0];
+        tag(el, 'Custom-built from scratch' + (v ? ' · ' + v : '') + ' · PHP / JS');
+      });
+      // Live readout of what this page actually cost to load.
+      const hud = document.createElement('div');
+      hud.className = 'xray-hud'; hud.setAttribute('aria-hidden', 'true');
+      const nav = performance.getEntriesByType('navigation')[0];
+      const res = performance.getEntriesByType('resource');
+      const kb = Math.round((res.reduce((a, r) => a + (r.transferSize || 0), 0) + (nav ? nav.transferSize || 0 : 0)) / 1024);
+      const ms = nav ? Math.round(nav.domContentLoadedEventEnd) : 0;
+      const rows = [
+        ['X-ray', 'On · press X'],
+        ['Ready in', ms ? ms + ' ms' : '—'],
+        ['Requests', String(res.length + 1)],
+        ['Transferred', kb > 4 ? kb + ' KB' : 'cached'],
+        ['DOM nodes', String(document.getElementsByTagName('*').length)],
+        ['Images', String(document.images.length)],
+        ['Stack', 'Python · GSAP · Vue · Three.js'],
+      ];
+      hud.innerHTML = rows.map(([k, v]) => `<span><b>${k}</b><i>${v}</i></span>`).join('');
+      document.body.appendChild(hud);
+      // "Safe mode"-style watermark: faded along the bottom and up the right edge.
+      const mark = document.createElement('div');
+      mark.className = 'xray-mark'; mark.setAttribute('aria-hidden', 'true');
+      mark.innerHTML = '<span class="xm-b">X-ray mode</span><span class="xm-r">X-ray mode</span>';
+      document.body.appendChild(mark);
+    };
+    const apply = (on) => {
+      if (on) build();
+      root.classList.toggle('xray', on);
+      btns.forEach((b) => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
+    };
+    // Brief notice when the mode changes (like a phone entering safe mode).
+    let toast, toastTimer;
+    const notify = (on) => {
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'xray-toast'; toast.setAttribute('role', 'status');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = on ? 'X-ray mode on · the code behind the design' : 'X-ray mode off';
+      toast.classList.remove('show'); void toast.offsetWidth; toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    };
+    const toggle = () => {
+      const on = !root.classList.contains('xray');
+      apply(on);
+      notify(on);
+      try { sessionStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+    };
+    btns.forEach((b) => b.addEventListener('click', toggle));
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'x' || e.key === 'X') && !e.ctrlKey && !e.metaKey && !e.altKey &&
+          !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) && !e.target.isContentEditable &&
+          !root.classList.contains('no-scroll')) toggle();
+    });
+    let saved = null;
+    try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+    if (saved === '1') {
+      if (document.readyState === 'complete') apply(true);
+      else window.addEventListener('load', () => apply(true));
+    }
+  })();
+
+  // ---------- contact: "will he reply soon?" from the live Lagos clock ----------
+  (() => {
+    const el = document.querySelector('.reply-status');
+    if (!el) return;
+    let cfg;
+    try { cfg = JSON.parse(el.dataset.hours); } catch (e) { return; }
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const text = el.querySelector('.rs-text');
+    const OFF = cfg.utcOffset * 3600e3; // Lagos has no daylight saving
+    const time = (d, tz) => d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', timeZone: tz });
+    const render = () => {
+      const now = new Date();
+      const lag = new Date(now.getTime() + OFF); // read with getUTC* = Lagos wall clock
+      const day = lag.getUTCDay(), h = lag.getUTCHours() + lag.getUTCMinutes() / 60;
+      const workday = cfg.days.includes(day);
+      const open = workday && h >= cfg.start && h < cfg.end;
+      const t = time(now, 'Africa/Lagos');
+      el.classList.toggle('is-open', open);
+      if (open) { text.textContent = T('rs_open', "It's {t} in Lagos. I'm at my desk, so replies are usually quick.").replace('{t}', t); return; }
+      // Next time I'm at my desk, shown in the visitor's own time zone.
+      let next = null;
+      for (let i = 0; i < 8 && !next; i++) {
+        const wall = new Date(Date.UTC(lag.getUTCFullYear(), lag.getUTCMonth(), lag.getUTCDate() + i, cfg.start));
+        const real = new Date(wall.getTime() - OFF);
+        if (real > now && cfg.days.includes(wall.getUTCDay())) next = real;
+      }
+      if (!next) return;
+      let r = next.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+      if (next.toDateString() !== now.toDateString()) r = next.toLocaleDateString(undefined, { weekday: 'long' }) + ' ' + r;
+      if (now.getTimezoneOffset() !== -cfg.utcOffset * 60) r += ' ' + T('rs_your', 'your time');
+      const key = !workday ? ['rs_weekend', "It's {t} in Lagos and it's the weekend. Expect a reply by {r}."]
+        : (h >= 22 || h < 6) ? ['rs_night', "It's {t} in Lagos. I'm probably asleep. Expect a reply by {r}."]
+        : h < cfg.start ? ['rs_morning', "It's {t} in Lagos. I'm not at my desk just yet. Expect a reply by {r}."]
+        : ['rs_evening', "It's {t} in Lagos. I've logged off for the evening. Expect a reply by {r}."];
+      text.textContent = T(key[0], key[1]).replace('{t}', t).replace('{r}', r);
+    };
+    render();
+    setInterval(render, 30000);
+  })();
+
+  // ---------- /start/: shareable step-by-step project brief ----------
+  // /start/?for=Ada greets the prospect by name. Answers autosave to
+  // localStorage (odBrief) and are only ever sent when the visitor taps
+  // WhatsApp or email on the review step.
+  (() => {
+    const root = document.getElementById('brief');
+    if (!root) return;
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const KEY = 'odBrief';
+    // Someone who arrives through a brief link has already been welcomed:
+    // don't show them the landing banner or loading screen on later pages.
+    try { sessionStorage.setItem('odGateSeen', '1'); sessionStorage.setItem('odPreloaderSeen', '1'); } catch (e) {}
+    const form = root.querySelector('.bf-form');
+    const steps = [...root.querySelectorAll('.bf-step')];
+    const TOTAL = +root.dataset.total;
+    const nav = root.querySelector('.bf-nav'), prog = root.querySelector('.bf-progress');
+    const back = root.querySelector('.bf-back'), next = root.querySelector('.bf-next');
+    let cur = 0;
+
+    // Personal greeting from ?for=Name
+    const who = (new URLSearchParams(location.search).get('for') || '').replace(/[<>]/g, '').trim().slice(0, 40);
+    if (who) {
+      const hi = root.querySelector('.bf-hi');
+      hi.textContent = T('bf_hi_name', 'Hi {n}!').replace('{n}', who) + ' ';
+      hi.hidden = false;
+    }
+
+    const read = () => {
+      const d = {};
+      new FormData(form).forEach((v, k) => { (d[k] = d[k] || []).push(String(v).trim()); });
+      return d;
+    };
+    const one = (d, k) => (d[k] || []).filter(Boolean).join(', ');
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ d: read(), s: cur })); } catch (e) {} };
+    const restore = () => {
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+      if (!saved || !saved.d) return false;
+      Object.entries(saved.d).forEach(([k, vals]) => {
+        form.querySelectorAll(`[name="${k}"]`).forEach((el) => {
+          if (el.type === 'checkbox' || el.type === 'radio') el.checked = vals.includes(el.value);
+          else el.value = vals[0] || '';
+        });
+      });
+      return true;
+    };
+    const hadDraft = restore();
+    if (!hadDraft && who) { const n = form.querySelector('[name="name"]'); if (n && !n.value) n.value = who; }
+    if (hadDraft) root.querySelector('.bf-saved').hidden = false;
+
+    const show = (i) => {
+      cur = i;
+      steps.forEach((s) => s.classList.toggle('is-active', +s.dataset.step === i));
+      const inForm = i >= 1 && i <= TOTAL;
+      nav.hidden = !inForm; prog.hidden = !inForm;
+      if (inForm) {
+        root.querySelector('.bf-count').textContent = T('bf_step', 'Step {n} of {t}').replace('{n}', i).replace('{t}', TOTAL);
+        root.querySelector('.bf-bar b').style.width = (i / TOTAL * 100) + '%';
+        back.hidden = false;
+      }
+      if (i === TOTAL + 1) { root.querySelector('.bf-summary').textContent = brief(); root.querySelector('.bf-done').hidden = true; }
+      const active = steps.find((s) => +s.dataset.step === i);
+      const focusEl = active && active.querySelector('input:not([type=checkbox]):not([type=radio]), textarea');
+      if (focusEl && matchMedia('(hover:hover)').matches) focusEl.focus({ preventScroll: true });
+      root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      save();
+    };
+
+    const fail = (msg) => {
+      const err = steps.find((s) => +s.dataset.step === cur).querySelector('.bf-error');
+      err.textContent = msg; return false;
+    };
+    const valid = () => {
+      const d = read();
+      const err = steps.find((s) => +s.dataset.step === cur)?.querySelector('.bf-error');
+      if (err) err.textContent = '';
+      if (cur === 1 && !one(d, 'name')) return fail(T('bf_err_name', 'Please tell me your name.'));
+      if (cur === 2 && !one(d, 'needs')) return fail(T('bf_err_need', 'Pick at least one option.'));
+      if (cur === 7 && one(d, 'idea').length < 10) return fail(T('bf_err_idea', 'A sentence or two about your idea, please.'));
+      if (cur === 8) {
+        const email = one(d, 'email'), wa = one(d, 'whatsapp');
+        const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), okWa = wa.replace(/\D/g, '').length >= 7;
+        if (!(okEmail || (!email && okWa)) || (email && !okEmail)) return fail(T('bf_err_contact', 'Please add a valid email or WhatsApp number.'));
+      }
+      return true;
+    };
+
+    const brief = () => {
+      const d = read();
+      const rows = [
+        ['Name', one(d, 'name')], ['Business', one(d, 'business')], ['Based in', one(d, 'location')],
+        ['Needs', one(d, 'needs')], ['Platform', one(d, 'platform')], ['Features', one(d, 'features')],
+        ['Already has', one(d, 'have')], ['Current site', one(d, 'current_site')], ['Sites they like', one(d, 'inspiration')],
+        ['Timeline', one(d, 'timeline')], ['Budget', one(d, 'budget')], ['Project', one(d, 'idea')],
+        ['Email', one(d, 'email')], ['WhatsApp', one(d, 'whatsapp')], ['Prefers', one(d, 'prefer')],
+      ].filter(([, v]) => v);
+      return ['NEW PROJECT BRIEF (odunayobolarinwa.com/start/)', ''].concat(rows.map(([k, v]) => `${k}: ${v}`)).join('\n');
+    };
+
+    root.querySelector('.bf-begin').addEventListener('click', () => show(1));
+    form.addEventListener('submit', (e) => { e.preventDefault(); if (valid()) show(cur + 1); });
+    back.addEventListener('click', () => show(Math.max(0, cur - 1)));
+    form.addEventListener('input', save);
+    form.addEventListener('change', save);
+    // Enter in a text field moves on (textareas keep their new lines).
+    form.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT' && !/checkbox|radio/.test(e.target.type)) { e.preventDefault(); if (valid()) show(cur + 1); }
+    });
+
+    const done = () => { root.querySelector('.bf-done').hidden = false; };
+    root.querySelector('.bf-wa').addEventListener('click', () => {
+      window.open(`${root.dataset.whatsapp}?text=${encodeURIComponent(brief())}`, '_blank', 'noopener'); done();
+    });
+    root.querySelector('.bf-mail').addEventListener('click', () => {
+      const subject = 'Project brief: ' + (one(read(), 'name') || 'new project');
+      location.href = `mailto:${root.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief())}`; done();
+    });
+    root.querySelector('.bf-copy').addEventListener('click', (e) => {
+      const btn = e.currentTarget, label = btn.querySelector('span'), old = label.textContent;
+      const ok = () => { label.textContent = T('bf_copied', 'Copied!'); setTimeout(() => { label.textContent = old; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(brief()).then(ok).catch(() => {});
+      else { const ta = document.createElement('textarea'); ta.value = brief(); document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (x) {} ta.remove(); }
+    });
+    root.querySelector('.bf-edit').addEventListener('click', () => show(1));
+    root.querySelector('.bf-restart').addEventListener('click', () => {
+      form.reset();
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      root.querySelector('.bf-saved').hidden = true;
+      if (who) form.querySelector('[name="name"]').value = who;
+      show(0);
+    });
+    show(0);
+  })();
+
+  // ---------- home: clients-around-the-world map ----------
+  // Pins pop in and the flight lines draw out from Lagos when the map scrolls
+  // into view (CSS, triggered once); tapping a pin shows that country's work.
+  (() => {
+    const world = document.querySelector('.world');
+    if (!world) return;
+    const pins = [...world.querySelectorAll('.map-pin')];
+    const lists = [...document.querySelectorAll('.map-list')];
+    const pick = (cc) => {
+      pins.forEach((p) => { const on = p.dataset.cc === cc; p.classList.toggle('is-on', on); p.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      lists.forEach((l) => { l.hidden = l.dataset.cc !== cc; });
+    };
+    pins.forEach((p) => p.addEventListener('click', () => pick(p.dataset.cc)));
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { world.classList.add('is-in'); io.disconnect(); } }, { threshold: .35 });
+      io.observe(world);
+    } else world.classList.add('is-in');
+  })();
+
+  // ---------- landing gate: a two-way question before the site reveals ----------
+  // Shown once per session, FIRST — visible from first paint (see the CSS:
+  // this element defaults to visible, it's not waiting on JS to appear), so
+  // nothing underneath it is ever seen before the visitor answers. "Yes"
+  // opens straight into the site (the preloader then plays fresh, see
+  // below). "No" swaps in a creative one-more-try persuasion panel; if
+  // they're still leaving after that, a short optional feedback form
+  // appears and the tab then tries to close itself. Dispatches
+  // 'gate:closed' so the preloader knows when to start.
+  (() => {
+    const gate = document.getElementById('gate');
+    if (!gate) { window.dispatchEvent(new Event('gate:closed')); return; }
+    const KEY = 'odGateSeen';
+    let seen;
+    try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+    if (seen) { gate.remove(); window.dispatchEvent(new Event('gate:closed')); return; }
+
+    const question = document.getElementById('gateQuestion');
+    const persuade = document.getElementById('gatePersuade');
+    const feedback = document.getElementById('gateFeedback');
+    const yesBtn = document.getElementById('gateYes');
+    const noBtn = document.getElementById('gateNo');
+    const persuadeYesBtn = document.getElementById('gatePersuadeYes');
+    const stillLeavingBtn = document.getElementById('gateStillLeaving');
+    const skipBtn = document.getElementById('gateSkip');
+    const justLeaveBtn = document.getElementById('gateJustLeave');
+
+    const markSeen = () => { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
+
+    // Live Lagos clock in the banner's corner (Africa/Lagos = WAT, UTC+1).
+    const clockEl = document.getElementById('gateTime');
+    if (clockEl) {
+      let fmt;
+      try { fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Africa/Lagos' }); } catch (e) {}
+      const tickClock = () => { if (fmt) clockEl.textContent = fmt.format(new Date()) + ' WAT'; };
+      tickClock();
+      const clockTimer = setInterval(() => { if (!document.body.contains(clockEl)) clearInterval(clockTimer); else tickClock(); }, 1000);
+    }
+    const enterSite = () => {
+      markSeen();
+      window.dispatchEvent(new Event('gate:closed'));
+      gate.classList.add('done');
+      // CSS transition + timer (not a GSAP tween), so the gate is always
+      // removed even if the tab is in the background (rAF paused).
+      gate.style.transition = 'opacity .5s ease';
+      gate.style.opacity = '0';
+      setTimeout(() => gate.remove(), 500);
+    };
+    const swapPanel = (hide, show) => {
+      hide.style.display = 'none';
+      show.classList.add('show');
+      if (window.gsap) gsap.from(show, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
+    };
+    // Browsers only allow script to close tabs they themselves opened, so a
+    // tab the visitor navigated to directly can't always be force-closed —
+    // this is a best-effort attempt with a graceful, honest fallback.
+    const tryClose = () => {
+      try { window.open('', '_self'); } catch (e) {}
+      window.close();
+      setTimeout(() => {
+        if (document.hidden) return;
+        feedback.innerHTML = '<p class="t-xl">All set — you can close this tab now.</p><div class="gate-actions"><button class="btn" id="gateFallbackIn" type="button">Actually, take me in</button></div>';
+        document.getElementById('gateFallbackIn')?.addEventListener('click', enterSite);
+      }, 350);
+    };
+
+    yesBtn?.addEventListener('click', enterSite);
+    noBtn?.addEventListener('click', () => swapPanel(question, persuade));
+    persuadeYesBtn?.addEventListener('click', enterSite);
+    stillLeavingBtn?.addEventListener('click', () => swapPanel(persuade, feedback));
+    skipBtn?.addEventListener('click', enterSite);
+    justLeaveBtn?.addEventListener('click', tryClose);
+    feedback?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const wa = feedback.dataset.whatsapp || '';
+      const reason = feedback.reason.value.trim();
+      const email = feedback.email.value.trim();
+      const lines = ["Feedback from odunayobolarinwa.com:", reason, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      // Navigating the tab to WhatsApp IS the "leave". Deliberately NOT marked
+      // as seen: only "yes, take me in" lets anyone past the gate, so pressing
+      // Back from WhatsApp lands on the question again.
+      window.location.href = `${wa}?text=${encodeURIComponent(lines)}`;
+    });
+
+    // Back/forward cache: a page restored from history comes back exactly as
+    // it was left (e.g. on the feedback form) — reload so it starts over at
+    // the question, with nothing behind it.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted && document.body.contains(gate)) location.reload();
+    });
+
+    if (window.gsap) gsap.from(gate.querySelector('.gate-inner'), { opacity: 0, y: 24, duration: .6, ease: 'power3.out' });
+  })();
+
+  // ---------- cookie banner: small, shows once per session, after the preloader clears ----------
+  (() => {
+    const banner = document.getElementById('cookie-banner');
+    if (!banner) return;
+    const KEY = 'odCookieNoticeSeen';
+    let seen;
+    try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+    if (seen) { banner.remove(); return; }
+
+    const dismiss = () => {
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+      banner.classList.remove('show');
+      setTimeout(() => banner.remove(), 400);
+    };
+    banner.querySelector('.cookie-accept')?.addEventListener('click', dismiss);
+    banner.querySelector('.cookie-close')?.addEventListener('click', dismiss);
+
+    const reveal = () => setTimeout(() => banner.classList.add('show'), 600);
+    window.addEventListener('preloader:done', () => setTimeout(reveal, 900), { once: true });
+  })();
+
+  // ---------- exit-intent popup: comical "drop your idea" prompt ----------
+  // Armed only after the preloader clears (so it can't fire mid-load), shown
+  // once per session the moment the cursor leaves out the top of the
+  // viewport, and marked seen as soon as it's shown so it never nags twice.
+  (() => {
+    const popup = document.getElementById('exit-popup');
+    if (!popup) return;
+    const KEY = 'odExitSeen';
+
+    const question = document.getElementById('exitQuestion');
+    const form = document.getElementById('exitForm');
+    const openFormBtn = document.getElementById('exitOpenForm');
+    const dismissBtn = document.getElementById('exitDismiss');
+    const skipBtn = document.getElementById('exitSkip');
+    const closeBtn = document.getElementById('exitClose');
+
+    const closePopup = () => {
+      popup.classList.add('done');
+      if (window.gsap) gsap.to(popup, { opacity: 0, duration: .4, ease: 'power1.out', onComplete: () => popup.remove() });
+      else { popup.style.transition = 'opacity .4s ease'; popup.style.opacity = '0'; setTimeout(() => popup.remove(), 400); }
+    };
+    const showPopup = () => {
+      try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+      popup.classList.add('show');
+      if (window.gsap) gsap.from(popup.querySelector('.exit-inner'), { opacity: 0, y: 40, scale: .92, duration: .6, ease: 'back.out(1.6)' });
+    };
+
+    closeBtn?.addEventListener('click', closePopup);
+    dismissBtn?.addEventListener('click', closePopup);
+    skipBtn?.addEventListener('click', closePopup);
+    openFormBtn?.addEventListener('click', () => {
+      question.style.display = 'none';
+      form.classList.add('show');
+      if (window.gsap) gsap.from(form, { opacity: 0, y: 16, duration: .5, ease: 'power2.out' });
+    });
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const wa = form.dataset.whatsapp || '';
+      const idea = form.idea.value.trim();
+      const email = form.email.value.trim();
+      const lines = ["Idea from odunayobolarinwa.com:", idea, email ? `Reply to: ${email}` : ''].filter(Boolean).join('\n');
+      window.open(`${wa}?text=${encodeURIComponent(lines)}`, '_blank', 'noopener');
+      closePopup();
+    });
+
+    // Only real "about to leave" signals, once per session:
+    //  - desktop: the pointer exits through the TOP edge of the window
+    //    (heading for the tabs / address bar / close button) while moving
+    //    upward — not sideways exits, not hovering an iframe, not the gate;
+    //  - touch: a fast flick back up toward the address bar after reading a
+    //    good way down the page (the standard mobile exit-intent signal).
+    // Never in the first few seconds, and never over the menu or lightbox.
+    const MIN_DWELL = 8000;
+    const arm = () => {
+      let seen;
+      try { seen = sessionStorage.getItem(KEY); } catch (e) {}
+      if (seen) { popup.remove(); return; }
+      const armedAt = performance.now();
+      let fired = false;
+      let onScroll = null;
+      const busy = () => {
+        const g = document.getElementById('gate');
+        return document.body.classList.contains('menu-open') || (g && !g.classList.contains('done'));
+      };
+      const fire = () => {
+        if (fired || busy() || performance.now() - armedAt < MIN_DWELL) return;
+        fired = true;
+        document.removeEventListener('mouseout', onOut);
+        if (onScroll) window.removeEventListener('scroll', onScroll);
+        showPopup();
+      };
+
+      let lastY = null;
+      document.addEventListener('mousemove', (e) => { lastY = e.clientY; }, { passive: true });
+      const onOut = (e) => {
+        if (e.relatedTarget || e.toElement) return;      // still inside the page
+        if (e.clientY > 0) return;                       // left via side/bottom
+        if (lastY !== null && lastY > 120) return;       // not travelling up toward the browser UI
+        fire();
+      };
+      document.addEventListener('mouseout', onOut);
+
+      if (window.matchMedia('(hover: none)').matches) {
+        let prevY = window.scrollY, prevT = performance.now(), maxDepth = 0;
+        onScroll = () => {
+          const y = window.scrollY, t = performance.now();
+          const doc = document.documentElement.scrollHeight - window.innerHeight;
+          maxDepth = Math.max(maxDepth, doc > 0 ? y / doc : 0);
+          const v = (y - prevY) / Math.max(t - prevT, 1);  // px per ms; negative = upward
+          prevY = y; prevT = t;
+          if (maxDepth > 0.35 && v < -2.2 && y < doc * 0.5) fire();
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+    };
+    window.addEventListener('preloader:done', arm, { once: true });
+  })();
+
+  // ---------- lightbox ----------
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.innerHTML = '<button class="lightbox-close" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"/></svg></button><img alt="">';
+  document.body.appendChild(lightbox);
+  const lbImg = lightbox.querySelector('img');
+  const showLightbox = (src, alt) => { lbImg.src = src; lbImg.alt = alt || ''; lightbox.classList.add('open'); document.body.classList.add('menu-open'); };
+  const hideLightbox = () => { lightbox.classList.remove('open'); document.body.classList.remove('menu-open'); lbImg.src = ''; };
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox || e.target.closest('.lightbox-close')) hideLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideLightbox(); });
+  document.querySelectorAll('.image-frame .frame-box img, .gallery-grid img, .masonry-item img, .bento-item img, .fb-proof img, .slider-slide img, .cs-card img, .cs-phone img').forEach((img) => {
+    img.addEventListener('click', () => showLightbox(img.dataset.full || img.currentSrc || img.src, img.alt));
+  });
+
+  // ---------- photo sliders: one per personal-photo subfolder ----------
+  document.querySelectorAll('.photo-slider').forEach((slider) => {
+    const track = slider.querySelector('.slider-track');
+    const prev = slider.querySelector('.slider-prev');
+    const next = slider.querySelector('.slider-next');
+    const step = () => (track.querySelector('.slider-slide')?.offsetWidth || 300) + 16;
+    prev?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    next?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+
+    // Mouse users: drag the strip like a phone swipe. A "Drag" badge follows
+    // the pointer while hovering so it's obvious; a real drag never opens
+    // the lightbox. Touch keeps the native swipe.
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const hint = document.createElement('span');
+    hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
+    hint.textContent = '← ' + T('sl_drag', 'Drag') + ' →';
+    slider.appendChild(hint);
+    let down = false, moved = false, startX = 0, startLeft = 0;
+    track.addEventListener('pointermove', (e) => {
+      const r = slider.getBoundingClientRect();
+      hint.style.transform = `translate(${e.clientX - r.left}px, ${e.clientY - r.top}px)`;
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 5) moved = true;
+      track.scrollLeft = startLeft - dx;
+    });
+    track.addEventListener('pointerenter', () => slider.classList.add('show-hint'));
+    track.addEventListener('pointerleave', () => { slider.classList.remove('show-hint'); });
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft;
+      track.classList.add('is-dragging');
+      e.preventDefault();
+    });
+    const end = () => {
+      if (!down) return;
+      down = false; track.classList.remove('is-dragging');
+      // settle on the nearest photo once the drag ends
+      const s = step(); track.scrollTo({ left: Math.round(track.scrollLeft / s) * s, behavior: 'smooth' });
+    };
+    window.addEventListener('pointerup', end);
+    track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopImmediatePropagation(); moved = false; } }, true);
+  });
+
+  // ---------- preloader: UplinkLoader (ThreeUI), embedded verbatim via iframe ----------
+  // The loader document is fully self-contained (own styles/fonts/animation
+  // loop) and runs independently; this just times the outer wrapper's fade
+  // so it roughly lines up with the loader's own "UPLINK ESTABLISHED" beat
+  // (see the RUN/HOLD constants in uplink-loader.html) while also blending
+  // in a real page-load signal so the overlay never clears a half-built page.
+  // Deliberately held back behind the landing gate — the iframe's src is
+  // only set once 'gate:closed' fires, so the loading animation plays fresh
+  // right after the visitor answers, instead of running unseen underneath.
+  (() => {
+    const el = document.getElementById('preloader');
+    // The only place the site is ever revealed (see html.veil in the CSS).
+    const unlockScroll = () => document.documentElement.classList.remove('no-scroll', 'veil');
+    const revealNow = () => { unlockScroll(); window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done')); };
+    if (!el || document.documentElement.classList.contains('no-preloader')) {
+      el?.remove();
+      // Even with no preloader, never reveal while the gate is still asking.
+      if (document.getElementById('gate')) window.addEventListener('gate:closed', revealNow, { once: true });
+      else revealNow();
+      return;
+    }
+
+    const start = () => {
+      const frame = document.getElementById('preloader-frame');
+      if (frame && !frame.getAttribute('src') && frame.dataset.src) frame.src = frame.dataset.src;
+
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        // The loading animation plays once per visit (on entry); every page
+        // after that opens instantly (see the inline head script).
+        try { sessionStorage.setItem('odPreloaderSeen', '1'); } catch (e) {}
+        el.classList.add('done');
+        setTimeout(() => el.remove(), 500);
+        unlockScroll();
+        window.odPreloaderDone = true; window.dispatchEvent(new Event('preloader:done'));
+      };
+      const failsafe = setTimeout(finish, 6000);
+
+      let realLoadDone = false;
+      Promise.race([
+        Promise.all([
+          document.fonts ? document.fonts.ready : Promise.resolve(),
+          document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }))
+        ]),
+        new Promise((r) => setTimeout(r, 2600))
+      ]).then(() => { realLoadDone = true; });
+
+      const MIN_SHOW = 3700; // matches the loader's own RUN(3200)+HOLD(500) first-cycle beat
+      const started = performance.now();
+      const tryReveal = () => {
+        if (realLoadDone && performance.now() - started >= MIN_SHOW) {
+          clearTimeout(failsafe);
+          // A CSS transition + timer rather than a GSAP tween: GSAP runs on
+          // requestAnimationFrame, which browsers pause in background tabs,
+          // and the reveal must never depend on that.
+          // Unveil while the preloader is still fully opaque, so its fade
+          // reveals the finished page rather than an empty background.
+          document.documentElement.classList.remove('veil');
+          el.style.transition = 'opacity .45s ease';
+          el.style.opacity = '0';
+          setTimeout(finish, 450);
+        } else {
+          setTimeout(tryReveal, 100);
+        }
+      };
+      tryReveal();
+    };
+
+    if (document.getElementById('gate')) window.addEventListener('gate:closed', start, { once: true });
+    else start();
+  })();
+
+  // ---------- "My journey": scroll-scrubbed letter narrative ----------
+  // Modelled on guillaumezhu.com: the title's scattered letters gather as it
+  // scrolls in, then a sticky full-screen stage shows one phrase at a time,
+  // its letters rising in one after another, holding, then lifting away.
+  // Everything is a pure function of the current scroll position (read from
+  // getBoundingClientRect each frame), so scrolling back up plays it in
+  // reverse exactly, and late-loading images above can't knock it out of
+  // sync the way a pre-measured pin would. Runs after the translation module,
+  // so it splits whichever language is showing.
+  (() => {
+    const sec = document.querySelector('.journey');
+    if (!sec || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const clamp = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+    const easeIn = (t) => t * t * t;
+    const split = (el) => {
+      const text = el.textContent.trim();
+      el.setAttribute('aria-label', text);
+      el.textContent = '';
+      text.split(/\s+/).forEach((word, wi, words) => {
+        const w = document.createElement('span');
+        w.className = 'jw';
+        w.setAttribute('aria-hidden', 'true');
+        [...word].forEach((ch) => {
+          const c = document.createElement('span');
+          c.className = 'jc';
+          c.textContent = ch;
+          w.appendChild(c);
+        });
+        el.appendChild(w);
+        if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
+      });
+      return [...el.querySelectorAll('.jc')];
+    };
+
+    const heading = sec.querySelector('.journey-heading');
+    const titleChars = split(heading).map((c, i) => ({
+      el: c,
+      // Deterministic scatter (no Math.random) so it looks the same each visit.
+      y: 0.35 + ((i * 37) % 10) / 10 * 0.9,
+      r: (((i * 53) % 9) - 4) * 4
+    }));
+
+    const runway = sec.querySelector('.journey-runway');
+    const lines = [...sec.querySelectorAll('.journey-line')].map((line) => {
+      const big = line.classList.contains('journey-label') ? line : line.querySelector('.journey-big');
+      return { line, chars: split(big), sub: line.querySelector('.journey-sub'), state: '' };
+    });
+    sec.style.setProperty('--jl-count', lines.length);
+    sec.classList.add('is-live');
+
+    const K = 0.55; // letter stagger: how far behind the first letter the last one runs
+    const setChars = (chars, fn) => {
+      const n = Math.max(chars.length - 1, 1);
+      chars.forEach((c, j) => { const [y, o] = fn(j / n); c.style.transform = `translate3d(0,${y}em,0)`; c.style.opacity = o; });
+    };
+
+    const update = () => {
+      const vh = window.innerHeight;
+
+      // Title: letters drop in from scattered heights as it reaches mid-screen.
+      const tt = clamp((vh - heading.getBoundingClientRect().top) / (vh * 0.55));
+      titleChars.forEach((c, j) => {
+        const p = easeOut(clamp(tt * (1 + K) - K * (j / Math.max(titleChars.length - 1, 1))));
+        c.el.style.transform = `translate3d(0,${(1 - p) * c.y * 3}em,0) rotate(${(1 - p) * c.r}deg)`;
+      });
+
+      // Stage: progress through the runway, one equal slice per line.
+      const r = runway.getBoundingClientRect();
+      const P = clamp(-r.top / Math.max(r.height - vh, 1));
+      const seg = 1 / lines.length;
+      lines.forEach((L, i) => {
+        const last = i === lines.length - 1;
+        const t = (P - i * seg) / seg;
+        const state = t <= 0 ? 'before' : (!last && t >= 1) ? 'after' : 'active';
+        if (state !== 'active' && state === L.state) return; // nothing to redraw off-screen
+        L.state = state;
+        if (state === 'before') { setChars(L.chars, () => [3, 0]); if (L.sub) L.sub.style.opacity = 0; return; }
+        if (state === 'after') { setChars(L.chars, () => [-1.5, 0]); if (L.sub) L.sub.style.opacity = 0; return; }
+        const tin = t / 0.45, tout = last ? 0 : (t - 0.72) / 0.28;
+        setChars(L.chars, (f) => {
+          const pin = easeOut(clamp(tin * (1 + K) - K * f));
+          const pout = easeIn(clamp(tout * (1 + K) - K * f));
+          return [(1 - pin) * 3 - pout * 1.5, Math.min(pin, 1 - pout)];
+        });
+        if (L.sub) {
+          const so = clamp((t - 0.4) / 0.15) * (last ? 1 : 1 - clamp((t - 0.72) / 0.12));
+          L.sub.style.opacity = so;
+          L.sub.style.transform = `translateY(${(1 - so) * 12}px)`;
+        }
+      });
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { ticking = false; update(); });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+
+  // ---------- GSAP scroll reveals + motion ----------
+  if (window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Lazy-loaded images (large project/portrait photos) finish loading well
+    // after ScrollTrigger's initial measurement and shift page height under
+    // it, so scrub-driven triggers (journey steps, CTA settle) drift out of
+    // sync with what's on screen unless positions get recomputed as each
+    // image actually lands.
+    let refreshTimer;
+    const scheduleRefresh = () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 150); };
+    document.querySelectorAll('img').forEach((img) => { if (!img.complete) img.addEventListener('load', scheduleRefresh, { once: true }); });
+    window.addEventListener('load', scheduleRefresh);
+    // Every trigger is first measured while the gate/preloader hold the page
+    // locked (html.no-scroll: height 100%, overflow hidden), so positions
+    // must be recomputed the moment the real, scrollable page is revealed.
+    const refreshNow = () => setTimeout(() => ScrollTrigger.refresh(), 60);
+    if (window.odPreloaderDone) refreshNow();
+    else window.addEventListener('preloader:done', refreshNow, { once: true });
+
+    document.querySelectorAll('[data-reveal]').forEach((section) => {
+      const kids = section.querySelectorAll(':scope > *');
+      gsap.from(kids.length ? kids : section, {
+        y: 36, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.08,
+        scrollTrigger: { trigger: section, start: 'top 85%', once: true }
+      });
+    });
+
+    // Headline word-reveal (no SplitText dependency: wrap words in spans on the fly)
+    document.querySelectorAll('[data-split-text]').forEach((heading) => {
+      const words = heading.textContent.trim().split(/\s+/);
+      heading.setAttribute('aria-label', words.join(' '));
+      heading.textContent = '';
+      words.forEach((w, i) => {
+        const outer = document.createElement('span');
+        outer.className = 'word';
+        outer.setAttribute('aria-hidden', 'true');
+        outer.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:top';
+        const inner = document.createElement('span');
+        inner.style.display = 'inline-block';
+        inner.textContent = w;
+        outer.appendChild(inner);
+        heading.appendChild(outer);
+        if (i < words.length - 1) heading.appendChild(document.createTextNode(' '));
+      });
+      gsap.from(heading.querySelectorAll('.word > span'), {
+        yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.06, delay: 0.2
+      });
+    });
+
+    // Image reveal: clip-path wipe as frames enter view (never on .work-card
+    // .frame — that element relies on overflow:visible so the vinyl disk can
+    // peek out past its right edge, which a clip-path would cut off).
+    gsap.utils.toArray('.image-frame .frame-box, .masonry-item').forEach((box) => {
+      gsap.from(box, {
+        clipPath: 'inset(0 0 100% 0)', duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: box, start: 'top 90%', once: true }
+      });
+    });
+
+    // (No parallax on the portraits: sliding the photo inside its frame left
+    // an empty band, so the frame looked bigger than the picture.)
+
+    gsap.utils.toArray('.work-card').forEach((card) => {
+      const disk = card.querySelector('.disk');
+      card.addEventListener('mouseenter', () => gsap.to(disk, { rotation: '+=45', duration: 0.6, ease: 'power2.out' }));
+    });
+
+    document.querySelectorAll('.btn').forEach((btn) => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        gsap.to(btn, { x: (e.clientX - r.left - r.width / 2) * 0.25, y: (e.clientY - r.top - r.height / 2) * 0.4, duration: 0.3, ease: 'power2.out' });
+      });
+      btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: 0.4, ease: 'power3.out' }));
+    });
+
+    // Marquee "drag": the bands are tied to the scroll position itself —
+    // scroll down and the paper band slides left / ink band right, scroll
+    // back up and they slide back — always trailing a little behind the
+    // scroll (eased) and leaning into the movement with a slight skew, so it
+    // feels physically dragged. A slow idle drift keeps it alive at rest.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.marquee').forEach((mq) => {
+        const bands = [...mq.querySelectorAll('.mq-track')].map((t, i) => ({ t, sign: i ? 1 : -1, half: 0 }));
+        if (!bands.length) return;
+        mq.classList.add('is-driven');
+        const measure = () => bands.forEach((b) => { b.half = b.t.scrollWidth / 2; });
+        measure();
+        document.fonts?.ready.then(measure);
+        window.addEventListener('resize', measure);
+        const RATIO = 0.85;   // px of marquee travel per px scrolled
+        const DRIFT = 22;     // px per second at rest
+        let drift = 0, current = null;
+        const wrap = (x, half) => -(((x % half) + half) % half);
+        gsap.ticker.add((time, dt) => {
+          drift += DRIFT * Math.min(dt, 64) / 1000;
+          const target = window.scrollY * RATIO + drift;
+          const r = mq.getBoundingClientRect();
+          const onScreen = r.bottom > -50 && r.top < window.innerHeight + 50;
+          if (current === null || !onScreen) { current = target; return; }
+          // Frame-rate independent easing toward the target = the "drag".
+          current += (target - current) * (1 - Math.pow(0.9, Math.min(dt, 64) / 16.7));
+          const lag = target - current;
+          const skew = Math.max(-9, Math.min(9, lag * 0.05));
+          bands.forEach((b) => {
+            if (!b.half) return;
+            const x = wrap(b.sign < 0 ? current : -current, b.half);
+            b.t.style.transform = `translate3d(${x}px,0,0) skewX(${b.sign * -skew}deg)`;
+          });
+        });
+      });
+    }
+
+    // Personal archive bento: tiles pop in one after another.
+    const bentoItems = gsap.utils.toArray('.bento-item');
+    if (bentoItems.length) {
+      gsap.from(bentoItems, {
+        opacity: 0, scale: 0.85, y: 24, duration: 0.6, ease: 'back.out(1.5)', stagger: 0.06,
+        scrollTrigger: { trigger: '.bento', start: 'top 85%', once: true }
+      });
+    }
+
+    // "In their words": each quote lights up word by word as it scrolls into
+    // reading position (scrubbed, so scrolling back dims it again); the name
+    // slides in once the quote is read; and every card except the last is
+    // eased back (slightly scaled, never faded) while the next card covers it.
+    const wordCards = gsap.utils.toArray('.word-card');
+    if (wordCards.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelector('.words-section')?.classList.add('words-live');
+      wordCards.forEach((card, i) => {
+        const q = card.querySelector('.word-quote');
+        const words = q.textContent.trim().split(/\s+/);
+        q.setAttribute('aria-label', q.textContent.trim());
+        q.textContent = '';
+        words.forEach((w, n) => {
+          const span = document.createElement('span');
+          span.className = 'ww';
+          span.setAttribute('aria-hidden', 'true');
+          span.textContent = w;
+          q.appendChild(span);
+          if (n < words.length - 1) q.appendChild(document.createTextNode(' '));
+        });
+        gsap.to(q.querySelectorAll('.ww'), {
+          opacity: 1, ease: 'none', stagger: 0.05,
+          scrollTrigger: { trigger: card, start: 'top 85%', end: 'top 40%', scrub: 0.5 }
+        });
+        gsap.from(card.querySelector('.word-mark'), {
+          scale: 0.4, rotate: -12, opacity: 0, duration: 0.8, ease: 'back.out(2)',
+          scrollTrigger: { trigger: card, start: 'top 80%', toggleActions: 'play none none reverse' }
+        });
+        gsap.from(card.querySelector('.word-cite'), {
+          y: 24, opacity: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: card, start: 'top 30%', toggleActions: 'play none none reverse' }
+        });
+        const next = wordCards[i + 1];
+        if (next) {
+          gsap.to(card, {
+            scale: 0.94, ease: 'none',
+            scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true }
+          });
+        }
+      });
+    }
+
+    // Header drops in once the preloader has cleared (or straight away when
+    // it's skipped), logo first, then links and controls.
+    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .xray-toggle, .nav .lang-switcher, .menu-btn');
+    gsap.set(navItems, { y: -24, opacity: 0 });
+    const showNav = () => {
+      gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });
+      // Safety net: the header must never stay hidden if the tween stalls
+      // (rAF is paused in background tabs). gsap.set applies instantly.
+      setTimeout(() => gsap.set(navItems, { clearProps: 'transform,opacity' }), 1600);
+    };
+    if (window.odPreloaderDone) showNav();
+    else window.addEventListener('preloader:done', showNav, { once: true });
+
+    // Page fade-in on load
+    gsap.from('.wrap', { opacity: 0, duration: 0.6, ease: 'power1.out' });
+
+    // CTA band heading: settles from a slight tilt/oversize into place as it
+    // scrolls into view — same "what's next" idea, in the site's own type.
+    gsap.utils.toArray('.cta-rotate').forEach((el) => {
+      gsap.from(el, {
+        rotate: -4, scale: 1.08, opacity: 0, y: 24, duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true }
+      });
+    });
+  }
+
+  // ---------- Three.js grain shader (progressive enhancement, never blocks the page) ----------
+  // Desktop only: on phones a full-screen shader redrawing every frame fights
+  // scrolling for the GPU, and the static CSS grain (body:before) already
+  // gives the same texture there.
+  const isTouchOrSmall = window.matchMedia('(hover: none), (max-width: 767px)').matches;
+  const initGrain = () => { try {
+    if (window.THREE) {
+      const canvas = document.createElement('canvas');
+      canvas.id = 'grain-canvas';
+      document.body.prepend(canvas);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, premultipliedAlpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const material = new THREE.ShaderMaterial({
+        uniforms: { u_time: { value: 0 }, u_res: { value: new THREE.Vector2() } },
+        vertexShader: 'void main(){gl_Position=vec4(position,1.0);}',
+        fragmentShader: `
+          precision mediump float;
+          uniform float u_time;
+          uniform vec2 u_res;
+          float rand(vec2 co){return fract(sin(dot(co.xy,vec2(12.9898,78.233)))*43758.5453);}
+          void main(){
+            vec2 uv=gl_FragCoord.xy/u_res.xy;
+            float n=rand(uv*u_res.xy*0.6+u_time*60.0);
+            gl_FragColor=vec4(vec3(n),0.06);
+          }`,
+        transparent: true
+      });
+      scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+      const resize = () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        material.uniforms.u_res.value.set(window.innerWidth, window.innerHeight);
+      };
+      resize();
+      window.addEventListener('resize', resize);
+      let raf, last = 0;
+      const tick = (t) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < 42) return; // ~24fps reads as film grain and frees the GPU for scrolling
+        last = t;
+        material.uniforms.u_time.value = t * 0.001;
+        renderer.render(scene, camera);
+      };
+      raf = requestAnimationFrame(tick);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(tick);
+      });
+    }
+  } catch (e) { /* WebGL unavailable — the static grain overlay in CSS already covers this */ } };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // One lazy loader per library, so three.js / Vue are fetched at most once
+  // and only on pages (and devices) that actually use them.
+  const loaded = {};
+  const loadScript = (src) => loaded[src] || (loaded[src] = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  }));
+  const THREE_SRC = '/assets/js/vendor/three.min.js';
+  const VUE_SRC = '/assets/js/vendor/vue.global.prod.min.js';
+
+  if (isTouchOrSmall) {
+    const g = document.createElement('div');
+    g.className = 'grain-css';
+    g.setAttribute('aria-hidden', 'true');
+    document.body.prepend(g);
+  } else if (!reducedMotion) {
+    // The animated grain is a nicety: fetch three.js only after the page and
+    // its images have loaded, when the browser is idle, so it never competes
+    // with what the visitor actually came to see.
+    const later = () => (window.requestIdleCallback ? requestIdleCallback(() => loadScript(THREE_SRC).then(initGrain).catch(() => {}), { timeout: 4000 })
+      : setTimeout(() => loadScript(THREE_SRC).then(initGrain).catch(() => {}), 1500));
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
+  }
+
+  // ---------- Three.js: floating hexagon (the OD logo's shape) in the CTA band ----------
+  // A slowly turning wireframe hex prism with an orbiting dust ring, drawn in
+  // the current --paper colour (so it follows light/dark mode) and tilting
+  // toward the pointer. three.js is only fetched once the band is near the
+  // viewport, and the loop only runs while it's actually on screen.
+  (() => {
+    const host = document.querySelector('.cta-3d');
+    if (!host || reducedMotion || !('IntersectionObserver' in window)) return;
+    let started = false;
+    const near = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting) || started) return;
+      started = true;
+      near.disconnect();
+      loadScript(THREE_SRC).then(() => initHex(host)).catch(() => {});
+    }, { rootMargin: '400px 0px' });
+    near.observe(host);
+
+    const initHex = (el) => { try {
+      const canvas = document.createElement('canvas');
+      el.appendChild(canvas);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isTouchOrSmall });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isTouchOrSmall ? 1 : 1.5));
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+      camera.position.z = 7.2;
+
+      const lineMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.6 });
+      const dotMat = new THREE.PointsMaterial({ size: isTouchOrSmall ? 0.07 : 0.055, transparent: true, opacity: 0.85 });
+      // --paper is an oklch() value, which THREE.Color can't parse; painting
+      // it onto a 1px canvas converts it to plain RGB in any browser.
+      const px = document.createElement('canvas').getContext('2d');
+      const recolor = () => {
+        px.fillStyle = '#eeeae0';
+        px.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--paper').trim() || '#eeeae0';
+        px.clearRect(0, 0, 1, 1);
+        px.fillRect(0, 0, 1, 1);
+        const [r, g, b] = px.getImageData(0, 0, 1, 1).data;
+        lineMat.color.setRGB(r / 255, g / 255, b / 255);
+        dotMat.color.setRGB(r / 255, g / 255, b / 255);
+      };
+      recolor();
+      new MutationObserver(recolor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+      const group = new THREE.Group();
+      // Hexagonal prism, pointy-top like the logo, as clean edges only.
+      const hex = new THREE.CylinderGeometry(1.6, 1.6, 1.1, 6, 1);
+      group.add(new THREE.LineSegments(new THREE.EdgesGeometry(hex), lineMat));
+      const inner = new THREE.CylinderGeometry(0.95, 0.95, 1.1, 6, 1);
+      group.add(new THREE.LineSegments(new THREE.EdgesGeometry(inner), lineMat));
+      group.rotation.x = Math.PI / 2;
+      scene.add(group);
+
+      const N = isTouchOrSmall ? 220 : 420;
+      const pos = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2 * 7.3, r = 2.6 + ((i * 73) % 100) / 100 * 1.6;
+        pos[i * 3] = Math.cos(a) * r;
+        pos[i * 3 + 1] = (((i * 37) % 100) / 100 - 0.5) * 0.8;
+        pos[i * 3 + 2] = Math.sin(a) * r;
+      }
+      const dustGeo = new THREE.BufferGeometry();
+      dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const dust = new THREE.Points(dustGeo, dotMat);
+      dust.rotation.x = 0.35;
+      scene.add(dust);
+
+      const size = () => {
+        const w = el.clientWidth, h = el.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      size();
+      window.addEventListener('resize', size);
+
+      let tx = 0, ty = 0;
+      window.addEventListener('pointermove', (e) => {
+        tx = (e.clientX / window.innerWidth - 0.5) * 0.6;
+        ty = (e.clientY / window.innerHeight - 0.5) * 0.4;
+      }, { passive: true });
+
+      let visible = false, raf = 0, last = 0;
+      const frameGap = isTouchOrSmall ? 33 : 16;
+      const tick = (t) => {
+        raf = requestAnimationFrame(tick);
+        if (t - last < frameGap) return;
+        last = t;
+        const s = t * 0.001;
+        group.rotation.z = s * 0.35;
+        group.rotation.x = Math.PI / 2 + Math.sin(s * 0.6) * 0.25 + ty;
+        group.rotation.y += (tx - group.rotation.y) * 0.05;
+        dust.rotation.y = -s * 0.12;
+        renderer.render(scene, camera);
+      };
+      const run = () => { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(tick); };
+      const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+      new IntersectionObserver((entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        visible ? run() : stop();
+      }).observe(el);
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : run()));
+      renderer.render(scene, camera);
+      if (window.gsap) gsap.from(canvas, { opacity: 0, scale: .8, duration: 1.2, ease: 'power3.out' });
+    } catch (e) { el.remove(); } };
+  })();
+
+  // ---------- Vue: works page category filter ----------
+  // The project cards stay server-rendered (so they're crawlable and work
+  // without JS); Vue owns only the filter state and the chip bar, and shows /
+  // hides cards by their data-cat. Projects can sit in several groups.
+  (() => {
+    const mount = document.getElementById('works-filter');
+    const grid = document.getElementById('works-grid');
+    if (!mount || !grid) return;
+    const cards = [...grid.querySelectorAll('.work-card')];
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const GROUPS = [
+      { id: 'all', label: T('filter_all', 'All'), test: () => true },
+      { id: 'web', label: T('filter_web', 'Web'), test: (c) => /\bweb|wordpress/i.test(c) },
+      { id: 'shop', label: T('filter_shop', 'E-commerce'), test: (c) => /e-commerce|shopify|marketplace/i.test(c) },
+      { id: 'brand', label: T('filter_brand', 'Branding'), test: (c) => /brand/i.test(c) },
+      { id: 'product', label: T('filter_product', 'Plugins & Products'), test: (c) => /plugin|product|platform|digital|saas|\bai\b/i.test(c) }
+    ];
+
+    loadScript(VUE_SRC).then(() => {
+      const { createApp, ref, computed, watch, nextTick } = window.Vue;
+      createApp({
+        setup() {
+          const active = ref('all');
+          const groups = computed(() => GROUPS.map((g) => ({ ...g, count: cards.filter((c) => g.test(c.dataset.cat || '')).length })).filter((g) => g.count));
+          watch(active, (id) => {
+            const g = GROUPS.find((x) => x.id === id) || GROUPS[0];
+            const shown = [];
+            cards.forEach((c) => { const on = g.test(c.dataset.cat || ''); c.hidden = !on; if (on) shown.push(c); });
+            nextTick(() => {
+              if (window.gsap) gsap.fromTo(shown, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .55, ease: 'power3.out', stagger: .05, overwrite: true });
+              if (window.ScrollTrigger) ScrollTrigger.refresh();
+            });
+          });
+          return { active, groups };
+        },
+        template: `<button v-for="g in groups" :key="g.id" type="button" class="filter-chip" :class="{ 'is-active': active === g.id }" :aria-pressed="active === g.id ? 'true' : 'false'" @click="active = g.id">{{ g.label }}<sup>{{ g.count }}</sup></button>`
+      }).mount(mount);
+      if (window.gsap) gsap.from(mount.children, { opacity: 0, y: 14, duration: .5, ease: 'power2.out', stagger: .05 });
+    }).catch(() => {});
+  })();
+  // ---------- Particles: a shape made of dots (home, About, 404) ----------
+  // Ported from Bencho's Particles component (MIT, bencho.dev/licence) to
+  // plain JS, since this site has no React. One instance per [data-particles];
+  // data-shape picks the shape it opens as. Bencho's notes are kept below.
+  (() => {
+    /* ══ Particles ════════════════════════════════════════════
+       A shape made of dots. Move over it and the dots are pushed
+       away from the pointer and spring home behind it; press and a
+       shockwave throws them out, and they gather again into the
+       NEXT shape — circle, square, flower, round again.
+
+       ── ONE SET OF DOTS, MANY SHAPES ────────────────────────
+       The dots never change, only where home is. Every shape is
+       sampled to the same number of points, and a change of shape
+       pairs each dot with a new home by angle round the middle, so
+       the swarm sweeps round into the new outline rather than
+       crossing itself.
+
+       ── STRETCHED BY SPEED ──────────────────────────────────
+       A dot at rest is round; a moving one is drawn a little long
+       along the way it is going, which is what makes a burst read
+       as a splash rather than a scatter of points. */
+
+    /* ── one spring, for everything that settles ───────────────
+       Frames, not milliseconds. `dt` is expressed in sixtieths of
+       a second and the damping is RAISED to it rather than
+       multiplied by it, so a dropped frame decays the same amount
+       of energy as the two frames it replaced. Multiplying is the
+       version that makes a spring behave differently on a busy
+       page, which is the hardest kind of bug to see.
+
+       The loop parks itself the moment the value has settled, so
+       nothing runs while the dots are at rest. */
+    const roots = document.querySelectorAll('[data-particles]');
+    if (!roots.length) return;
+
+    /* Read once. A preference, not a live input. */
+    const still = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    const W = 480;
+    const H = 400;
+    const CX = W / 2;
+    const CY = H / 2;
+    /* how many dots every shape is sampled to */
+    const N = 720;
+    const SHAPES = ['Circle', 'Square', 'Flower'];
+
+    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+    const outline = (s) => {
+      const p = new Path2D();
+      if (s === 'Circle') p.arc(CX, CY, 150, 0, Math.PI * 2);
+      else if (s === 'Square') {
+        if (p.roundRect) p.roundRect(CX - 140, CY - 140, 280, 280, 36);
+        else p.rect(CX - 140, CY - 140, 280, 280); // Safari < 16
+      } else {
+        /* five round petals round a smaller middle — circles drawn
+           the same way round, so the fill is their union. Petals
+           just touching their neighbours, so the notches between
+           them read at the dots' own grain */
+        for (let i = 0; i < 5; i++) {
+          const a = -Math.PI / 2 + (i * Math.PI * 2) / 5;
+          const x = CX + Math.cos(a) * 104;
+          const y = CY + 8 + Math.sin(a) * 104;
+          p.moveTo(x + 60, y);
+          p.arc(x, y, 60, 0, Math.PI * 2);
+        }
+        p.moveTo(CX + 58, CY + 8);
+        p.arc(CX, CY + 8, 58, 0, Math.PI * 2);
+      }
+      return p;
+    };
+
+    /* ── N points, spread evenly over the inside of a shape ──
+       A hex grid spaced so the shape holds about N of them — its
+       area over N, which is the spacing that fills it evenly — then
+       trimmed or topped up to exactly N. It was a fixed fine grid
+       thinned by a stride, and the stride beat against the grid:
+       the circle came out in zigzag bands.
+       Shapes are fixed, so each is sampled once and shared by every
+       instance on the page. */
+    const cache = {};
+    const homes = (s) => {
+      if (cache[s]) return cache[s];
+      const c = document.createElement('canvas');
+      c.width = W;
+      c.height = H;
+      const g = c.getContext('2d');
+      const path = outline(s);
+      let area = 0;
+      for (let y = 1; y < H; y += 2) for (let x = 1; x < W; x += 2) if (g.isPointInPath(path, x, y)) area += 4;
+      const sp = Math.sqrt((area / N) * (2 / Math.sqrt(3)));
+      const rowH = (sp * Math.sqrt(3)) / 2;
+      const pts = [];
+      for (let y = rowH / 2, row = 0; y < H; y += rowH, row++) {
+        for (let x = sp / 2 + (row % 2) * (sp / 2); x < W; x += sp) {
+          if (g.isPointInPath(path, x, y)) pts.push([x, y]);
+        }
+      }
+      /* within a few of N either way; drop evenly or repeat evenly */
+      const out = [];
+      for (let i = 0; i < N; i++) out.push(pts[Math.floor((i * pts.length) / N)]);
+      return (cache[s] = out);
+    };
+
+    const angle = (x, y) => Math.atan2(y - CY, x - CX);
+
+    roots.forEach((root) => {
+      const cv = root.querySelector('canvas');
+      if (!cv) return;
+      const ctx = cv.getContext('2d');
+      /* how far the pointer's push reaches, px; how hard it pushes, 0..100 */
+      const reach = clamp(+root.dataset.reach || 80, 30, 160);
+      const force = clamp(+root.dataset.force || 60, 0, 100);
+      /* the size of a dot */
+      const r = root.dataset.grain === 'Coarse' ? 2.7 : 1.9;
+      let dots = [];
+      let at = SHAPES.includes(root.dataset.shape) ? root.dataset.shape : 'Circle';
+      let hand = null;
+      let raf = 0;
+
+      /* the drawing space stays 480×400; the backing store follows the
+         size CSS gives the canvas, so the big home version is as sharp
+         as the small one. draw() scales by cv.width / W. */
+      const fit = () => {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const k = (cv.getBoundingClientRect().width || W) / W;
+        const w = Math.round(W * k * dpr);
+        if (w === cv.width) return;
+        cv.width = w;
+        cv.height = Math.round(H * k * dpr);
+        draw();
+      };
+
+      /* ── give every dot a home in a shape ────────────────── */
+      const become = (s) => {
+        at = s;
+        const next = homes(s);
+        if (!dots.length) {
+          dots = next.map(([x, y]) => ({ hx: x, hy: y, x, y, vx: 0, vy: 0 }));
+          return;
+        }
+        /* pair by angle round the middle, so the swarm sweeps */
+        const a = dots.map((d, i) => [angle(d.x, d.y), i]).sort((p, q) => p[0] - q[0]);
+        const b = next.map((h, i) => [angle(h[0], h[1]), i]).sort((p, q) => p[0] - q[0]);
+        a.forEach(([, di], k) => {
+          const h = next[b[k][1]];
+          dots[di].hx = h[0];
+          dots[di].hy = h[1];
+          if (still) { dots[di].x = h[0]; dots[di].y = h[1]; }
+        });
+      };
+
+      const draw = () => {
+        const k = cv.width / W;
+        ctx.setTransform(k, 0, 0, k, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        /* the dots are drawn in the canvas's own CSS colour, so the
+           theme carries them */
+        ctx.fillStyle = getComputedStyle(cv).color;
+        ctx.beginPath();
+        for (const d of dots) {
+          const sp = Math.hypot(d.vx, d.vy);
+          if (sp < 0.3) {
+            ctx.moveTo(d.x + r, d.y);
+            ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
+          } else {
+            /* long along its path, a little thin across it */
+            const s = Math.min(2.6, 1 + sp * 0.12);
+            const rot = Math.atan2(d.vy, d.vx);
+            ctx.moveTo(d.x + Math.cos(rot) * r * s, d.y + Math.sin(rot) * r * s);
+            ctx.ellipse(d.x, d.y, r * s, r / Math.sqrt(s), rot, 0, Math.PI * 2);
+          }
+        }
+        ctx.fill();
+      };
+
+      const run = () => {
+        if (raf) return;
+        let prev = 0;
+        const S = (force / 100) * 11;
+        const tick = (t) => {
+          const dt = prev ? clamp((t - prev) / 16.67, 0, 2.5) : 1;
+          prev = t;
+          const h = hand;
+          let busy = !!h;
+          for (const d of dots) {
+            if (h) {
+              const dx = d.x - h.x;
+              const dy = d.y - h.y;
+              const dd = Math.hypot(dx, dy);
+              if (dd < reach && dd > 0.01) {
+                const f = Math.pow(1 - dd / reach, 2) * S;
+                d.vx += (dx / dd) * f * dt;
+                d.vy += (dy / dd) * f * dt;
+              }
+            }
+            d.vx = (d.vx + (d.hx - d.x) * 0.05 * dt) * Math.pow(0.84, dt);
+            d.vy = (d.vy + (d.hy - d.y) * 0.05 * dt) * Math.pow(0.84, dt);
+            d.x += d.vx * dt;
+            d.y += d.vy * dt;
+            if (Math.abs(d.hx - d.x) < 0.05 && Math.abs(d.hy - d.y) < 0.05 && Math.abs(d.vx) < 0.02 && Math.abs(d.vy) < 0.02) {
+              d.x = d.hx; d.y = d.hy; d.vx = 0; d.vy = 0;
+            } else busy = true;
+          }
+          draw();
+          raf = busy ? requestAnimationFrame(tick) : 0;
+        };
+        raf = requestAnimationFrame(tick);
+      };
+
+      /* the canvas is scaled down by CSS on narrow screens, so the
+         pointer is mapped back into the 480×400 drawing space */
+      const where = (e) => {
+        const b = cv.getBoundingClientRect();
+        const k = b.width / W;
+        return { x: (e.clientX - b.left) / k, y: (e.clientY - b.top) / k };
+      };
+
+      cv.addEventListener('pointermove', (e) => {
+        if (still) return;
+        hand = where(e);
+        run();
+      });
+      /* a finger that starts a scroll fires pointercancel, not leave */
+      const away = () => { hand = null; run(); };
+      cv.addEventListener('pointerleave', away);
+      cv.addEventListener('pointercancel', away);
+      cv.addEventListener('pointerdown', (e) => {
+        /* the shockwave, then the next shape */
+        const p = where(e);
+        if (!still) {
+          const S = 0.4 + (force / 100) * 1.2;
+          for (const d of dots) {
+            const dx = d.x - p.x;
+            const dy = d.y - p.y;
+            const dd = Math.hypot(dx, dy);
+            if (dd > 200 || dd < 0.01) continue;
+            const f = (1 - dd / 200) * 30 * S;
+            d.vx += (dx / dd) * f;
+            d.vy += (dy / dd) * f;
+          }
+        }
+        become(SHAPES[(SHAPES.indexOf(at) + 1) % SHAPES.length]);
+        draw();
+        run();
+        /* on touch, a tap is the whole gesture: let the dots settle */
+        if (e.pointerType !== 'mouse') hand = null;
+      });
+
+      /* redraw in the new ink when the theme flips */
+      new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+      become(at);
+      fit();
+      draw();
+      if (window.ResizeObserver) new ResizeObserver(fit).observe(cv);
+    });
+  })();
+})();
