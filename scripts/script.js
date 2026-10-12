@@ -997,6 +997,21 @@
       CHORDS[chordIx % CHORDS.length].forEach((fr, i) => voice(fr * (i > 1 ? 1 : 2), 'triangle', 0.045, 3.5, 3, 5, 0.8));
       chordIx++;
     };
+    // Click note: low, soft and mostly echo, so it blooms in the distance
+    // instead of beeping. A tiny downward glide and a quiet bell overtone.
+    const clickNote = () => {
+      const t = ctx.currentTime, n = SCALE[Math.floor(Math.random() * 6)];
+      const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), g2 = ctx.createGain(), f = ctx.createBiquadFilter();
+      o.type = 'sine'; o.frequency.setValueAtTime(n * 1.03, t); o.frequency.exponentialRampToValueAtTime(n, t + 0.18);
+      o2.type = 'triangle'; o2.frequency.value = n * 2.01;
+      f.type = 'lowpass'; f.frequency.value = 1400;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.07, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
+      g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(0.012, t + 0.02); g2.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+      o.connect(g); o2.connect(g2); g.connect(f); g2.connect(f);
+      const dry = ctx.createGain(); dry.gain.value = 0.3; f.connect(dry); dry.connect(master);
+      const wet = ctx.createGain(); wet.gain.value = 1.1; f.connect(wet); wet.connect(verb);
+      o.start(t); o2.start(t); o.stop(t + 2.5); o2.stop(t + 1.3);
+    };
     const chime = () => voice(SCALE[5 + Math.floor(Math.random() * 6)] * 2, 'sine', 0.05, 0.02, 0.05, 3.2, 0.9);
     const schedule = () => {
       playChord();
@@ -1039,23 +1054,36 @@
     document.addEventListener('pointerdown', (e) => {
       if (!on || !ctx || e.target.closest('.sound-toggle')) return;
       if (!e.target.closest('a, button, [role="button"], .work-card, .map-pin, .bf-chip, label, summary')) return;
-      const n = SCALE[4 + Math.floor(Math.random() * 7)] * 2;
-      voice(n, 'sine', 0.09, 0.005, 0.02, 1.4, 0.7);
-      voice(n * 1.5, 'sine', 0.025, 0.005, 0.01, 0.9, 0.7);
+      clickNote();
     }, true);
 
-    // Pause in background tabs; resume when the visitor comes back.
-    document.addEventListener('visibilitychange', () => { if (!ctx || !on) return; document.hidden ? ctx.suspend() : ctx.resume(); });
+    // Only plays while the visitor is on this tab: fade out and pause when they
+    // switch away, resume and fade back in when they return.
+    document.addEventListener('visibilitychange', () => {
+      if (!ctx || !on) return;
+      if (document.hidden) { fade(0, 0.4); setTimeout(() => { if (document.hidden) ctx.suspend(); }, 450); }
+      else { ctx.resume().then(() => fade(0.8, 1.5)); }
+    });
 
-    // Browsers only allow audio after a gesture: if sound was on earlier in the
-    // visit, show the button as on and start on the first interaction.
+    // Sound is ON by default (unless switched off earlier in the visit). Browsers
+    // only allow audio after a gesture, so try straight away (some allow it for
+    // sites a visitor uses often) and otherwise start on the first click or key,
+    // which for most visitors is "Yes, let me in" on the landing banner.
     let saved = null;
     try { saved = sessionStorage.getItem(KEY); } catch (e) {}
-    if (saved === '1') {
+    if (saved !== '0') {
       btns.forEach((b) => { b.setAttribute('aria-pressed', 'true'); b.classList.add('is-on'); });
       on = true;
-      const kick = () => { if (on) start(); };
-      ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, kick, { once: true, capture: true }));
+      const kick = (e) => {
+        if (!on || (e && e.target && e.target.closest && e.target.closest('.sound-toggle'))) return;
+        ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.removeEventListener(ev, kick, true));
+        if (!document.hidden) start();
+      };
+      ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, kick, true));
+      try {
+        setup();
+        ctx.resume().then(() => { if (ctx.state === 'running' && on && !document.hidden) kick(); }).catch(() => {});
+      } catch (e) {}
     }
   })();
 

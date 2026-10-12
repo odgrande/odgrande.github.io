@@ -189,8 +189,8 @@ THEME_TOGGLE_ICON='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20
 SOUND_ICONS='<svg class="snd-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg><svg class="snd-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>'
 def sound_toggle(cls=""):
     # Ambient music + soft click sounds, generated live with the Web Audio API
-    # (see script.js). Off by default; the choice lasts for the visit.
-    return f'<button class="sound-toggle {cls}" type="button" aria-label="Turn sound on or off" aria-pressed="false" title="Sound">{SOUND_ICONS}</button>'
+    # (see script.js). On by default from the first click; turning it off lasts the visit.
+    return f'<button class="sound-toggle {cls}" type="button" aria-label="Turn sound on or off" aria-pressed="true" title="Sound">{SOUND_ICONS}</button>'
 
 def xray_toggle(cls=""):
     # X-ray mode: flips the page into a blueprint that labels the tech behind
@@ -1154,7 +1154,7 @@ def page_cookies():
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
 <li><code>odBrief</code> — the answers you type into the project brief (/start/), kept on your device (local storage) so you can finish later. Nothing is sent anywhere until you choose to send it, and "Start over" clears it.</li>
-<li><code>odSound</code> — whether you switched the site's sound on, for this visit only (session storage).</li>
+<li><code>odSound</code> — remembers if you switched the site's sound off, for this visit only (session storage).</li>
 <li><code>odXray</code> — whether X-ray mode is switched on, for this visit only (session storage).</li>
 <li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>
