@@ -92,6 +92,24 @@
     });
   }
 
+  // Warm the lazy images: once the page has finished loading, quietly start
+  // fetching the rest (a few at a time, in page order) so they are already
+  // there when you scroll to them. Skipped when the visitor has Data Saver on.
+  const warmImages = () => {
+    const imgs = [...document.querySelectorAll('img[loading="lazy"]')];
+    let i = 0;
+    const step = () => {
+      imgs.slice(i, i + 4).forEach((im) => { im.loading = 'eager'; });
+      i += 4;
+      if (i < imgs.length) setTimeout(step, 300);
+    };
+    step();
+  };
+  if (!(navigator.connection && navigator.connection.saveData)) {
+    const kick = () => (window.requestIdleCallback ? requestIdleCallback(warmImages, { timeout: 2000 }) : setTimeout(warmImages, 600));
+    if (document.readyState === 'complete') kick(); else addEventListener('load', kick, { once: true });
+  }
+
   // Home hero: line the big logo's right edge up with the photo's, so it
   // mirrors the text's left margin (side-by-side layout only).
   const heroLogo = document.querySelector('.hero-logo img');
@@ -1123,7 +1141,7 @@
       setup();
       ctx.resume();
       if (!drone) { startDrone(); schedule(); }
-      fade(0.38, 2.5);
+      fade(0.2, 2.5);
     };
     const stop = () => {
       if (!ctx) return;
@@ -1154,7 +1172,7 @@
     document.addEventListener('visibilitychange', () => {
       if (!ctx || !on) return;
       if (document.hidden) { fade(0, 0.4); setTimeout(() => { if (document.hidden) ctx.suspend(); }, 450); }
-      else { ctx.resume().then(() => fade(0.38, 1.5)); }
+      else { ctx.resume().then(() => fade(0.2, 1.5)); }
     });
 
     // Sound is ON by default (unless switched off earlier in the visit). Browsers

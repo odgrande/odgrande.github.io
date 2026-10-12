@@ -171,6 +171,7 @@ def head(title,desc,canonical):
     return f'''<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{full}</title><meta name="description" content="{esc(desc)}">
 <link rel="canonical" href="{url}">
+<link rel="alternate" type="application/rss+xml" title="Odunayo Bolarinwa: projects &amp; updates" href="https://odunayobolarinwa.com/feed.xml">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Odunayo Bolarinwa"><meta property="og:url" content="{url}">
 <meta property="og:title" content="{full}"><meta property="og:description" content="{esc(desc)}">
 <meta property="og:image" content="https://odunayobolarinwa.com/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Odunayo Bolarinwa, Odgrande Digital CEO: Let's create magic together">
@@ -351,7 +352,7 @@ def footer():
     social_html+=f'<li><a href="mailto:{esc(site["email"])}">EMAIL</a></li>'
     nav_html="".join(f'<li><a href="{u}"><span data-i18n="nav_{k}">{esc(t)}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
     return f'''<footer data-reveal><a href="/" class="footer-logo" aria-label="{esc(site["name"])} — home"><img src="/assets/theme/logo.png" alt="">{esc(site["name"])}</a><div class="footer-cols"><div><h3 class="h6" data-i18n="footer_socials_heading">Socials</h3><ul>{social_html}</ul></div><div><h3 class="h6" data-i18n="footer_nav_heading">Navigation</h3><ul>{nav_html}</ul></div></div>
-<div class="footer-bottom"><p class="ft-crafted"><span data-i18n="ft_crafted_pre">Crafted with</span> {SMILE_SVG.format(cls="ft-smile")} <span data-i18n="ft_crafted_by" data-i18n-n="{esc(site["name"].split()[0])}">by {esc(site["name"].split()[0])}</span></p><p>© 2026 <span data-i18n="ft_rights">All Rights Reserved</span></p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a> · <a class="legal-link" href="/faq/"><span data-i18n="footer_faq">FAQ</span></a> · <a class="legal-link" href="/changelog/"><span data-i18n="footer_changelog">Changelog</span></a></p><p class="t-xsm ft-clock" id="visitor-clock-wrap" style="display:none"><span id="visitor-clock"></span></p></div></footer>'''
+<div class="footer-bottom"><p class="ft-crafted"><span data-i18n="ft_crafted_pre">Crafted with</span> {SMILE_SVG.format(cls="ft-smile")} <span data-i18n="ft_crafted_by" data-i18n-n="{esc(site["name"].split()[0])}">by {esc(site["name"].split()[0])}</span></p><p>© 2026 <span data-i18n="ft_rights">All Rights Reserved</span></p><p class="t-xsm"><a class="legal-link" href="/privacy/"><span data-i18n="footer_privacy">Privacy</span></a> · <a class="legal-link" href="/cookies/"><span data-i18n="footer_cookies">Cookies</span></a> · <a class="legal-link" href="/sitemap/"><span data-i18n="footer_sitemap">Sitemap</span></a> · <a class="legal-link" href="/faq/"><span data-i18n="footer_faq">FAQ</span></a> · <a class="legal-link" href="/changelog/"><span data-i18n="footer_changelog">Changelog</span></a> · <a class="legal-link" href="/feed.xml">RSS</a></p><p class="t-xsm ft-clock" id="visitor-clock-wrap" style="display:none"><span id="visitor-clock"></span></p></div></footer>'''
 
 # ---------- shared components ----------
 
@@ -1102,7 +1103,7 @@ def page_faq():
 def page_changelog():
     site=CONFIG["site"]
     items="".join(
-        f'''<li class="cl-item"><div class="cl-meta"><span class="cl-ver">{esc(v)}</span><time datetime="{esc(d)}">{esc(d)}</time></div><ul class="cl-notes">{"".join(f"<li>{esc(n)}</li>" for n in notes)}</ul></li>'''
+        f'''<li class="cl-item" id="{esc(v)}"><div class="cl-meta"><span class="cl-ver">{esc(v)}</span><time datetime="{esc(d)}">{esc(d)}</time></div><ul class="cl-notes">{"".join(f"<li>{esc(n)}</li>" for n in notes)}</ul></li>'''
         for v,d,notes in CONFIG.get("changelog",[]))
     body=f'''<section class="container container-md" data-reveal>
 <h1 class="h1 text-center" data-i18n="cl_heading">Changelog</h1>
@@ -1276,7 +1277,7 @@ def rewrite_images(mapping):
             full,small,(fw,fh),(sw,_)=hit
             tag=tag.replace(sm.group(0),f' src="{q(small)}" srcset="{q(small)} {sw}w, {q(full)} {fw}w" sizes="(max-width: 700px) 100vw, 700px" data-full="{q(full)}"',1)
             if " width=" not in tag:tag=tag.replace("<img",f'<img width="{fw}" height="{fh}"',1)
-        if " loading=" not in tag:tag=tag.replace("<img",'<img loading="lazy"',1)
+        if " loading=" not in tag:tag=tag.replace("<img",'<img loading="eager"' if "fetchpriority" in tag else '<img loading="lazy"',1)
         if " decoding=" not in tag:tag=tag.replace("<img",'<img decoding="async"',1)
         return tag
     attr_re=re.compile(r'((?:href|data-src|poster)=")(/assets/[^"]+)(")')
@@ -1303,10 +1304,24 @@ def write_seo_files(projects):
     # robots.txt + sitemap.xml so search engines find every page.
     base="https://odunayobolarinwa.com"
     paths=["/","/works/","/about/","/credentials/","/contact/","/start/","/faq/","/changelog/","/privacy/","/cookies/","/sitemap/"]+[f"/works/{p['slug']}/" for p in projects]
-    urls="".join(f"<url><loc>{base}{u}</loc></url>" for u in paths)
+    # lastmod = the date of the newest changelog entry, so crawlers know to revisit.
+    lastmod=CONFIG["changelog"][0][1]
+    urls="".join(f"<url><loc>{base}{u}</loc><lastmod>{lastmod}</lastmod></url>" for u in paths)
     (SITE/"sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n',encoding="utf-8")
     # Custom domain (also set in the repo's Pages settings).
     (SITE/"CNAME").write_text("odunayobolarinwa.com\n",encoding="utf-8")
+    # RSS feed: every site update (changelog) and every project, so feed
+    # readers and search engines pick up new work as soon as it ships.
+    from email.utils import format_datetime
+    from datetime import datetime, timezone
+    def rss_date(d): return format_datetime(datetime.strptime(d,"%Y-%m-%d").replace(hour=12,tzinfo=timezone.utc))
+    items=[]
+    for v,d,notes in CONFIG.get("changelog",[]):
+        items.append(f"<item><title>{esc('Site update '+v)}</title><link>{base}/changelog/#{v}</link><guid isPermaLink=\"false\">odb-changelog-{v}</guid><pubDate>{rss_date(d)}</pubDate><description>{esc(' '.join(notes))}</description></item>")
+    for p in projects:
+        items.append(f"<item><title>{esc(p['title'])}</title><link>{base}/works/{p['slug']}/</link><guid>{base}/works/{p['slug']}/</guid><category>{esc(p.get('category',''))}</category><description>{esc(p.get('description',''))}</description></item>")
+    newest=rss_date(CONFIG["changelog"][0][1])
+    (SITE/"feed.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Odunayo Bolarinwa: projects &amp; updates</title><link>{base}/</link><atom:link href="{base}/feed.xml" rel="self" type="application/rss+xml"/><description>New projects, case studies and site updates from Odunayo Bolarinwa, full-stack web developer and web designer in Lagos.</description><language>en</language><lastBuildDate>{newest}</lastBuildDate>{"".join(items)}</channel></rss>'+chr(10),encoding="utf-8")
     (SITE/"robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n",encoding="utf-8")
 
 def main():
