@@ -32,7 +32,7 @@
     "Claude API", "AI Chat Interfaces", "Email Automation", "MailOptin"
   ],
   "changelog": [
-    ["v2.3", "2026-10-12", ["Sound: a mysterious ambient soundscape and soft glass click notes, all generated live in the browser (no audio files). It starts as you enter and only plays while you are on the tab; the speaker button in the nav and mobile menu turns it off."]],
+    ["v2.3", "2026-10-12", ["Sound: a mysterious ambient soundscape and a crisp touchpad-style tap on every click, all generated live in the browser (no audio files). It starts as you enter and only plays while you are on the tab; the speaker button in the nav and mobile menu turns it off."]],
     ["v2.2", "2026-10-12", ["Home hero: a code-to-photo portrait. Move your mouse over it (or watch it sweep on phones) to decode the code back into the photo.", "Smart cursor on desktop: it says VIEW, OPEN, PLAY or DRAG depending on what you point at, with a soft spotlight in dark mode.", "The original home portrait now lives on the About page."]],
     ["v2.1", "2026-10-12", ["CULTUR FM Totes: new Featured build for the Tote Emails plugin (v2.0.0), with branded confirmation and dispatch emails and automatic Printful tracking. Email screenshots show customer details redacted."]],
     ["v2.0", "2026-10-07", ["Every project now has its own case study: the story behind it, how it was built and the results, with stat tiles for the real numbers.", "MailOptin case study with new desktop and mobile screens; BLASTFEST includes the video feedback."]],

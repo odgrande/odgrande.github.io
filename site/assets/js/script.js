@@ -939,7 +939,7 @@
     }
   })();
 
-  // ---------- sound: generated ambient music + soft "glass" click notes ----------
+  // ---------- sound: generated ambient music + a tactile tap on every click ----------
   // Everything is synthesised live with the Web Audio API: no audio files, no
   // licensing, nothing extra to download. Off by default (and browsers block
   // autoplay anyway); once switched on it stays on for the visit.
@@ -997,20 +997,25 @@
       CHORDS[chordIx % CHORDS.length].forEach((fr, i) => voice(fr * (i > 1 ? 1 : 2), 'triangle', 0.045, 3.5, 3, 5, 0.8));
       chordIx++;
     };
-    // Click note: low, soft and mostly echo, so it blooms in the distance
-    // instead of beeping. A tiny downward glide and a quiet bell overtone.
+    // Click sound: a crisp, tactile touchpad-style tap: a tiny burst of
+    // band-passed noise (the "tick") over a soft low thump, ~30ms, no echo.
+    let tapNoise = null;
     const clickNote = () => {
-      const t = ctx.currentTime, n = SCALE[Math.floor(Math.random() * 6)];
-      const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), g2 = ctx.createGain(), f = ctx.createBiquadFilter();
-      o.type = 'sine'; o.frequency.setValueAtTime(n * 1.03, t); o.frequency.exponentialRampToValueAtTime(n, t + 0.18);
-      o2.type = 'triangle'; o2.frequency.value = n * 2.01;
-      f.type = 'lowpass'; f.frequency.value = 1400;
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.07, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
-      g2.gain.setValueAtTime(0, t); g2.gain.linearRampToValueAtTime(0.012, t + 0.02); g2.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
-      o.connect(g); o2.connect(g2); g.connect(f); g2.connect(f);
-      const dry = ctx.createGain(); dry.gain.value = 0.3; f.connect(dry); dry.connect(master);
-      const wet = ctx.createGain(); wet.gain.value = 1.1; f.connect(wet); wet.connect(verb);
-      o.start(t); o2.start(t); o.stop(t + 2.5); o2.stop(t + 1.3);
+      const t = ctx.currentTime;
+      if (!tapNoise) {
+        tapNoise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.04), ctx.sampleRate);
+        const d = tapNoise.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 4);
+      }
+      const src = ctx.createBufferSource(); src.buffer = tapNoise;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600 + Math.random() * 600; bp.Q.value = 1.4;
+      const ng = ctx.createGain(); ng.gain.value = 0.55;
+      src.connect(bp); bp.connect(ng); ng.connect(ctx.destination);
+      const o = ctx.createOscillator(), og = ctx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(90, t + 0.03);
+      og.gain.setValueAtTime(0.18, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
+      o.connect(og); og.connect(ctx.destination);
+      src.start(t); o.start(t); o.stop(t + 0.05);
     };
     const chime = () => voice(SCALE[5 + Math.floor(Math.random() * 6)] * 2, 'sine', 0.05, 0.02, 0.05, 3.2, 0.9);
     const schedule = () => {
@@ -1049,11 +1054,9 @@
     };
     btns.forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); apply(!on, true); }));
 
-    // A soft, slightly mysterious glass note on every click while sound is on
-    // (a different note of the same scale each time, so clicking makes a melody).
+    // A tactile tap on every click or tap anywhere, while sound is on.
     document.addEventListener('pointerdown', (e) => {
-      if (!on || !ctx || e.target.closest('.sound-toggle')) return;
-      if (!e.target.closest('a, button, [role="button"], .work-card, .map-pin, .bf-chip, label, summary')) return;
+      if (!on || !ctx || ctx.state !== 'running' || e.target.closest('.sound-toggle')) return;
       clickNote();
     }, true);
 
