@@ -592,6 +592,8 @@ html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:6
 .cs-card img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;cursor:zoom-in}
 .cs-card figcaption{display:flex;gap:.8rem;align-items:baseline;padding:.85rem 1.1rem;border-top:2px solid var(--paper);font-family:var(--mono);font-size:.78rem;line-height:1.5;color:var(--paper);background:var(--ink)}
 .cs-n{font-weight:700;color:var(--muted)}
+/* Wide side-by-side screenshots (e.g. mobile + desktop email previews) show uncropped. */
+.cs-fit .cs-card img{aspect-ratio:auto;object-fit:contain;background:#dcdcdc}
 @media(max-width:599px){.cs-card{top:calc(4.6rem + var(--i) * .7rem)}.cs-card figcaption{font-size:.7rem;padding:.7rem .85rem}}
 .cs-phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1.2rem}
 .cs-phone{margin:0}

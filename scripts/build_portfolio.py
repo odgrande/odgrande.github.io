@@ -770,7 +770,7 @@ def case_study(p):
 {stack_html(cs["stack"]) if cs.get("stack") else (stack_html(p["stack"]) if p.get("stack") else "")}
 {block("cs_outcome","The outcome",f'<ul class="cs-outcome">{outcome}</ul>' if outcome else "")}
 {block("cs_feedback","In their words",video)}
-{block("cs_screens","Inside the product",f'<div class="cs-deck">{cards}</div>' if cards else "","cs-screens")}
+{block("cs_screens","Inside the product",f'<div class="cs-deck{" cs-fit" if cs.get("screensFit") else ""}">{cards}</div>' if cards else "","cs-screens")}
 {block("cs_mobile","On mobile",f'<div class="cs-phones">{phones}</div>' if phones else "")}
 </section>"""
 
