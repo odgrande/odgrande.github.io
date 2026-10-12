@@ -658,7 +658,7 @@ def page_home(projects):
 <p class="name-origin" data-i18n="pron_origin">Yoruba · Ọdúnayọ̀, “a year of joy”</p>
 </div>
 </div>
-<div class="hero-photo">{image_frame(hero_portrait,site["name"],"portrait")}</div>
+<div class="hero-photo">{image_frame(hero_portrait,site["name"],"portrait code-portrait")}<p class="cp-hint" aria-hidden="true"><span class="cp-hint-fine" data-i18n="cp_hint">Hover to decode</span></p></div>
 </div>
 </section>
 
@@ -848,7 +848,8 @@ def page_about():
     site=CONFIG["site"]
     magic_hero=find_personal(MAGIC_HERO)
     magic_standing=find_personal(MAGIC_STANDING)
-    portrait=find_personal(PORTRAIT_ABOUT) or (personal_images()[0] if personal_images() else "")
+    # The home hero is now the code-to-photo portrait; the plain hero photo lives here.
+    portrait=find_personal(PORTRAIT_HERO) or find_personal(PORTRAIT_ABOUT) or (personal_images()[0] if personal_images() else "")
     experience=accordion_box(CONFIG["experience"],resume=True)
     education=accordion_box(CONFIG["education"],resume=True)
     tags="".join(f"<span>{esc(x)}</span>" for x in CONFIG["capabilities"])

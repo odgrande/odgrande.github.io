@@ -98,6 +98,7 @@
   (() => {
     const TRANSLATIONS = {
       pcm: {
+        cur_view: "See am", cur_play: "Play", cur_drag: "Drag am", cur_open: "Open", cp_hint: "Hover make e decode",
         cs_feedback: "Wetin dem talk",
         cs_eyebrow: "Case study", cs_challenge: "Wetin be the wahala", cs_approach: "How I take run am", cs_built: "Wetin I build", cs_stack: "Wetin dey under the hood", cs_outcome: "How e land", cs_screens: "Inside the product", cs_mobile: "For phone",
         faq_q_5: "How I go take start project with you?", faq_a_5: "Fill my 3-minute project brief. E go waka you through your goals, features, timeline and budget, then e go send everything give me for WhatsApp or email so I fit come back with clear plan.", faq_q_6: "Which tech stack you dey use?", faq_a_6: "Anything wey fit the work. Front-end: HTML, CSS, JavaScript and React. Back-end: Node.js, PHP and Python/Django with PostgreSQL and REST APIs. Platforms: WordPress, WooCommerce, Shopify (Liquid), Webflow and Framer. Plus payment, automation and AI integrations like Stripe and Claude API.", faq_q_7: "You dey give support after launch?", faq_a_7: "Yes. Plenty of my clients still dey with me after launch for maintenance, fixes, updates and new features as their business dey grow.", faq_q_8: "How much project dey cost?", faq_a_8: "E depend on wetin you need, so no be one price for everybody. Share your goals and budget for the project brief and I go come back with plan wey fit am.", faq_link_start: "Start your project brief →", faq_all_btn: "See all the questions", faq_page_intro: "Straight answers about how I dey work, wetin I dey build and how to start.", faq_more_q: "Question still dey your mind?", footer_faq: "FAQ", footer_changelog: "Changelog", cl_heading: "Changelog", cl_intro: "Wetin new for this site, the latest first.", contact_faq_hint: "You get quick question? Check the FAQ.", sl_drag: "Drag am",
@@ -161,6 +162,7 @@
         live_site_btn: "Live Site"
       },
       yo: {
+        cur_view: "Wò ó", cur_play: "Ṣe é", cur_drag: "Fà á", cur_open: "Ṣí i", cp_hint: "Gbé àsín sórí rẹ̀ láti ṣí i",
         cs_feedback: "Ọ̀rọ̀ wọn",
         cs_eyebrow: "Ìtàn iṣẹ́", cs_challenge: "Ìpèníjà náà", cs_approach: "Ọ̀nà tí mo gbà", cs_built: "Ohun tí mo kọ́", cs_stack: "Àwọn irinṣẹ́ inú rẹ̀", cs_outcome: "Àbájáde", cs_screens: "Nínú ọjà náà", cs_mobile: "Lórí fóònù",
         faq_q_5: "Báwo ni mo ṣe lè bẹ̀rẹ̀ iṣẹ́ àkànṣe pẹ̀lú rẹ?", faq_a_5: "Kún àlàyé iṣẹ́ àkànṣe ìṣẹ́jú mẹ́ta mi. Yóò tọ́ ọ sọ́nà nípa àwọn àfojúsùn rẹ, ẹ̀yà, àkókò àti ìnáwó, lẹ́yìn náà yóò fi gbogbo rẹ̀ ránṣẹ́ sí mi lórí WhatsApp tàbí ímeèlì kí n lè padà wá pẹ̀lú ètò tó ṣe kedere.", faq_q_6: "Àwọn irinṣẹ́ ìmọ̀ ẹ̀rọ wo lo máa ń lò?", faq_a_6: "Ohunkóhun tó bá yẹ iṣẹ́ náà. Front-end: HTML, CSS, JavaScript àti React. Back-end: Node.js, PHP àti Python/Django pẹ̀lú PostgreSQL àti REST API. Pẹpẹ: WordPress, WooCommerce, Shopify (Liquid), Webflow àti Framer. Bákan náà ìsopọ̀ ìsanwó, adáṣiṣẹ́ àti AI bíi Stripe àti Claude API.", faq_q_7: "Ṣé o máa ń ṣe àtìlẹ́yìn lẹ́yìn ìfilọ́lẹ̀?", faq_a_7: "Bẹ́ẹ̀ni. Ọ̀pọ̀ àjọṣe mi pẹ̀lú àwọn oníbàárà máa ń tẹ̀síwájú lẹ́yìn ìfilọ́lẹ̀ pẹ̀lú ìtọ́jú, àtúnṣe, ìmúdójúìwọ̀n àti ẹ̀yà tuntun bí iṣẹ́ wọn ṣe ń dàgbà.", faq_q_8: "Èló ni iṣẹ́ àkànṣe máa ń náni?", faq_a_8: "Ó dá lórí ohun tí o nílò, nítorí náà kò sí iye kan fún gbogbo ènìyàn. Pín àwọn àfojúsùn àti ìnáwó rẹ nínú àlàyé iṣẹ́ àkànṣe, màá sì padà wá pẹ̀lú ètò tó bá a mu.", faq_link_start: "Bẹ̀rẹ̀ àlàyé iṣẹ́ àkànṣe rẹ →", faq_all_btn: "Wo gbogbo ìbéèrè", faq_page_intro: "Ìdáhùn tààrà nípa bí mo ṣe ń ṣiṣẹ́, ohun tí mo ń kọ́ àti bí a ṣe lè bẹ̀rẹ̀.", faq_more_q: "Ṣé o ṣì ní ìbéèrè?", footer_faq: "Ìbéèrè", footer_changelog: "Àkọsílẹ̀ àyípadà", cl_heading: "Àkọsílẹ̀ àyípadà", cl_intro: "Ohun tuntun lórí ojúlé yìí, tuntun jù lọ ní àkọ́kọ́.", contact_faq_hint: "Ṣé o ní ìbéèrè kíákíá? Wo FAQ.", sl_drag: "Fà á",
@@ -224,6 +226,7 @@
         live_site_btn: "Ojúlé Tó Ń Ṣiṣẹ́"
       },
       ha: {
+        cur_view: "Duba", cur_play: "Kunna", cur_drag: "Ja", cur_open: "Buɗe", cp_hint: "Sanya linzami don warwarewa",
         cs_feedback: "Abin da suka ce",
         cs_eyebrow: "Nazarin aiki", cs_challenge: "Kalubalen", cs_approach: "Hanyar da na bi", cs_built: "Abin da na gina", cs_stack: "Abin da ke ciki", cs_outcome: "Sakamakon", cs_screens: "Cikin samfurin", cs_mobile: "A wayar hannu",
         faq_q_5: "Ta yaya zan fara aiki tare da kai?", faq_a_5: "Cike bayanin aiki na minti 3. Zai bi da kai ta burinka, fasaloli, lokaci da kasafin kuɗi, sannan ya aiko min komai ta WhatsApp ko imel don in dawo maka da tsari bayyananne.", faq_q_6: "Waɗanne fasahohi kake amfani da su?", faq_a_6: "Duk abin da ya dace da aikin. Front-end: HTML, CSS, JavaScript da React. Back-end: Node.js, PHP da Python/Django tare da PostgreSQL da REST API. Dandali: WordPress, WooCommerce, Shopify (Liquid), Webflow da Framer. Da haɗin biyan kuɗi, sarrafa kai da AI kamar Stripe da Claude API.", faq_q_7: "Kana bayar da tallafi bayan ƙaddamarwa?", faq_a_7: "Ee. Yawancin dangantakata da abokan ciniki na ci gaba bayan ƙaddamarwa tare da kulawa, gyare-gyare, sabuntawa da sababbin fasaloli yayin da kasuwancinsu ke girma.", faq_q_8: "Nawa ne kuɗin aiki?", faq_a_8: "Ya danganta da abin da kake bukata, don haka babu farashi ɗaya ga kowa. Raba burinka da kasafin kuɗinka a cikin bayanin aiki kuma zan dawo maka da tsarin da ya dace.", faq_link_start: "Fara bayanin aikinka →", faq_all_btn: "Duba duk tambayoyi", faq_page_intro: "Amsoshi kai tsaye game da yadda nake aiki, abin da nake ginawa da yadda ake farawa.", faq_more_q: "Har yanzu kana da tambaya?", footer_faq: "Tambayoyi", footer_changelog: "Tarihin canje-canje", cl_heading: "Tarihin canje-canje", cl_intro: "Abin da ke sabo a wannan shafin, sabon farko.", contact_faq_hint: "Kana da tambaya mai sauri? Duba FAQ.", sl_drag: "Ja",
@@ -287,6 +290,7 @@
         live_site_btn: "Shafin Yanar Gizo"
       },
       fr: {
+        cur_view: "Voir", cur_play: "Lire", cur_drag: "Glisser", cur_open: "Ouvrir", cp_hint: "Survolez pour décoder",
         cs_feedback: "Leurs mots",
         cs_eyebrow: "Étude de cas", cs_challenge: "Le défi", cs_approach: "L'approche", cs_built: "Ce que j'ai construit", cs_stack: "Sous le capot", cs_outcome: "Le résultat", cs_screens: "À l'intérieur du produit", cs_mobile: "Sur mobile",
         faq_q_5: "Comment démarrer un projet avec vous ?", faq_a_5: "Remplissez mon brief de projet de 3 minutes. Il vous guide à travers vos objectifs, fonctionnalités, délais et budget, puis m'envoie le tout par WhatsApp ou e-mail pour que je revienne vers vous avec un plan clair.", faq_q_6: "Quelle est votre stack technique ?", faq_a_6: "Ce qui convient au projet. Front-end : HTML, CSS, JavaScript et React. Back-end : Node.js, PHP et Python/Django avec PostgreSQL et des API REST. Plateformes : WordPress, WooCommerce, Shopify (Liquid), Webflow et Framer. Plus des intégrations de paiement, d'automatisation et d'IA comme Stripe et l'API Claude.", faq_q_7: "Proposez-vous un accompagnement après le lancement ?", faq_a_7: "Oui. Beaucoup de mes collaborations se poursuivent bien après le lancement : maintenance, corrections, mises à jour et nouvelles fonctionnalités au fil de la croissance de l'entreprise.", faq_q_8: "Combien coûte un projet ?", faq_a_8: "Cela dépend de vos besoins, il n'y a donc pas de prix unique. Partagez vos objectifs et votre budget dans le brief de projet et je reviendrai vers vous avec un plan adapté.", faq_link_start: "Commencer votre brief de projet →", faq_all_btn: "Voir toutes les questions", faq_page_intro: "Des réponses claires sur ma façon de travailler, ce que je construis et comment démarrer.", faq_more_q: "Vous avez encore une question ?", footer_faq: "FAQ", footer_changelog: "Journal des modifications", cl_heading: "Journal des modifications", cl_intro: "Les nouveautés du site, des plus récentes aux plus anciennes.", contact_faq_hint: "Une question rapide ? Consultez la FAQ.", sl_drag: "Glisser",
@@ -453,6 +457,7 @@
       ['.reply-status', 'Live time-zone maths · Intl API'],
       ['.world', 'Natural Earth data · SVG mask · CSS-drawn flight lines'],
       ['.cs-deck', 'CSS position: sticky card stack · lazy WebP'],
+      ['.code-portrait', 'Canvas ASCII render · pointer lens reveal'],
       ['.brief', 'Multi-step form · localStorage drafts · WhatsApp / email hand-off'],
       ['.works-grid', 'Vue 3 · filtered grid · WebP thumbnails'],
       ['.hero-media', 'WebP hero · srcset 800/1600w · priority load'],
@@ -742,6 +747,196 @@
       const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { world.classList.add('is-in'); io.disconnect(); } }, { threshold: .35 });
       io.observe(world);
     } else world.classList.add('is-in');
+  })();
+
+  // ---------- smart cursor: a ring that follows the mouse and says what things do ----------
+  // Desktop pointers only, never with reduced motion. VIEW on project cards and
+  // zoomable images, PLAY on videos, DRAG on swipeable strips; it shrinks to an
+  // inverting dot over links and buttons. Plus a faint spotlight in dark mode.
+  (() => {
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const T = (k, f) => (window.odT ? window.odT(k, f) : f);
+    const root = document.documentElement;
+    const ring = document.createElement('div');
+    ring.className = 'cursor'; ring.setAttribute('aria-hidden', 'true');
+    ring.innerHTML = '<span class="cursor-label"></span>';
+    const spot = document.createElement('div');
+    spot.className = 'cursor-spot'; spot.setAttribute('aria-hidden', 'true');
+    document.body.append(spot, ring);
+    root.classList.add('has-cursor');
+    const label = ring.querySelector('.cursor-label');
+    const RULES = [
+      ['.slider-track, .cs-phones', 'drag', () => T('cur_drag', 'Drag')],
+      ['video, .video-frame', 'play', () => T('cur_play', 'Play')],
+      ['.work-card, .pager-link', 'view', () => T('cur_view', 'View')],
+      ['.code-portrait', 'decode', () => ''],
+      ['.cs-card img, .masonry-item img, .bento-item img, .fb-proof img, .image-frame .frame-box img, .slider-slide img', 'view', () => T('cur_open', 'Open')],
+      ['a, button, [role="button"], input, textarea, select, label', 'link', () => ''],
+    ];
+    let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, shown = false, raf = 0;
+    const tick = () => {
+      cx += (x - cx) * 0.22; cy += (y - cy) * 0.22;
+      ring.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(tick) : 0;
+    };
+    document.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      x = e.clientX; y = e.clientY;
+      spot.style.setProperty('--mx', x + 'px'); spot.style.setProperty('--my', y + 'px');
+      if (!shown) { shown = true; cx = x; cy = y; root.classList.add('cursor-on'); }
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
+    document.addEventListener('mouseover', (e) => {
+      const t = e.target;
+      let state = '', text = '';
+      for (const [sel, st, txt] of RULES) { if (t.closest && t.closest(sel)) { state = st; text = txt(); break; } }
+      ring.dataset.state = state; label.textContent = text;
+    });
+    document.addEventListener('mouseleave', () => root.classList.remove('cursor-on'));
+    document.addEventListener('mouseenter', () => { if (shown) root.classList.add('cursor-on'); });
+    document.addEventListener('mousedown', () => ring.classList.add('is-down'));
+    document.addEventListener('mouseup', () => ring.classList.remove('is-down'));
+  })();
+
+  // ---------- home hero: code-to-photo portrait ----------
+  // The portrait is redrawn as code characters on a canvas; a soft lens that
+  // follows the pointer "decodes" it back to the real photo underneath. On
+  // touch screens the lens sweeps by itself. The real <img> stays in the page
+  // (alt text, fast first paint), and with reduced motion nothing changes.
+  (() => {
+    const frame = document.querySelector('.code-portrait .frame-box');
+    const img = frame && frame.querySelector('img');
+    if (!img || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'cp-canvas'; canvas.setAttribute('aria-hidden', 'true');
+    frame.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    const CHARS = ' ..,:;-=+<>/{}[]#@';
+    const SEED = '{}<>/;=()[]+*#';
+    let grid = [], cols = 0, rows = 0, cell = 9, W = 0, H = 0, dpr = 1;
+    let lx = -999, ly = -999, tx = -999, ty = -999, R = 0, visible = false, running = false, t0 = performance.now();
+    const colors = () => {
+      const cs = getComputedStyle(document.documentElement);
+      return { ink: cs.getPropertyValue('--ink').trim() || '#111', paper: cs.getPropertyValue('--paper').trim() || '#eee' };
+    };
+    let pal = colors();
+    const sample = () => {
+      // Layout size, not getBoundingClientRect: the page's reveal animation
+      // scales the frame for a moment and would shrink the grid.
+      if (!frame.offsetWidth || !bmp || !bmp.naturalWidth) return false;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = frame.offsetWidth; H = frame.offsetHeight;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      cell = Math.max(6, Math.min(10, W / 48)); // ~48 columns: enough detail for a face
+      cols = Math.ceil(W / cell); rows = Math.ceil(H / (cell * 1.25));
+      // Sample the photo the way the <img> shows it (object-fit: cover, top).
+      const off = document.createElement('canvas'); off.width = cols; off.height = rows;
+      const o = off.getContext('2d', { willReadFrequently: true });
+      // Head-and-shoulders crop: the same window the CSS zooms the real photo to
+      // (--cp-zoom wide, starting --cp-top down, centred), so code and photo line up.
+      const fcs = getComputedStyle(frame);
+      const zoom = parseFloat(fcs.getPropertyValue('--cp-zoom')) || 1, top = parseFloat(fcs.getPropertyValue('--cp-top')) || 0;
+      const br = W / H;
+      let sw = bmp.naturalWidth / zoom, sh = sw / br;
+      let sx = (bmp.naturalWidth - sw) / 2, sy = bmp.naturalHeight * top;
+      if (sy + sh > bmp.naturalHeight) sy = Math.max(0, bmp.naturalHeight - sh);
+      // Downscale in smooth stages (one big jump skips pixels and adds noise).
+      try {
+        let src = bmp, w = sw, h = sh, x0 = sx, y0 = sy;
+        while (w / 2 > cols * 2) {
+          const st = document.createElement('canvas'); st.width = Math.round(w / 2); st.height = Math.round(h / 2);
+          const sc = st.getContext('2d'); sc.imageSmoothingQuality = 'high';
+          sc.drawImage(src, x0, y0, w, h, 0, 0, st.width, st.height);
+          src = st; w = st.width; h = st.height; x0 = 0; y0 = 0;
+        }
+        o.imageSmoothingQuality = 'high';
+        o.drawImage(src, x0, y0, w, h, 0, 0, cols, rows);
+      } catch (e) { return false; }
+      let data;
+      try { data = o.getImageData(0, 0, cols, rows).data; } catch (e) { return false; }
+      const lum = [];
+      for (let i = 0; i < cols * rows; i++) lum.push((0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2]) / 255);
+      const sorted = lum.slice().sort((a, b) => a - b);
+      // The backdrop is the photo's most common tone: measure each spot's distance
+      // from it, so the backdrop vanishes and the person (light or dark) becomes code.
+      // ...and add edges (where light changes sharply) so outlines like the face,
+      // shoulders and collar read clearly. Both are scaled by percentiles so
+      // one very bright object can't wash the rest out.
+      const med = sorted[Math.floor(sorted.length * 0.5)];
+      const at = (c, r) => lum[Math.min(rows - 1, Math.max(0, r)) * cols + Math.min(cols - 1, Math.max(0, c))];
+      const dist = [], edge = [];
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        dist.push(Math.abs(at(c, r) - med));
+        const gx = at(c + 1, r - 1) + 2 * at(c + 1, r) + at(c + 1, r + 1) - at(c - 1, r - 1) - 2 * at(c - 1, r) - at(c - 1, r + 1);
+        const gy = at(c - 1, r + 1) + 2 * at(c, r + 1) + at(c + 1, r + 1) - at(c - 1, r - 1) - 2 * at(c, r - 1) - at(c + 1, r - 1);
+        edge.push(Math.hypot(gx, gy));
+      }
+      const pct = (arr, q) => Math.max(0.02, arr.slice().sort((a, b) => a - b)[Math.floor(arr.length * q)]);
+      const dm = pct(dist, 0.8), em = pct(edge, 0.9), THR = 0.45;
+      // 0 = backdrop (left empty), up to 1 = strongest detail
+      grid = dist.map((d, i) => (Math.pow(Math.min(1, 0.6 * d / dm + 0.6 * edge[i] / em), 0.7) - THR) / (1 - THR));
+      R = Math.max(W, H) * (fine ? 0.2 : 0.24);
+      return true;
+    };
+    const draw = (now) => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = pal.ink; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = pal.paper;
+      ctx.font = `700 ${cell * 1.15}px "JetBrains Mono", ui-monospace, monospace`;
+      ctx.textBaseline = 'top';
+      const ch = cell * 1.25, flick = Math.floor(now / 90);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const l = grid[r * cols + c];
+          if (l <= 0) continue;
+          let k = CHARS[Math.min(CHARS.length - 1, 1 + Math.floor(l * (CHARS.length - 1)))];
+          // a few characters keep "compiling" so the code feels alive
+          if (((c * 7 + r * 13 + flick) % 41) === 0) k = SEED[(c + r + flick) % SEED.length];
+          ctx.globalAlpha = 0.3 + Math.min(1, l) * 0.7;
+          ctx.fillText(k, c * cell, r * ch);
+        }
+      }
+      ctx.globalAlpha = 1;
+      // the lens: cut a soft hole so the real photo shows through
+      if (lx > -900) {
+        ctx.globalCompositeOperation = 'destination-out';
+        const g = ctx.createRadialGradient(lx, ly, R * 0.55, lx, ly, R);
+        g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(lx, ly, R, 0, Math.PI * 2); ctx.fill();
+        ctx.globalCompositeOperation = 'source-over';
+      }
+    };
+    const loop = (now) => {
+      if (!visible) { running = false; return; }
+      if (!fine) { // touch: a slow figure-eight sweep across the face
+        const s = (now - t0) / 2600;
+        tx = W * (0.5 + 0.32 * Math.sin(s)); ty = H * (0.38 + 0.22 * Math.sin(s * 2));
+      }
+      lx += (tx - lx) * (lx < -900 ? 1 : 0.16); ly += (ty - ly) * (ly < -900 ? 1 : 0.16);
+      draw(now);
+      requestAnimationFrame(loop);
+    };
+    const start = () => { if (!running && visible && grid.length) { running = true; requestAnimationFrame(loop); } };
+    const init = () => { if (sample()) { frame.classList.add('cp-ready'); draw(performance.now()); start(); } };
+    // Sample from a plain copy of the photo: an <img> with srcset reports a
+    // density-adjusted size that doesn't match its real pixels.
+    let bmp = null;
+    const loadBmp = () => {
+      const b = new Image();
+      b.onload = () => { bmp = b; init(); };
+      b.src = img.currentSrc || img.src;
+    };
+    if (img.complete && img.naturalWidth) loadBmp(); else img.addEventListener('load', loadBmp, { once: true });
+    new IntersectionObserver((es) => { visible = es.some((e) => e.isIntersecting); start(); }).observe(frame);
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { if (sample()) draw(performance.now()); }, 200); });
+    new MutationObserver(() => { pal = colors(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    if (fine) {
+      frame.addEventListener('pointermove', (e) => { const b = frame.getBoundingClientRect(); tx = e.clientX - b.left; ty = e.clientY - b.top; if (lx < -900) { lx = tx; ly = ty; } });
+      frame.addEventListener('pointerleave', () => { tx = -999; ty = -999; lx = -999; ly = -999; });
+    }
   })();
 
   // ---------- landing gate: a two-way question before the site reveals ----------

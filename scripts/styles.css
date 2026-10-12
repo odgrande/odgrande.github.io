@@ -600,6 +600,34 @@ html.xray .xray-hud{display:grid;position:fixed;right:1rem;bottom:1rem;z-index:6
 .cs-phone img{display:block;width:100%;height:auto;cursor:zoom-in}
 @media(max-width:767px){.cs-phones{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:62%;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.5rem;scrollbar-width:none}.cs-phones::-webkit-scrollbar{display:none}.cs-phone{scroll-snap-align:start}}
 
+/* SMART CURSOR (desktop, motion-friendly): ring + label that follows the
+   mouse; inverts what's beneath via mix-blend-mode so it works on any theme. */
+.cursor{position:fixed;left:0;top:0;z-index:2147483000;width:30px;height:30px;margin:-15px 0 0 -15px;border:1.5px solid #fff;border-radius:50%;mix-blend-mode:difference;pointer-events:none;opacity:0;display:grid;place-items:center;transition:width .25s ease,height .25s ease,margin .25s ease,background .25s ease,opacity .2s ease,border-color .25s ease}
+html.cursor-on .cursor{opacity:1}
+.cursor-label{font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#000;opacity:0;transition:opacity .2s ease;white-space:nowrap}
+.cursor[data-state="view"],.cursor[data-state="play"],.cursor[data-state="drag"]{width:76px;height:76px;margin:-38px 0 0 -38px;background:#fff;border-color:#fff}
+.cursor[data-state="view"] .cursor-label,.cursor[data-state="play"] .cursor-label,.cursor[data-state="drag"] .cursor-label{opacity:1}
+.cursor[data-state="link"]{width:12px;height:12px;margin:-6px 0 0 -6px;background:#fff}
+.cursor[data-state="decode"]{width:10px;height:10px;margin:-5px 0 0 -5px;background:#fff}
+.cursor.is-down{width:22px;height:22px;margin:-11px 0 0 -11px}
+.cursor-spot{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .4s ease;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.045),transparent 70%)}
+html.cursor-on:not([data-theme="light"]) .cursor-spot{opacity:1}
+html.has-cursor .drag-hint{display:none}
+html.xray .cursor-spot{display:none}
+
+/* CODE-TO-PHOTO PORTRAIT (home hero): canvas of code characters over the
+   real photo; the pointer lens (or an automatic sweep on touch) decodes it. */
+/* Head and shoulders only: zoom the photo 2x from 4% down its height (the
+   canvas samples exactly this window). Origin y = top / (1 - 1/zoom). */
+.code-portrait .frame-box{position:relative;--cp-zoom:2;--cp-top:.04;overflow:hidden}
+.code-portrait .frame-box img{transform:scale(var(--cp-zoom));transform-origin:50% 8%;object-fit:cover}
+.cp-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.code-portrait .frame-box.cp-ready .cp-canvas{opacity:1}
+.hero-photo:has(.cp-hint){flex-wrap:wrap}
+.cp-hint{flex-basis:100%;margin:.6rem 0 0;font-family:var(--mono);font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-align:center}
+@media(hover:none),(pointer:coarse){.cp-hint{display:none}}
+@media(prefers-reduced-motion:reduce){.cp-hint{display:none}}
+
 /* FEATURED BUILD — a framed two-column panel inside a project page: the
    story on the left, the skills it shows on the right (stacked on phones). */
 .feature-build{width:100%;max-width:64rem;display:grid;grid-template-columns:1fr;border:2px solid var(--paper);background:color-mix(in oklch,var(--ink) 70%,transparent)}
