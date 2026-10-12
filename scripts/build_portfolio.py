@@ -186,6 +186,12 @@ NAV_LINKS=[("HOME","/"),("WORKS","/works/"),("ABOUT","/about/"),("CREDENTIALS","
 
 THEME_TOGGLE_ICON='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a6 6 0 1 1 0-12a6 6 0 0 1 0 12Zm0-16a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 18a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.7.71a1 1 0 1 1-1.41 1.41l-.71-.7a1 1 0 0 1 0-1.42Zm13.44 13.44a1 1 0 0 1 1.42 0l.7.71a1 1 0 1 1-1.41 1.41l-.71-.7a1 1 0 0 1 0-1.42ZM1 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H2a1 1 0 0 1-1-1Zm18 0a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1ZM4.22 19.78a1 1 0 0 1 0-1.42l.7-.7a1 1 0 1 1 1.42 1.41l-.71.71a1 1 0 0 1-1.41 0Zm13.44-13.44a1 1 0 0 1 0-1.42l.71-.7a1 1 0 1 1 1.41 1.41l-.7.71a1 1 0 0 1-1.42 0Z"/></svg>'
 
+SOUND_ICONS='<svg class="snd-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg><svg class="snd-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>'
+def sound_toggle(cls=""):
+    # Ambient music + soft click sounds, generated live with the Web Audio API
+    # (see script.js). Off by default; the choice lasts for the visit.
+    return f'<button class="sound-toggle {cls}" type="button" aria-label="Turn sound on or off" aria-pressed="false" title="Sound">{SOUND_ICONS}</button>'
+
 def xray_toggle(cls=""):
     # X-ray mode: flips the page into a blueprint that labels the tech behind
     # each section (see script.js). Off by default.
@@ -223,8 +229,8 @@ def nav(current="/"):
 </svg>'''
     name=esc(CONFIG["site"]["name"])
     logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a>'
-    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{xray_toggle("desktop-only")}{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" type="button" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{xray_toggle()}{theme_toggle()}{lang_switcher()}</div><button class="close-btn" type="button" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
+    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{sound_toggle("desktop-only")}{xray_toggle("desktop-only")}{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" type="button" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
+<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{sound_toggle()}{xray_toggle()}{theme_toggle()}{lang_switcher()}</div><button class="close-btn" type="button" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
@@ -1148,6 +1154,7 @@ def page_cookies():
         ("The short version","This site doesn't use tracking or advertising cookies. It uses your browser's local and session storage — technically not cookies, but covered here for the same reason — to remember a few small preferences on your own device."),
         ("What's stored, exactly",'''<ul style="margin:0;padding-left:1.2rem;list-style:disc;display:flex;flex-direction:column;gap:.4rem">
 <li><code>odBrief</code> — the answers you type into the project brief (/start/), kept on your device (local storage) so you can finish later. Nothing is sent anywhere until you choose to send it, and "Start over" clears it.</li>
+<li><code>odSound</code> — whether you switched the site's sound on, for this visit only (session storage).</li>
 <li><code>odXray</code> — whether X-ray mode is switched on, for this visit only (session storage).</li>
 <li><code>odTheme</code> — your light/dark mode choice for this visit only; every new visit opens in the default dark theme (session storage).</li>
 <li><code>odLang</code> — your chosen site language for this visit only; every new visit starts in English (session storage).</li>

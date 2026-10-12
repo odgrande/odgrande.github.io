@@ -939,6 +939,126 @@
     }
   })();
 
+  // ---------- sound: generated ambient music + soft "glass" click notes ----------
+  // Everything is synthesised live with the Web Audio API: no audio files, no
+  // licensing, nothing extra to download. Off by default (and browsers block
+  // autoplay anyway); once switched on it stays on for the visit.
+  (() => {
+    const btns = document.querySelectorAll('.sound-toggle');
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!btns.length || !AC) { btns.forEach((b) => b.remove()); return; }
+    const KEY = 'odSound';
+    let ctx = null, master = null, verb = null, on = false, timers = [], drone = null;
+    // A minor pentatonic, used for the chimes and click notes
+    const SCALE = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 783.99, 880];
+    const CHORDS = [[110, 164.81, 261.63, 329.63], [87.31, 130.81, 220, 329.63], [98, 146.83, 246.94, 293.66], [82.41, 123.47, 196, 246.94]];
+
+    const reverb = () => {
+      const len = ctx.sampleRate * 4.5, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+      }
+      const c = ctx.createConvolver(); c.buffer = buf; return c;
+    };
+    const setup = () => {
+      if (ctx) return;
+      ctx = new AC();
+      master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+      verb = reverb();
+      const wet = ctx.createGain(); wet.gain.value = 0.55; verb.connect(wet); wet.connect(master);
+    };
+    const voice = (freq, type, gain, attack, hold, release, toVerb = 0.6) => {
+      const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+      o.type = type; o.frequency.value = freq;
+      f.type = 'lowpass'; f.frequency.value = Math.min(4000, freq * 6);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(gain, t + attack);
+      g.gain.setValueAtTime(gain, t + attack + hold);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + attack + hold + release);
+      o.connect(f); f.connect(g);
+      g.connect(master);
+      if (toVerb) { const s = ctx.createGain(); s.gain.value = toVerb; g.connect(s); s.connect(verb); }
+      o.start(t); o.stop(t + attack + hold + release + 0.1);
+    };
+    const startDrone = () => {
+      const t = ctx.currentTime, out = ctx.createGain(); out.gain.value = 0.11;
+      const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380; f.Q.value = 4;
+      const lfo = ctx.createOscillator(), lfoAmt = ctx.createGain();
+      lfo.frequency.value = 0.045; lfoAmt.gain.value = 220; lfo.connect(lfoAmt); lfoAmt.connect(f.frequency);
+      const oscs = [55, 55.4, 82.41].map((fr, i) => { const o = ctx.createOscillator(); o.type = i === 2 ? 'triangle' : 'sawtooth'; o.frequency.value = fr; o.connect(f); o.start(t); return o; });
+      f.connect(out); out.connect(master);
+      const s = ctx.createGain(); s.gain.value = 0.4; out.connect(s); s.connect(verb);
+      lfo.start(t);
+      drone = { stop: () => { oscs.forEach((o) => o.stop()); lfo.stop(); } };
+    };
+    let chordIx = 0;
+    const playChord = () => {
+      CHORDS[chordIx % CHORDS.length].forEach((fr, i) => voice(fr * (i > 1 ? 1 : 2), 'triangle', 0.045, 3.5, 3, 5, 0.8));
+      chordIx++;
+    };
+    const chime = () => voice(SCALE[5 + Math.floor(Math.random() * 6)] * 2, 'sine', 0.05, 0.02, 0.05, 3.2, 0.9);
+    const schedule = () => {
+      playChord();
+      timers.push(setInterval(playChord, 9000));
+      const loopChime = () => { if (!on) return; chime(); timers.push(setTimeout(loopChime, 3500 + Math.random() * 5000)); };
+      timers.push(setTimeout(loopChime, 2500));
+    };
+    const fade = (to, sec) => {
+      const t = ctx.currentTime;
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(master.gain.value, t);
+      master.gain.linearRampToValueAtTime(to, t + sec);
+    };
+    const start = () => {
+      setup();
+      ctx.resume();
+      if (!drone) { startDrone(); schedule(); }
+      fade(0.8, 2.5);
+    };
+    const stop = () => {
+      if (!ctx) return;
+      fade(0, 1.2);
+      setTimeout(() => {
+        if (on) return;
+        timers.forEach((x) => { clearInterval(x); clearTimeout(x); }); timers = [];
+        if (drone) { drone.stop(); drone = null; }
+        ctx.suspend();
+      }, 1400);
+    };
+    const apply = (state, save) => {
+      on = state;
+      btns.forEach((b) => { b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('is-on', on); });
+      if (save) { try { sessionStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {} }
+      on ? start() : stop();
+    };
+    btns.forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); apply(!on, true); }));
+
+    // A soft, slightly mysterious glass note on every click while sound is on
+    // (a different note of the same scale each time, so clicking makes a melody).
+    document.addEventListener('pointerdown', (e) => {
+      if (!on || !ctx || e.target.closest('.sound-toggle')) return;
+      if (!e.target.closest('a, button, [role="button"], .work-card, .map-pin, .bf-chip, label, summary')) return;
+      const n = SCALE[4 + Math.floor(Math.random() * 7)] * 2;
+      voice(n, 'sine', 0.09, 0.005, 0.02, 1.4, 0.7);
+      voice(n * 1.5, 'sine', 0.025, 0.005, 0.01, 0.9, 0.7);
+    }, true);
+
+    // Pause in background tabs; resume when the visitor comes back.
+    document.addEventListener('visibilitychange', () => { if (!ctx || !on) return; document.hidden ? ctx.suspend() : ctx.resume(); });
+
+    // Browsers only allow audio after a gesture: if sound was on earlier in the
+    // visit, show the button as on and start on the first interaction.
+    let saved = null;
+    try { saved = sessionStorage.getItem(KEY); } catch (e) {}
+    if (saved === '1') {
+      btns.forEach((b) => { b.setAttribute('aria-pressed', 'true'); b.classList.add('is-on'); });
+      on = true;
+      const kick = () => { if (on) start(); };
+      ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, kick, { once: true, capture: true }));
+    }
+  })();
+
   // ---------- landing gate: a two-way question before the site reveals ----------
   // Shown once per session, FIRST — visible from first paint (see the CSS:
   // this element defaults to visible, it's not waiting on JS to appear), so
@@ -1555,7 +1675,7 @@
 
     // Header drops in once the preloader has cleared (or straight away when
     // it's skipped), logo first, then links and controls.
-    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .xray-toggle, .nav .lang-switcher, .menu-btn');
+    const navItems = document.querySelectorAll('.nav-logo, .nav ul li, .nav .theme-toggle, .nav .xray-toggle, .nav .sound-toggle, .nav .lang-switcher, .menu-btn');
     gsap.set(navItems, { y: -24, opacity: 0 });
     const showNav = () => {
       gsap.to(navItems, { y: 0, opacity: 1, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform,opacity' });

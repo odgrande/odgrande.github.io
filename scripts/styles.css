@@ -249,6 +249,19 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
 @media(min-width:768px){.nav .xray-toggle.desktop-only{display:flex}}
 /* X sits right beside the theme toggle, same spacing as theme -> language. */
 .nav .xray-toggle.desktop-only+.theme-toggle.desktop-only{margin-left:.5rem}
+/* SOUND toggle: same outlined circle; speaker with waves when on, struck when off.
+   Gentle pulsing ring while music plays. */
+.sound-toggle{position:relative;display:flex;align-items:center;justify-content:center;width:32px;height:32px;color:var(--paper);border:2px solid var(--paper);border-radius:50%;transition:background .2s,color .2s;flex-shrink:0}
+.sound-toggle svg{width:16px;height:16px}
+.sound-toggle .snd-on,.sound-toggle.is-on .snd-off{display:none}
+.sound-toggle.is-on .snd-on{display:block}
+.sound-toggle:hover,.sound-toggle.is-on{background:var(--paper);color:var(--ink)}
+.sound-toggle.is-on:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--paper);opacity:0;animation:snd-ring 2.4s ease-out infinite}
+@keyframes snd-ring{0%{transform:scale(.85);opacity:.6}100%{transform:scale(1.25);opacity:0}}
+@media(prefers-reduced-motion:reduce){.sound-toggle.is-on:after{animation:none}}
+.nav .sound-toggle.desktop-only{display:none;margin-left:1.25rem}
+@media(min-width:768px){.nav .sound-toggle.desktop-only{display:flex}}
+.nav .sound-toggle.desktop-only+.xray-toggle.desktop-only{margin-left:.5rem}
 @media(min-width:768px){.nav .theme-toggle.desktop-only{display:flex}}
 
 /* ============ LANGUAGE SWITCHER ============
