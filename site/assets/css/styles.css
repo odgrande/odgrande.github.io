@@ -340,7 +340,8 @@ main{display:flex;flex-direction:column;gap:6rem;padding-bottom:2rem}
   .mx-foot{flex-direction:column;align-items:stretch;gap:.85rem;padding:.6rem var(--canvas-pad) calc(1rem + env(safe-area-inset-bottom))}
   .mx-controls{justify-content:space-between;order:1}
   .mx-cta{order:2;text-align:center;font-size:1.35rem;padding:.75rem 1rem .6rem}
-  .mx-social{order:3;margin:0;justify-content:center;gap:.3rem 1rem}
+  .mx-social{order:3;margin:0;justify-content:center;gap:.3rem .85rem}
+  .mx-social a{font-size:.7rem;letter-spacing:.06em}
   .mx-swipe{order:4;display:block;text-align:center;font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-size:.6rem}
   .mx-swipe:before{content:"";display:block;width:38px;height:4px;border-radius:4px;background:currentColor;margin:0 auto .45rem;opacity:.6}
 }
@@ -937,6 +938,8 @@ html.gate-skip #gate{display:none}
     .mq-a{transform:rotate(-7deg)}
     .mq-b{transform:rotate(6deg);box-shadow:0 0 0 1px rgba(238,234,224,.25)}
 }
+/* Light mode: no drop shadows under the bands (they read as dirty black smudges on white). */
+[data-theme="light"] .mq-a,[data-theme="light"] .mq-b{box-shadow:none}
 .mq-track{display:flex;align-items:center;width:max-content;will-change:transform;animation:mq-left 22s linear infinite}
 .mq-b .mq-track{animation-name:mq-right}
 .marquee.is-driven .mq-track{animation:none}
