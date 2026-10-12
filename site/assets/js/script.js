@@ -1,33 +1,112 @@
 (() => {
+  // ---------- full-screen menu ----------
   const toggle = document.getElementById('nav-toggle');
   const menu = document.getElementById('mobile-menu');
   const close = document.getElementById('mobile-close');
+  const stage = menu?.querySelector('.mx-stage');
+  const ghost = menu?.querySelector('.mx-ghost');
+  const timeEl = document.getElementById('mx-time');
+  let clockTimer = null, lastFocus = null;
+  const tick = () => {
+    if (timeEl) timeEl.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos' }).format(new Date());
+  };
+  const setGhost = (a) => {
+    if (!ghost) return;
+    const w = a?.querySelector('.mx-word')?.textContent || '';
+    if (w && ghost.textContent !== w) { ghost.textContent = w; ghost.classList.remove('pop'); void ghost.offsetWidth; ghost.classList.add('pop'); }
+  };
   const open = () => {
-    if (!menu) return;
+    if (!menu || menu.classList.contains('open')) return;
+    lastFocus = document.activeElement;
+    menu.classList.remove('closing');
     menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
     document.body.classList.add('menu-open');
     toggle?.setAttribute('aria-expanded', 'true');
-    if (window.gsap) {
-      gsap.fromTo(menu, { clipPath: 'circle(0% at calc(100% - 44px) 44px)' }, { clipPath: 'circle(150% at calc(100% - 44px) 44px)', duration: .7, ease: 'power3.inOut', clearProps: 'clipPath' });
-      gsap.from(menu.querySelectorAll('ul a, .mobile-nav-logo'), { y: 40, opacity: 0, rotate: -3, duration: .6, ease: 'power3.out', stagger: .06, delay: .25 });
-    }
-    close?.focus({ preventScroll: true });
+    setGhost(menu.querySelector('a[aria-current="page"]') || menu.querySelector('.mx-list a'));
+    tick(); clockTimer = setInterval(tick, 15000);
+    setTimeout(() => close?.focus({ preventScroll: true }), 50);
   };
   const shut = () => {
     if (!menu || !menu.classList.contains('open')) return;
     menu.classList.remove('open');
+    menu.classList.add('closing');
+    menu.setAttribute('aria-hidden', 'true');
+    menu.style.removeProperty('--drag');
     document.body.classList.remove('menu-open');
     toggle?.setAttribute('aria-expanded', 'false');
+    clearInterval(clockTimer);
+    setTimeout(() => menu.classList.remove('closing'), 700);
+    (lastFocus && lastFocus !== document.body ? lastFocus : toggle)?.focus?.({ preventScroll: true });
   };
   toggle?.setAttribute('aria-expanded', 'false');
   toggle?.setAttribute('aria-controls', 'mobile-menu');
   toggle?.addEventListener('click', open);
-  close?.addEventListener('click', () => { shut(); toggle?.focus({ preventScroll: true }); });
-  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', shut));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
-  // Rotating to desktop width with the menu open would otherwise leave the
-  // page scroll-locked behind a now-hidden overlay.
-  window.matchMedia('(min-width: 768px)').addEventListener?.('change', (e) => { if (e.matches) shut(); });
+  close?.addEventListener('click', shut);
+  menu?.querySelectorAll('.mx-list a, .mx-cta, .mx-logo').forEach((a) => a.addEventListener('click', shut));
+  menu?.querySelectorAll('.mx-list a').forEach((a) => {
+    a.addEventListener('pointerenter', () => setGhost(a));
+    a.addEventListener('focus', () => setGhost(a));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!menu?.classList.contains('open')) return;
+    if (e.key === 'Escape') { shut(); return; }
+    if (e.key !== 'Tab') return;
+    // keep keyboard focus inside the open menu
+    const f = [...menu.querySelectorAll('a, button')].filter((el) => el.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  // Desktop: the whole list tilts in 3D towards the pointer.
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (menu && stage && fine && !still) {
+    menu.addEventListener('pointermove', (e) => {
+      const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
+      stage.style.setProperty('--ry', (x * 14).toFixed(2) + 'deg');
+      stage.style.setProperty('--rx', (-y * 10).toFixed(2) + 'deg');
+      ghost?.style.setProperty('--gx', (x * -40).toFixed(1) + 'px');
+      ghost?.style.setProperty('--gy', (y * -30).toFixed(1) + 'px');
+    });
+  }
+
+  // Phones: drag the menu down to close it.
+  if (menu && !fine) {
+    let y0 = null, dy = 0;
+    menu.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.lang-menu')) return;
+      y0 = e.touches[0].clientY; dy = 0;
+    }, { passive: true });
+    menu.addEventListener('touchmove', (e) => {
+      if (y0 === null) return;
+      dy = Math.max(0, e.touches[0].clientY - y0);
+      menu.style.setProperty('--drag', dy + 'px');
+    }, { passive: true });
+    menu.addEventListener('touchend', () => {
+      if (y0 === null) return;
+      y0 = null;
+      if (dy > 110) shut(); else menu.style.removeProperty('--drag');
+    });
+  }
+
+  // Home hero: line the big logo's right edge up with the photo's, so it
+  // mirrors the text's left margin (side-by-side layout only).
+  const heroLogo = document.querySelector('.hero-logo img');
+  const heroPic = document.querySelector('.hero-photo .image-frame');
+  if (heroLogo && heroPic) {
+    const align = () => {
+      heroLogo.style.translate = '';
+      if (innerWidth < 768) return;
+      const a = heroLogo.getBoundingClientRect(), b = heroPic.getBoundingClientRect();
+      heroLogo.style.translate = Math.round(b.right - a.right) + 'px 0';
+    };
+    addEventListener('load', align);
+    addEventListener('resize', align);
+    if (window.ResizeObserver) new ResizeObserver(align).observe(heroPic);
+  }
 
   document.querySelectorAll('.accordion-item').forEach((item) => {
     const trigger = item.querySelector('.accordion-trigger');
@@ -108,7 +187,7 @@
         pron_label: "How you go call am:",
         fb_eyebrow: "Featured build", fb_skills: "Skills wey e show",
         testimonials_sub: "Straight from inbox: wetin clients write back after dem collect their site.",
-        g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted_pre: "Na with", ft_crafted_by: "{n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects across custom React, Node.js & PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
+        g_p_eyebrow: "Wait, true true?", g_p_head: "15+ live products for Nigeria, UK, Canada and USA — and none of dem don catch fire. Give me 10 seconds of scrolling, I promise say e worth am.", g_p_yes: "Okay, you don convince me", g_p_leave: "I still dey go", g_f_head: "Alright, na your loss. You fit tell me why?", g_f_reason_ph: "Wetin for make you stay? (optional)", g_f_email_ph: "Your email (optional)", g_f_send: "Send feedback & comot", g_f_just: "Just comot", g_f_skip: "Abeg, carry me enter", x_eyebrow: "Hold on — no go yet", x_head: "To comot without dropping your correct idea na crime against innovation.", x_sub: "(No be real crime. Abeg no call police.) Tell me wetin you dey plan — website, app, or that wild 2am idea — and I go turn am to something real.", x_yes: "Okay, take my idea", x_later: "Maybe later", x_f_head: "Oya, impress me.", x_idea_ph: "My correct idea na...", x_email_ph: "Where I go send updates? (optional)", x_send: "Send my idea", x_never: "Forget am", ck_text: "Dis site dey use small browser storage to remember your theme and language for dis visit and some one-time prompts — nobody dey track you or sell anything. Check the", ck_link: "Cookie Policy", ck_ok: "I don hear", ft_crafted_pre: "Na with", ft_crafted_by: "{n} take build am", ft_rights: "All rights dey reserved", works_intro: "{n} projects: custom builds, online shops and brands.", more_work: "More Work", mq_fullstack: "Full-Stack Developer", mq_webdesigner: "Web Designer", mq_build: "Make We Build Something Great", mq_open: "I Dey Open For Work", mq_projects: "{n} Projects", mq_countries: "4 Countries", mq_zero: "Zero Templates",
         ph_stamp: "Pictures dey come soon",
         ptc_about_heading: "When I No Dey Work", ptc_hint: "Move over the dots. Click or tap make the shape change.", nf_eyebrow: "Error 404", nf_heading: "I don lost for inside code.", nf_text: "Dis page no dey (or e move as I dey arrange code). Make we carry you go better place.", nf_home: "Go back home",
         pager_prev: "Before", pager_next: "Next",
@@ -116,6 +195,7 @@
         filter_all: "All", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Branding", filter_product: "Plugins & Products",
         journey_title: "My journey", journey_l1: "First", journey_p1: "Website Design.", journey_s1: "GenM apprenticeship, 2018 — na there I start web.", journey_l2: "Then", journey_p2: "Freelance Development.", journey_s2: "I dey ship work for international clients for Upwork since 2021.", journey_l3: "Today", journey_p3: "I join design and code together.", journey_s3: "Founder, Odgrande Digital — 15+ live products for Nigeria, UK, Canada and USA.",
         nav_home: "Home", nav_works: "Works", nav_about: "About", nav_credentials: "Credentials", nav_contact: "Contact",
+        menu_label: "Menu", menu_close: "Close am", menu_here: "You dey here", menu_swipe: "Drag am down make e close", menu_say: "Holla me", menu_d_home: "Where everything start", menu_d_works: "Projects and case studies", menu_d_about: "The person behind the code", menu_d_credentials: "Certificates and proof", menu_d_contact: "Make we build something",
         gate_eyebrow: "Knock, knock", gate_headline: "Come inside. Dis websites no dey bite.",
         gate_subtext: "Na only bug dey bite, and I don kill all of dem finish.", gate_subtext2: "You ready make you look around?",
         gate_yes: "Yes, make I enter", gate_no: "No, I go pass",
@@ -172,7 +252,7 @@
         pron_label: "Bí a ṣe ń pè é:",
         fb_eyebrow: "Iṣẹ́ àfihàn", fb_skills: "Àwọn ọgbọ́n tí ó fi hàn",
         testimonials_sub: "Tààrà láti inú àpótí ìmeèlì: ohun tí àwọn oníbàárà kọ padà lẹ́yìn tí wọ́n gba ojú-òpó wọn.",
-        g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted_pre: "A fi", ft_crafted_by: "ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ àkànṣe {n} ní React, Node.js àti PHP àkànṣe, WordPress, Shopify, Webflow, ìṣòwò orí ayélujára àti iṣẹ́ àmì-ìdámọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
+        g_p_eyebrow: "Dúró ná, lóòótọ́?", g_p_head: "Àwọn ọjà 15+ tó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA — kò sí ọ̀kan nínú wọn tó jóná. Fún mi ní ìṣẹ́jú-àáyá 10 láti yí lọ, mo ṣèlérí pé ó tọ́ sí i.", g_p_yes: "Ó dáa, o ti yí mi lọ́kàn padà", g_p_leave: "Mo ṣì ń lọ", g_f_head: "Ó dáa, àdánù rẹ ni. Ṣé o lè sọ ìdí rẹ̀ fún mi?", g_f_reason_ph: "Kí ni ìbá mú kí o dúró? (kò pọndandan)", g_f_email_ph: "Ímeèlì rẹ (kò pọndandan)", g_f_send: "Fi èsì ránṣẹ́ kí o sì lọ", g_f_just: "Kàn lọ", g_f_skip: "Rárá, mú mi wọlé", x_eyebrow: "Dúró — má tíì lọ", x_head: "Láti lọ láìfi èrò ọlọ́gbọ́n rẹ sílẹ̀ níbí dà bí ẹ̀ṣẹ̀ sí ìmọ̀-tuntun.", x_sub: "(Kì í ṣe ẹ̀ṣẹ̀ gidi. Jọ̀ọ́ má pe ọlọ́pàá.) Sọ ohun tí o ń rò fún mi — wẹ́ẹ̀bù, áàpù, tàbí èrò àràmàǹdà ní agogo méjì òru — màá sì sọ ọ́ di òótọ́.", x_yes: "Ó dáa, gba èrò mi", x_later: "Bóyá nígbà míì", x_f_head: "Ó dáa, jẹ́ kí n rí i.", x_idea_ph: "Èrò ọlọ́gbọ́n mi ni...", x_email_ph: "Ibo ni kí n fi ìròyìn ránṣẹ́ sí? (kò pọndandan)", x_send: "Fi èrò mi ránṣẹ́", x_never: "Kò burú", ck_text: "Ojú-òpó yìí ń lo ìpamọ́ aṣàwákiri díẹ̀ láti rántí àwọ̀ àti èdè rẹ fún ìbẹ̀wò yìí àti àwọn ìbéèrè ẹ̀ẹ̀kan — a kò tọpinpin tàbí ta ohunkóhun. Wo", ck_link: "Ìlànà Kúkì", ck_ok: "Ó yé mi", ft_crafted_pre: "A fi", ft_crafted_by: "ṣe é láti ọwọ́ {n}", ft_rights: "Gbogbo ẹ̀tọ́ wà ní ìpamọ́", works_intro: "Iṣẹ́ àkànṣe {n}: kóòdù àdáni, ilé ìtajà orí ayélujára àti àmì-ìdámọ̀.", more_work: "Àwọn Iṣẹ́ Míì", mq_fullstack: "Olùgbéejáde Full-Stack", mq_webdesigner: "Apẹ̀rẹ Wẹ́ẹ̀bù", mq_build: "Ẹ Jẹ́ Ká Kọ́ Nǹkan Ńlá", mq_open: "Mo Wà Fún Iṣẹ́", mq_projects: "Iṣẹ́ {n}", mq_countries: "Orílẹ̀-èdè 4", mq_zero: "Kò Sí Àwòṣe",
         ph_stamp: "Àwòrán ń bọ̀ láìpẹ́",
         ptc_about_heading: "Lẹ́yìn Iṣẹ́", ptc_hint: "Gbé kọ́sọ̀ kọjá lórí àwọn àmì náà. Tẹ̀ ẹ́ láti yí ìrísí padà.", nf_eyebrow: "Àṣìṣe 404", nf_heading: "Mo sọnù nínú kóòdù.", nf_text: "Ojú-ìwé yìí kò sí (tàbí ó ti kúrò níbẹ̀ nígbà tí mo ń tún kóòdù ṣe). Jẹ́ ká mú ọ lọ síbi tó wúlò.", nf_home: "Padà sí ilé",
         pager_prev: "Ti tẹ́lẹ̀", pager_next: "Èyí tó kàn",
@@ -180,6 +260,7 @@
         filter_all: "Gbogbo rẹ̀", filter_web: "Wẹ́ẹ̀bù", filter_shop: "Ọjà Orí Ayélujára", filter_brand: "Àmì Ìdánimọ̀", filter_product: "Àwọn Plugin & Ọjà",
         journey_title: "Ìrìn Àjò Mi", journey_l1: "Àkọ́kọ́", journey_p1: "Àpẹrẹ Wẹ́ẹ̀bù.", journey_s1: "Ìkọ́ṣẹ́ GenM, 2018 — ìbẹ̀rẹ̀ mi nínú wẹ́ẹ̀bù.", journey_l2: "Lẹ́yìn náà", journey_p2: "Ìdàgbàsókè Aládàáni.", journey_s2: "Mo ń ṣiṣẹ́ fún àwọn oníbàárà káàkiri àgbáyé lórí Upwork láti 2021.", journey_l3: "Lónìí", journey_p3: "Mo so àpẹrẹ àti kóòdù pọ̀.", journey_s3: "Olùdásílẹ̀, Odgrande Digital — ọjà 15+ tí ó wà láàyè ní Nàìjíríà, UK, Kánádà àti USA.",
         nav_home: "Ile", nav_works: "Isẹ́", nav_about: "Nipa Mi", nav_credentials: "Ẹ̀rí", nav_contact: "Kan Si Mi",
+        menu_label: "Àkójọ", menu_close: "Pa á dé", menu_here: "O wà níbí", menu_swipe: "Fà á sísàlẹ̀ láti pa á dé", menu_say: "Kí mi", menu_d_home: "Ibi tí gbogbo rẹ̀ ti bẹ̀rẹ̀", menu_d_works: "Àwọn iṣẹ́ àti ìtàn wọn", menu_d_about: "Ẹni tó wà lẹ́yìn kóòdù", menu_d_credentials: "Ìwé-ẹ̀rí àti ẹ̀rí", menu_d_contact: "Jẹ́ ká kọ́ nǹkan papọ̀",
         gate_eyebrow: "Kọ́kọ́, kọ́kọ́", gate_headline: "Ẹ wọlé wá. Àwọn wẹ́ẹ̀bù yìí kì í buni jẹ.",
         gate_subtext: "Kòkòrò àṣìṣe (bugs) nìkan ló ń buni jẹ, mo sì ti pa gbogbo wọn run.", gate_subtext2: "Ṣé o ti ṣetán láti wo yíká?",
         gate_yes: "Bẹ́ẹ̀ni, jẹ́ kí n wọlé", gate_no: "Rárá, mo kọjá",
@@ -236,7 +317,7 @@
         pron_label: "Yadda ake furtawa:",
         fb_eyebrow: "Fitaccen aiki", fb_skills: "Ƙwarewar da yake nunawa",
         testimonials_sub: "Kai tsaye daga akwatin saƙo: abin da abokan ciniki suka rubuto bayan an miƙa musu shafinsu.",
-        g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted_pre: "An ƙirƙira da", ft_crafted_by: "daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n} a cikin ginin React, Node.js da PHP na musamman, WordPress, Shopify, Webflow, kasuwancin kan layi da aikin alama.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
+        g_p_eyebrow: "Jira, da gaske?", g_p_head: "Kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka — babu ko ɗaya da ya kama wuta. Ba ni daƙiƙa 10 na gungurawa, na yi alkawari zai dace.", g_p_yes: "To, ka shawo kaina", g_p_leave: "Har yanzu zan tafi", g_f_head: "To, asararka ce. Za ka gaya mini dalili?", g_f_reason_ph: "Me zai sa ka zauna? (na zaɓi)", g_f_email_ph: "Imel ɗinka (na zaɓi)", g_f_send: "Aika ra'ayi ka tafi", g_f_just: "Tafi kawai", g_f_skip: "A'a, kai ni ciki", x_eyebrow: "Dakata — kada ka tafi tukuna", x_head: "Tafiya ba tare da barin kyakkyawan ra'ayinka a nan ba laifi ne ga ƙirƙira.", x_sub: "(Ba laifi na gaske ba ne. Don Allah kada ka kira 'yan sanda.) Faɗa mini abin da kake tunani — shafin yanar gizo, manhaja, ko wani ra'ayi na tsakar dare — zan mayar da shi gaskiya.", x_yes: "To, karɓi ra'ayina", x_later: "Watakila daga baya", x_f_head: "To, burge ni.", x_idea_ph: "Kyakkyawan ra'ayina shi ne...", x_email_ph: "Ina zan aika labarai? (na zaɓi)", x_send: "Aika ra'ayina", x_never: "Bar shi", ck_text: "Wannan shafin yana amfani da ɗan ajiyar burauza don tuna jigo da harshenka na wannan ziyara da wasu tambayoyi na lokaci ɗaya — ba a bin diddigi ko sayar da komai. Duba", ck_link: "Manufar Kukis", ck_ok: "Na gane", ft_crafted_pre: "An ƙirƙira da", ft_crafted_by: "daga {n}", ft_rights: "Duk haƙƙoƙi an kiyaye su", works_intro: "Ayyuka {n}: gine-gine na musamman, shagunan kan layi da alamomi.", more_work: "Ƙarin Ayyuka", mq_fullstack: "Mai Haɓaka Full-Stack", mq_webdesigner: "Mai Zanen Yanar Gizo", mq_build: "Mu Gina Wani Abu Mai Girma", mq_open: "A Shirye Don Aiki", mq_projects: "Ayyuka {n}", mq_countries: "Ƙasashe 4", mq_zero: "Babu Samfuri",
         ph_stamp: "Hotuna na zuwa nan ba da jimawa ba",
         ptc_about_heading: "Bayan Aiki", ptc_hint: "Matsa kan ɗigogin. Danna don canza siffa.", nf_eyebrow: "Kuskure 404", nf_heading: "Na ɓace a cikin lamba.", nf_text: "Wannan shafin babu shi (ko ya koma wani wuri). Bari mu kai ka wuri mai amfani.", nf_home: "Koma gida",
         pager_prev: "Na baya", pager_next: "Na gaba",
@@ -244,6 +325,7 @@
         filter_all: "Duka", filter_web: "Yanar Gizo", filter_shop: "Kasuwancin Intanet", filter_brand: "Alamar Kasuwanci", filter_product: "Plugins & Kayayyaki",
         journey_title: "Tafiyata", journey_l1: "Da farko", journey_p1: "Zanen Yanar Gizo.", journey_s1: "Koyon sana'a a GenM, 2018 — farkon aikina a yanar gizo.", journey_l2: "Sannan", journey_p2: "Ci gaba mai zaman kansa.", journey_s2: "Ina isar da ayyuka ga abokan ciniki na duniya a Upwork tun 2021.", journey_l3: "Yau", journey_p3: "Ina haɗa zane da lamba.", journey_s3: "Wanda ya kafa Odgrande Digital — kayayyaki 15+ masu aiki a Najeriya, UK, Kanada da Amurka.",
         nav_home: "Gida", nav_works: "Ayyuka", nav_about: "Game da Ni", nav_credentials: "Takardun Shaida", nav_contact: "Tuntuɓe Ni",
+        menu_label: "Menu", menu_close: "Rufe", menu_here: "Kana nan", menu_swipe: "Ja ƙasa don rufewa", menu_say: "Gaishe ni", menu_d_home: "Inda komai ya fara", menu_d_works: "Ayyuka da nazarinsu", menu_d_about: "Mutumin bayan code", menu_d_credentials: "Takardun shaida da hujja", menu_d_contact: "Mu gina wani abu tare",
         gate_eyebrow: "Ƙwanƙwasa, ƙwanƙwasa", gate_headline: "Shigo ciki. Waɗannan shafukan ba sa cizo.",
         gate_subtext: "Ƙwari (bugs) kaɗai ke cizo, kuma na kashe su duka.", gate_subtext2: "Ka shirya ka duba ko'ina?",
         gate_yes: "Eh, bari in shiga", gate_no: "A'a, zan wuce",
@@ -300,7 +382,7 @@
         pron_label: "Prononciation :",
         fb_eyebrow: "Réalisation phare", fb_skills: "Compétences démontrées",
         testimonials_sub: "Directement de la boîte mail : ce que les clients ont répondu après la livraison de leur site.",
-        g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted_pre: "Conçu avec", ft_crafted_by: "par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : développements sur mesure React, Node.js et PHP, WordPress, Shopify, Webflow, e-commerce et identité de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
+        g_p_eyebrow: "Attendez, vraiment ?", g_p_head: "Plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis — et aucun n'a pris feu. Accordez-moi 10 secondes de scroll, promis, ça vaut le coup.", g_p_yes: "D'accord, vous m'avez convaincu", g_p_leave: "Je pars quand même", g_f_head: "Tant pis pour vous. Vous me dites pourquoi ?", g_f_reason_ph: "Qu'est-ce qui vous aurait fait rester ? (facultatif)", g_f_email_ph: "Votre e-mail (facultatif)", g_f_send: "Envoyer et partir", g_f_just: "Partir", g_f_skip: "En fait, je rentre", x_eyebrow: "Attendez — ne partez pas encore", x_head: "Partir sans déposer votre idée géniale ici, c'est un crime contre l'innovation.", x_sub: "(Pas un vrai crime. N'appelez pas la police.) Dites-moi ce que vous imaginez — un site, une appli, une idée folle de 2 h du matin — et j'en ferai quelque chose de réel.", x_yes: "D'accord, voici mon idée", x_later: "Plus tard", x_f_head: "Allez-y, impressionnez-moi.", x_idea_ph: "Mon idée géniale, c'est...", x_email_ph: "Où vous envoyer des nouvelles ? (facultatif)", x_send: "Envoyer mon idée", x_never: "Laisser tomber", ck_text: "Ce site utilise un peu de stockage du navigateur pour retenir votre thème et votre langue pendant cette visite, et quelques messages uniques — rien n'est suivi ni vendu. Voir la", ck_link: "Politique de cookies", ck_ok: "Compris", ft_crafted_pre: "Conçu avec", ft_crafted_by: "par {n}", ft_rights: "Tous droits réservés", works_intro: "{n} projets : sur mesure, boutiques en ligne et identités de marque.", more_work: "Autres projets", mq_fullstack: "Développeur Full-Stack", mq_webdesigner: "Web Designer", mq_build: "Construisons Quelque Chose de Grand", mq_open: "Disponible", mq_projects: "{n} Projets", mq_countries: "4 Pays", mq_zero: "Zéro Template",
         ph_stamp: "Visuels bientôt",
         ptc_about_heading: "Hors du bureau", ptc_hint: "Survolez les points. Cliquez ou touchez pour changer de forme.", nf_eyebrow: "Erreur 404", nf_heading: "Perdu dans le code.", nf_text: "Cette page n'existe pas (ou elle a bougé pendant un refactoring). Allons quelque part d'utile.", nf_home: "Retour à l'accueil",
         pager_prev: "Précédent", pager_next: "Suivant",
@@ -308,6 +390,7 @@
         filter_all: "Tout", filter_web: "Web", filter_shop: "E-commerce", filter_brand: "Identité de marque", filter_product: "Plugins & Produits",
         journey_title: "Mon parcours", journey_l1: "D'abord", journey_p1: "Design web.", journey_s1: "Apprentissage chez GenM, 2018 — mes débuts dans le web.", journey_l2: "Puis", journey_p2: "Développement freelance.", journey_s2: "Des livraisons pour des clients internationaux sur Upwork depuis 2021.", journey_l3: "Aujourd'hui", journey_p3: "Je relie design et code.", journey_s3: "Fondateur d'Odgrande Digital — plus de 15 produits en ligne au Nigeria, au Royaume-Uni, au Canada et aux États-Unis.",
         nav_home: "Accueil", nav_works: "Travaux", nav_about: "À propos", nav_credentials: "Qualifications", nav_contact: "Contact",
+        menu_label: "Menu", menu_close: "Fermer", menu_here: "Vous êtes ici", menu_swipe: "Glissez vers le bas pour fermer", menu_say: "Dites bonjour", menu_d_home: "Là où tout commence", menu_d_works: "Projets et études de cas", menu_d_about: "La personne derrière le code", menu_d_credentials: "Certificats et preuves", menu_d_contact: "Construisons quelque chose",
         gate_eyebrow: "Toc, toc", gate_headline: "Entrez donc. Ces sites ne mordent pas.",
         gate_subtext: "Seuls les bugs mordent, et je les ai tous écrasés.", gate_subtext2: "Prêt à faire le tour ?",
         gate_yes: "Oui, je rentre", gate_no: "Non, je passe",
@@ -939,7 +1022,7 @@
     }
   })();
 
-  // ---------- sound: generated ambient music + a tactile tap on every click ----------
+  // ---------- sound: generated ambient music + a game-style keypad blip on every click ----------
   // Everything is synthesised live with the Web Audio API: no audio files, no
   // licensing, nothing extra to download. Off by default (and browsers block
   // autoplay anyway); once switched on it stays on for the visit.
@@ -997,25 +1080,31 @@
       CHORDS[chordIx % CHORDS.length].forEach((fr, i) => voice(fr * (i > 1 ? 1 : 2), 'triangle', 0.045, 3.5, 3, 5, 0.8));
       chordIx++;
     };
-    // Click sound: a crisp, tactile touchpad-style tap: a tiny burst of
-    // band-passed noise (the "tick") over a soft low thump, ~30ms, no echo.
+    // Click sound: a short video-game keypad "punch": a two-step square-wave
+    // blip (like a menu select) over a tiny noise transient, ~80ms, no echo.
     let tapNoise = null;
     const clickNote = () => {
-      const t = ctx.currentTime;
+      const t = ctx.currentTime, p = 1 + (Math.random() - 0.5) * 0.04;
       if (!tapNoise) {
-        tapNoise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.04), ctx.sampleRate);
+        tapNoise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.025), ctx.sampleRate);
         const d = tapNoise.getChannelData(0);
-        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 4);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 5);
       }
       const src = ctx.createBufferSource(); src.buffer = tapNoise;
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2600 + Math.random() * 600; bp.Q.value = 1.4;
-      const ng = ctx.createGain(); ng.gain.value = 0.55;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 1;
+      const ng = ctx.createGain(); ng.gain.value = 0.1;
       src.connect(bp); bp.connect(ng); ng.connect(ctx.destination);
-      const o = ctx.createOscillator(), og = ctx.createGain();
-      o.type = 'sine'; o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(90, t + 0.03);
-      og.gain.setValueAtTime(0.18, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
-      o.connect(og); og.connect(ctx.destination);
-      src.start(t); o.start(t); o.stop(t + 0.05);
+      const o = ctx.createOscillator(), og = ctx.createGain(), lp = ctx.createBiquadFilter();
+      o.type = 'square';
+      o.frequency.setValueAtTime(587.33 * p, t);
+      o.frequency.setValueAtTime(880 * p, t + 0.032);
+      lp.type = 'lowpass'; lp.frequency.value = 3200;
+      og.gain.setValueAtTime(0.0001, t);
+      og.gain.exponentialRampToValueAtTime(0.028, t + 0.004);
+      og.gain.setValueAtTime(0.028, t + 0.05);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.085);
+      o.connect(lp); lp.connect(og); og.connect(ctx.destination);
+      src.start(t); o.start(t); o.stop(t + 0.1);
     };
     const chime = () => voice(SCALE[5 + Math.floor(Math.random() * 6)] * 2, 'sine', 0.05, 0.02, 0.05, 3.2, 0.9);
     const schedule = () => {
@@ -1034,7 +1123,7 @@
       setup();
       ctx.resume();
       if (!drone) { startDrone(); schedule(); }
-      fade(0.8, 2.5);
+      fade(0.38, 2.5);
     };
     const stop = () => {
       if (!ctx) return;
@@ -1065,7 +1154,7 @@
     document.addEventListener('visibilitychange', () => {
       if (!ctx || !on) return;
       if (document.hidden) { fade(0, 0.4); setTimeout(() => { if (document.hidden) ctx.suspend(); }, 450); }
-      else { ctx.resume().then(() => fade(0.8, 1.5)); }
+      else { ctx.resume().then(() => fade(0.38, 1.5)); }
     });
 
     // Sound is ON by default (unless switched off earlier in the visit). Browsers

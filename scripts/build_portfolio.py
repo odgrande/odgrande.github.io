@@ -211,26 +211,38 @@ def lang_switcher(cls=""):
 
 NAV_KEYS=["home","works","about","credentials","contact"]
 
+MENU_DESC={"home":"Where it all starts","works":"Projects & case studies","about":"The person behind the code","credentials":"Certificates & proof","contact":"Let's build something"}
+
 def nav(current="/"):
-    # The link for the section you're in (project pages count as Works) is
-    # marked aria-current="page" and drawn faded, so you always know where
-    # you are.
+    # Header: logo, the site controls, and one MENU pill. The pill opens a
+    # full-screen menu (#mobile-menu): shutters drop over the page, then the
+    # links stand up in 3D. Desktop: a huge list that tilts with the pointer,
+    # with the hovered word ghosted giant behind it. Phones: a split-flap
+    # board of slabs, a thumb dock at the bottom and swipe-down to close.
+    # The section you're in (project pages count as Works) is marked
+    # aria-current="page" and tagged "You are here".
     def cur(u):
         return ' aria-current="page"' if (current==u if u=="/" else current.startswith(u)) else ""
-    desktop="".join(f'<li><a href="{u}"{cur(u)}>{i+1}. <span data-i18n="nav_{k}">{t}</span></a></li>' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
-    mobile="".join(f'<li><a href="{u}"{cur(u)}><span data-i18n="nav_{k}">{t}</span></a></li>' for (t,u),k in zip(NAV_LINKS,NAV_KEYS))
-    close_icon='<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" class="close-icon" aria-hidden="true"><path d="M5 5L19 19M19 5L5 19" fill="none" stroke-width="2.2" stroke-linecap="round"/></svg>'
-    # Same outlined-circle language as the theme toggle and language pill:
-    # two short bars of unequal length (like the site's underlines) that
-    # even out on hover/tap.
+    items="".join(f'''<li style="--i:{i}"><a href="{u}"{cur(u)}><span class="mx-n">0{i+1}</span><span class="mx-word" data-i18n="nav_{k}">{t.title()}</span><span class="mx-desc" data-i18n="menu_d_{k}">{esc(MENU_DESC[k])}</span><span class="mx-here" data-i18n="menu_here">You are here</span><span class="mx-arrow" aria-hidden="true">&#8599;</span></a></li>''' for i,((t,u),k) in enumerate(zip(NAV_LINKS,NAV_KEYS)))
+    close_icon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>'
     menu_icon='''<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" class="hamburger-icon" aria-hidden="true">
 <rect class="menu-bar menu-bar-1" x="1" y="4" width="14" height="2" rx="1"/>
 <rect class="menu-bar menu-bar-2" x="1" y="10" width="9" height="2" rx="1"/>
 </svg>'''
-    name=esc(CONFIG["site"]["name"])
-    logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a>'
-    return f'''<nav class="nav">{logo}<ul>{desktop}</ul>{sound_toggle("desktop-only")}{xray_toggle("desktop-only")}{theme_toggle("desktop-only")}{lang_switcher("desktop-only")}<button class="menu-btn" type="button" id="nav-toggle" aria-label="Open navigation">{menu_icon}</button></nav>
-<div class="mobile-nav" id="mobile-menu"><div class="mobile-nav-controls">{sound_toggle()}{xray_toggle()}{theme_toggle()}{lang_switcher()}</div><button class="close-btn" type="button" id="mobile-close" aria-label="Close navigation">{close_icon}</button><a href="/" class="mobile-nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo.png" alt="" width="112" height="126"></a><ul>{mobile}</ul></div>'''
+    s=CONFIG["site"]; name=esc(s["name"])
+    socials="".join(f'<a href="{esc(s[k])}" target="_blank" rel="noopener">{lbl}</a>' for k,lbl in (("github","GitHub"),("linkedin","LinkedIn"),("instagram","Instagram"),("twitter","X")) if s.get(k))
+    logo=f'<a href="/" class="nav-logo" aria-label="{name} — home"><img src="/assets/theme/logo-mark.svg" alt="" width="112" height="123"></a>'
+    shutters="".join(f'<i style="--i:{i}"></i>' for i in range(5))
+    # Header: small controls on the left, MENU on the right. The home page
+    # carries the big logo in its hero instead; other pages centre a small one.
+    if current=="/": logo=""
+    return f'''<nav class="nav"><div class="nav-ctrls">{sound_toggle()}{xray_toggle()}{theme_toggle()}{lang_switcher()}</div>{logo}<button class="menu-btn" type="button" id="nav-toggle" aria-label="Open the menu"><span class="menu-word" data-i18n="menu_label">Menu</span>{menu_icon}</button></nav>
+<div class="menu-x" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Site menu" aria-hidden="true">
+<div class="mx-shutters" aria-hidden="true">{shutters}</div><div class="mx-bg" aria-hidden="true"></div><div class="mx-ghost" aria-hidden="true"></div>
+<div class="mx-top"><a href="/" class="mx-logo" aria-label="{name} — home"><img src="/assets/theme/logo-mark.svg" alt="" width="112" height="123"></a><span class="mx-clock t-xsm" aria-hidden="true">Lagos <b id="mx-time">--:--</b></span><button class="mx-close" type="button" id="mobile-close" aria-label="Close the menu"><span class="menu-word" data-i18n="menu_close">Close</span>{close_icon}</button></div>
+<nav class="mx-stage" aria-label="Main"><ol class="mx-list">{items}</ol></nav>
+<div class="mx-foot"><div class="mx-controls">{sound_toggle()}{xray_toggle()}{theme_toggle()}{lang_switcher()}</div><a class="mx-cta" href="/start/"><span data-i18n="bf_title">Start a project</span> &#8594;</a><div class="mx-social"><a href="mailto:{esc(s["email"])}" data-i18n="menu_say">Say hello</a>{socials}</div><span class="mx-swipe t-xsm" data-i18n="menu_swipe">Swipe down to close</span></div>
+</div>'''
 
 def preloader():
     return '''<div id="preloader"><iframe id="preloader-frame" title="Loading" data-src="/assets/theme/uplink-loader.html" sandbox="allow-scripts" loading="eager"></iframe></div>'''
@@ -370,9 +382,13 @@ def image_frame(src,alt,cls="",sub="",eager=None):
     return f'''<div class="image-frame {cls}">{wa_barcode()}<div class="frame-box"><img src="{esc(src)}" alt="{esc(alt)}" {load}></div></div>'''
 
 MQ_KEYS={"Full-Stack Developer":"mq_fullstack","Web Designer":"mq_webdesigner","Let's Build Something Great":"mq_build","Open For Work":"mq_open","4 Countries":"mq_countries","Zero Templates":"mq_zero"}
+# Shipped projects, including the custom Shopify Liquid / WordPress themes and
+# plugins that aren't listed as separate case studies.
+PROJECT_COUNT="22+"
+
 def mq_attr(phrase):
     # Translatable marquee words; "21 Projects" keeps its live count via data-i18n-n.
-    m=re.fullmatch(r"(\d+) Projects",phrase)
+    m=re.fullmatch(r"(\d+\+?) Projects",phrase)
     if m: return f' data-i18n="mq_projects" data-i18n-n="{m.group(1)}"'
     return f' data-i18n="{MQ_KEYS[phrase]}"' if phrase in MQ_KEYS else ""
 
@@ -653,7 +669,7 @@ def page_home(projects):
     services=accordion_box(CONFIG["services"])
     reel=home_reel_video(projects)
     body=f'''<section class="container container-xl hero" data-reveal>
-<p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p>
+<div class="hero-top"><span class="hero-logo"><img src="/assets/theme/logo-mark.svg" alt="{esc(site["name"])} logo" width="112" height="123" fetchpriority="high"></span><p class="t-xl tagline" data-i18n="hero_tagline">Hey there! I'm a Full-Stack Web Developer &amp; Web Designer with 5+ years of experience building digital products for clients across Nigeria, the UK, Canada and the USA.</p></div>
 <div class="hero-main">
 <div class="hero-copy">
 <a class="btn btn-live" href="/contact/"><i class="live-dot" aria-hidden="true"></i><span data-i18n="hero_badge">Available for work</span></a>
@@ -717,10 +733,10 @@ def page_home(projects):
 def page_works(projects):
     body=f'''<section class="container container-lg" style="align-items:center" data-reveal>
 <h1 class="h1 text-center" data-i18n="works_heading">Works</h1>
-<p class="t-sm text-center" data-i18n="works_intro" data-i18n-n="{len(projects)}">{len(projects)} projects across custom React, Node.js &amp; PHP builds, WordPress, Shopify, Webflow, e-commerce and brand work.</p>
+<p class="t-sm text-center" data-i18n="works_intro" data-i18n-n="{PROJECT_COUNT}">{PROJECT_COUNT} projects: custom builds, online stores and brands.</p>
 </section>
 
-{marquee([f"{len(projects)} Projects","4 Countries","Zero Templates"])}
+{marquee([f"{PROJECT_COUNT} Projects","4 Countries","Zero Templates"])}
 
 <section class="container container-lg" style="align-items:center" data-reveal>
 <div id="works-filter" class="works-filter" aria-label="Filter projects"></div>
